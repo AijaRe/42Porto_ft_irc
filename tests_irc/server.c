@@ -60,19 +60,32 @@ int main() {
 	}
 
 	std::cout << "Client connected" << std::endl;
+while (true) {
+        memset(buffer, 0, sizeof(buffer));
+        int bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
+        if (bytes_read <= 0) {
+            std::cerr << "Read failed or client disconnected" << std::endl;
+            break;
+        }
 
-	// Read the message from the client
-	int bytes_read = read(client_fd, buffer, sizeof(buffer) - 1); // -1 to leave space for the null terminator
-	if (bytes_read < 0) {
-		std::cerr << "read failed" << std::endl;
-		close(server_fd);
-		close(client_fd); 
-		return 1;
-	}
+        buffer[bytes_read] = '\0';
+        std::cout << "Received: " << buffer;
 
-	buffer[bytes_read] = '\0'; // Null terminate the string
-
-	std::cout << "Client says: " << buffer << std::endl;
+        // Handle PING from the client
+        if (strncmp(buffer, "PING", 4) == 0) {
+            std::string response = "PONG " + std::string(buffer + 5);
+            send(client_fd, response.c_str(), response.length(), 0);
+            std::cout << "Sent: " << response << std::endl;
+        } else if (strncmp(buffer, "NICK", 4) == 0 || strncmp(buffer, "USER", 4) == 0) {
+            // Send a welcome message after the handshake
+            const char *welcome = "Welcome to the We Read The Manual!\r\n";
+            send(client_fd, welcome, strlen(welcome), 0);
+            std::cout << "Sent: " << welcome;
+        } else {
+            // Echo the message back to the client (for testing)
+            send(client_fd, buffer, bytes_read, 0);
+        }
+    }
 
 	close(client_fd);
 	close(server_fd);
@@ -81,4 +94,6 @@ int main() {
 
 // To test run the program
 // in separate terminal run "nc localhost 6667"
-
+// Kill the process: sudo fuser -k 6667/tcp
+// Test HexChat handshake: /quote NICK mynickname
+// /quote USER myusername 0 * :Real Name
