@@ -38,11 +38,11 @@ int main() {
 	serv_addr.sin_addr.s_addr = INADDR_ANY; // Any IP address
 	serv_addr.sin_port = htons(port); // convert port to network byte order
 
-	// Reuse port after server restart (therwise port will be in TIME_WAIT state)
+	// Reuse port after server restart (otherwise port will be in TIME_WAIT state)
 	// Without this option, the server will not be able to bind to the same port
 	// unless you kill the process manually or wait for the TIME_WAIT state to expire
 	int opt = 1;
-	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT , &opt, sizeof(opt)) < 0) {
+	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
 		log_message("ERROR", "setsockopt failed");
 		close(server_fd);
 		return 1;
