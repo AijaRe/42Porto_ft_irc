@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/26 21:04:55 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/01/29 21:02:14 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <poll.h> // poll
 
 #define MAX_CONNECTIONS 5
+#define BUFFER_SIZE 1024
 
 class Server {
 	public:
@@ -29,13 +30,18 @@ class Server {
 
 		int getPort() const;
 		std::string getPassword() const;
+
+		void runServer(); //start server loop
 		
 	private:
 		int _port;
 		std::string _password;
 		int _server_fd;
+		std::vector<pollfd> _fd_list;
 
 		void createSocket();
+		void acceptClient();
+		void handleClient(size_t index);
 };
 
 

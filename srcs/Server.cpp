@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/26 20:58:44 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/01/29 20:59:04 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,15 @@ Server::Server (const std::string &port, const std::string &password) {
 		throw std::runtime_error("Error: Password cannot be empty.");
 
 	createSocket();
-
 }
 
 Server::~Server() {
 	// close server socket
 	close(_server_fd);
+	// Close all client sockets
+    for (size_t i = 1; i < _fd_list.size(); ++i) {
+        close(_fd_list[i].fd);
+    }
 }
 
 void	Server::createSocket() {
@@ -65,8 +68,81 @@ void	Server::createSocket() {
 	}
 
 	logMessage("INFO", "Server listening on port " + std::to_string(_port));
-	
+
+	// initialize pollfd struct for server socket, POLLIN: there is data to read
+	pollfd server_poll = {_server_fd, POLLIN, 0};
+	// add server socket to the list of file descriptors (fd with index 0)
+	_fd_list.push_back(server_poll); 
 }
+
+void	Server::runServer() {
+	while (true) {
+		// use poll to wait for events on the sockets
+		int activity = poll(_fd_list.data(), _fd_list.size(), -1); // -1: wait indefinitely
+		if (activity < 0) {
+			logMessage("ERROR", "Poll failed");
+			break;
+		}
+
+		// check if the server socket has an event (new client connection)
+		if (_fd_list[0].revents & POLLIN) {
+			acceptClient();
+		}
+
+		// check existing clients for events (incoming messages)
+		for (size_t i = 1; i < _fd_list.size(); ++i) {
+			if (_fd_list[i].revents & POLLIN) {
+				handleClient(i);
+			}
+		}
+	}
+}
+
+void	Server::acceptClient() {
+	struct sockaddr_in client_addr;
+	socklen_t addrlen = sizeof(client_addr);
+	int client_fd = accept(_server_fd, (struct sockaddr *)&client_addr, &addrlen);
+	if (client_fd < 0) {
+		logMessage("ERROR", "Accept failed");
+		return;
+	}
+
+	// initialize pollfd struct for client socket, POLLIN: there is data to read
+	pollfd client_poll = {client_fd, POLLIN, 0};
+	// add client socket to the list of file descriptors
+	_fd_list.push_back(client_poll);
+
+	logMessage("INFO", "New client connected");
+}
+
+void	Server::handleClient(size_t index) {
+	char buffer[BUFFER_SIZE];
+	memset(buffer, 0, sizeof(buffer));
+	int bytes_read = read(_fd_list[index].fd, buffer, sizeof(buffer) - 1);
+	if (bytes_read <= 0) {
+		logMessage("ERROR", "Client disconnected");
+		close(_fd_list[index].fd);
+		_fd_list.erase(_fd_list.begin() + index);
+	} else {
+		buffer[bytes_read] = '\0';
+		logMessage("RECEIVED", buffer);
+		// Handle PING/PONG from the client
+		if (strncmp(buffer, "PING", 4) == 0) {
+			std::string response = "PONG " + std::string(buffer + 5); // dynamic response
+			send(_fd_list[index].fd, response.c_str(), response.length(), 0);
+		} else if (strncmp(buffer, "NICK", 4) == 0 || strncmp(buffer, "USER", 4) == 0) {
+			// if message contains "NICK" or "USER" Send a welcome message after the handshake
+			const char *welcome = "Welcome to the We Read The Manual!\r\n"; // static response
+			send(_fd_list[index].fd, welcome, strlen(welcome), 0);
+		} else {
+			// send a generic response
+			const char *answer = "Got some unconventional stuff from you\r\n";
+			send(_fd_list[index].fd, answer, strlen(answer), 0);
+		}
+		
+	}
+}
+
 
 int Server::getPort() const {
 	return _port;

@@ -108,9 +108,9 @@ int main() {
     }
 
 	close(client_fd);
-	close(server_fd);
-*/
-	// pooling
+	close(server_fd); */
+
+	// pollin
 	pollfd server_poll = {server_fd, POLLIN, 0};// POLLIN: There is data to read
 	clients.push_back(server_poll);
 
@@ -160,17 +160,17 @@ int main() {
 					// Handle PING/PONG from the client
 					if (strncmp(buffer, "PING", 4) == 0) {
             			std::string response = "PONG " + std::string(buffer + 5); // dynamic response
-            			send(client_fd, response.c_str(), response.length(), 0);
+            			send(clients[i].fd, response.c_str(), response.length(), 0);
             			std::cout << "Sent: " << response << std::endl;
        				} else if (strncmp(buffer, "NICK", 4) == 0 || strncmp(buffer, "USER", 4) == 0) {
             			// if message contains "NICK" or "USER" Send a welcome message after the handshake
             			const char *welcome = "Welcome to the We Read The Manual!\r\n"; // static response
-            			send(client_fd, welcome, strlen(welcome), 0);
+            			send(clients[i].fd, welcome, strlen(welcome), 0);
             			std::cout << "Sent: " << welcome;
         			} else {
             			// send a generic response
 						const char *answer = "Got some unconventional stuff from you\r\n";
-						send(client_fd, answer, strlen(answer), 0);
+						send(clients[i].fd, answer, strlen(answer), 0);
 					}
 				}
 			}
