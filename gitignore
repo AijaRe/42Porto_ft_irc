@@ -1,5 +1,6 @@
 *.out
 *.o
+*/*.o
 *.d
 ircserv
 tests_irc/*.out

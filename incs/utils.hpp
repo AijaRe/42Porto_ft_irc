@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/26 21:03:49 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/01/29 21:01:45 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <exception>
 #include <string.h> // strlen
 #include <unistd.h> // read, write, close
+#include <vector> // std::vector
 
 
 #define RESET   "\033[0m"
