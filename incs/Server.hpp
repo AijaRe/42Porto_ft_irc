@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/31 18:48:35 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/01/31 19:07:41 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 #include <netinet/in.h> // sockaddr_in
 #include <poll.h> // poll
 #include <map>
-#include "CommandHandler.hpp"
 #include "User.hpp"
-
 
 #define MAX_CONNECTIONS 5
 #define BUFFER_SIZE 1024
+
+class CommandHandler;
 
 class Server {
 	public:
@@ -47,7 +47,7 @@ class Server {
 		void createSocket();
 		void acceptClient();
 
-		CommandHandler _commandHandler;
+		CommandHandler *_commandHandler;
 };
 
 

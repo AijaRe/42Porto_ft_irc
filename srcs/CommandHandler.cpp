@@ -6,11 +6,12 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 18:43:47 by yfontene          #+#    #+#             */
-/*   Updated: 2025/01/31 18:43:48 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/01/31 19:09:16 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/CommandHandler.hpp"
+#include "../incs/Server.hpp"
 
 CommandHandler::CommandHandler(Server &server) : _server(server) {}
 

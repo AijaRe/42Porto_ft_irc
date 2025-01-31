@@ -6,13 +6,14 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/31 18:37:23 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/01/31 19:11:42 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Server.hpp"
+#include "../incs/CommandHandler.hpp"
 
-Server::Server (const std::string &port, const std::string &password) : _commandHandler(*this) {
+Server::Server (const std::string &port, const std::string &password) {
 	// validate and save port number
 	char *end;
 	long tmp_port = std::strtol(port.c_str(), &end, 10);
@@ -35,6 +36,7 @@ Server::~Server() {
     for (size_t i = 1; i < _fd_list.size(); ++i) {
         close(_fd_list[i].fd);
     }
+	delete _commandHandler;
 }
 
 void	Server::createSocket() {
@@ -126,8 +128,7 @@ void	Server::handleClient(size_t index) {
 	} else {
 		buffer[bytes_read] = '\0';
 		logMessage("RECEIVED", buffer);
-		_commandHandler.executeCommand(_fd_list[index].fd, buffer);
-		
+		_commandHandler->executeCommand(_fd_list[index].fd, buffer);
 	}
 }
 
