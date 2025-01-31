@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+         #
+#    By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 19:53:42 by arepsa            #+#    #+#              #
-#    Updated: 2025/01/26 21:06:44 by arepsa           ###   ########.fr        #
+#    Updated: 2025/01/31 18:46:18 by yfontene         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ NAME		= ircserv
 
 SRC_DIR		= srcs
 INC_DIR		= incs
-FILES		= main utils Server
+FILES		= main utils Server CommandHandler User
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(FILES)))
 OBJ			= $(addprefix $(SRC_DIR)/, $(addsuffix .o, $(FILES)))
 DEPS		= $(OBJ:.o=.d)

@@ -7,3 +7,8 @@ void logMessage(const std::string &type, const std::string &message)
     else
         std::cout << "[" << type << "] " << message << std::endl;
 }
+
+void sendMessage(int client_fd, const std::string &message) {
+    std::string formattedMessage = message + "\r\n";
+    send(client_fd, formattedMessage.c_str(), formattedMessage.length(), 0);
+}

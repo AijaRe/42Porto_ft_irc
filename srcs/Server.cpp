@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/29 20:59:04 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/01/31 18:37:23 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Server.hpp"
 
-Server::Server (const std::string &port, const std::string &password) {
+Server::Server (const std::string &port, const std::string &password) : _commandHandler(*this) {
 	// validate and save port number
 	char *end;
 	long tmp_port = std::strtol(port.c_str(), &end, 10);
@@ -126,23 +126,10 @@ void	Server::handleClient(size_t index) {
 	} else {
 		buffer[bytes_read] = '\0';
 		logMessage("RECEIVED", buffer);
-		// Handle PING/PONG from the client
-		if (strncmp(buffer, "PING", 4) == 0) {
-			std::string response = "PONG " + std::string(buffer + 5); // dynamic response
-			send(_fd_list[index].fd, response.c_str(), response.length(), 0);
-		} else if (strncmp(buffer, "NICK", 4) == 0 || strncmp(buffer, "USER", 4) == 0) {
-			// if message contains "NICK" or "USER" Send a welcome message after the handshake
-			const char *welcome = "Welcome to the We Read The Manual!\r\n"; // static response
-			send(_fd_list[index].fd, welcome, strlen(welcome), 0);
-		} else {
-			// send a generic response
-			const char *answer = "Got some unconventional stuff from you\r\n";
-			send(_fd_list[index].fd, answer, strlen(answer), 0);
-		}
+		_commandHandler.executeCommand(_fd_list[index].fd, buffer);
 		
 	}
 }
-
 
 int Server::getPort() const {
 	return _port;

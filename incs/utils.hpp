@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/29 21:01:45 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/01/31 18:43:37 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <string.h> // strlen
 #include <unistd.h> // read, write, close
 #include <vector> // std::vector
+#include <sys/types.h>
+#include <sys/socket.h>
 
 
 #define RESET   "\033[0m"
@@ -31,5 +33,6 @@
 #define UNDERLINE "\033[4m"
 
 void logMessage(const std::string &type, const std::string &message);
+void sendMessage(int client_fd, const std::string &message);
 
 #endif
