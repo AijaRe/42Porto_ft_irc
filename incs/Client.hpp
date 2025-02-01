@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:02:57 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/01 19:24:07 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 19:26:36 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ class Client
     public:
         Client(int fd);
         ~Client();
-
-        std::string buffer;
         
         std::string buffer;
         
