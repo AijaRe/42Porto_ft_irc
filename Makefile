@@ -6,7 +6,7 @@
 #    By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 19:53:42 by arepsa            #+#    #+#              #
-#    Updated: 2025/02/01 11:51:57 by yfontene         ###   ########.fr        #
+#    Updated: 2025/02/01 13:16:39 by yfontene         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ NAME		= ircserv
 
 SRC_DIR		= srcs
 INC_DIR		= incs
-FILES		= main utils Server Client Command_handler
+FILES		= main utils Server Client CommandHandler
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(FILES)))
 OBJ			= $(addprefix $(SRC_DIR)/, $(addsuffix .o, $(FILES)))
 DEPS		= $(OBJ:.o=.d)

@@ -1,11 +1,11 @@
-#include "../incs/Command_handler.hpp"
+#include "../incs/CommandHandler.hpp"
 #include "Server.hpp"
 
-Command_handler::Command_handler(Server &server) : _server(server) {}
+CommandHandler::CommandHandler(Server &server) : _server(server) {}
 
-Command_handler::~Command_handler() {}
+CommandHandler::~CommandHandler() {}
 
-void Command_handler::handle_command(Client &client, const std::string &command)
+void CommandHandler::handleCommand(Client &client, const std::string &command)
 {
     std::istringstream iss(command);
     std::string cmd;
@@ -24,7 +24,7 @@ void Command_handler::handle_command(Client &client, const std::string &command)
         sendError(client.getFd(), "Unknown command: " + cmd);
 }
 
-void Command_handler::handleNick(Client &client, std::istringstream &iss)
+void CommandHandler::handleNick(Client &client, std::istringstream &iss)
 {
     std::string nickname;
     iss >> nickname;
@@ -43,7 +43,7 @@ void Command_handler::handleNick(Client &client, std::istringstream &iss)
     logMessage("NICK", nickname);
 }
 
-void Command_handler::handleUser(Client &client, std::istringstream &iss)
+void CommandHandler::handleUser(Client &client, std::istringstream &iss)
 {
     std::string username;
     iss >> username;
@@ -56,7 +56,7 @@ void Command_handler::handleUser(Client &client, std::istringstream &iss)
     logMessage("USER", "Client set username to: " + username);
 }
 
-void Command_handler::handlePrivmsg(Client &client, std::istringstream &iss)
+void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
 {
     std::string target, message;
     iss >> target;
@@ -77,7 +77,7 @@ void Command_handler::handlePrivmsg(Client &client, std::istringstream &iss)
     }
 }
 
-void Command_handler::handleJoin(Client &client, std::istringstream &iss)
+void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
 {
     std::string channel;
     iss >> channel;
@@ -90,7 +90,7 @@ void Command_handler::handleJoin(Client &client, std::istringstream &iss)
     logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + channel);
 }
 
-void Command_handler::handlePing(Client &client, std::istringstream &iss)
+void CommandHandler::handlePing(Client &client, std::istringstream &iss)
 {
     std::string response = "PONG " + std::string(iss.str().substr(5));
     send(client.getFd(), response.c_str(), response.length(), 0);

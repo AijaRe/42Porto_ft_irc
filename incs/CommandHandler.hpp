@@ -1,17 +1,17 @@
-#ifndef COMMAND_HANDLER_HPP
-#define COMMAND_HANDLER_HPP
+#ifndef COMMANDHANDLER_HPP
+#define COMMANDHANDLER_HPP
 
 #include "Client.hpp"
 #include "utils.hpp"
 
 class Server;
 
-class Command_handler
+class CommandHandler
 {
     public:
-        Command_handler(Server &server);
-        ~Command_handler();
-        void handle_command(Client &client, const std::string &command);
+        CommandHandler(Server &server);
+        ~CommandHandler();
+        void handleCommand(Client &client, const std::string &command);
     private:
         Server &_server;
 

@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 12:48:20 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 13:16:04 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include "Client.hpp"
 #include "utils.hpp"
-#include "Command_handler.hpp"
+#include "CommandHandler.hpp"
 
 #define MAX_CONNECTIONS 5
 #define BUFFER_SIZE 1024
@@ -36,7 +36,7 @@ class Server {
 		int _server_fd;
 		std::vector<pollfd> _fd_list;
 		std::vector<Client> _clients;
-    	Command_handler _command_handler;
+    	CommandHandler _command_handler;
 
 		void createSocket();
 		void acceptClient();

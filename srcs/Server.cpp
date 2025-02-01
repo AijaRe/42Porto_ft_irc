@@ -6,12 +6,12 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 12:48:39 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 13:16:01 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Server.hpp"
-#include "Command_handler.hpp"
+#include "CommandHandler.hpp"
 
 Server::Server (const std::string &port, const std::string &password) : _port(0), _password(""), _command_handler(*this) {
 	// validate and save port number
@@ -134,7 +134,7 @@ void	Server::handleClient(size_t index) {
 		logMessage("RECEIVED", buffer);
 		
 		// handle command
-		_command_handler.handle_command(_clients[index - 1], buffer);
+		_command_handler.handleCommand(_clients[index - 1], buffer);
 	}
 }
 
