@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 14:12:56 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/01 16:52:50 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Server.hpp"
+#include "CommandHandler.hpp"
 
-Server::Server (const std::string &port, const std::string &password) {
+Server::Server (const std::string &port, const std::string &password) : _port(0), _password(""), _command_handler(*this) {
 	// validate and save port number
 	char *end;
 	long tmp_port = std::strtol(port.c_str(), &end, 10);
@@ -69,8 +70,9 @@ void	Server::createSocket() {
 	if (listen(_server_fd, MAX_CONNECTIONS) < 0) {
 		throw std::runtime_error("Error: Listen failed.");
 	}
-
-	logMessage("INFO", "Server listening on port " + std::to_string(_port));
+	std::stringstream ss;
+	ss << _port;
+	logMessage("INFO", "Server listening on port " + ss.str());
 
 	// initialize pollfd struct for server socket, POLLIN: there is data to read
 	pollfd server_poll = {_server_fd, POLLIN, 0};
@@ -116,6 +118,10 @@ void	Server::acceptClient() {
 		return;
 	}
 	
+	//add client to the list of clients
+	Client new_client(client_fd);
+    _clients.push_back(new_client);
+	
 	// initialize pollfd struct for client socket, POLLIN: there is data to read
 	pollfd client_poll = {client_fd, POLLIN, 0};
 	// add client socket to the list of file descriptors
@@ -133,26 +139,14 @@ void	Server::handleClient(size_t index) {
 		logMessage("ERROR", "Client disconnected");
 		close(client_fd);
 		_fd_list.erase(_fd_list.begin() + index);
-		return ;
-	} 
-
-	buffer[bytes_read] = '\0';
-	logMessage("RECEIVED", buffer);
-	// Handle PING/PONG from the client
-	if (strncmp(buffer, "PING", 4) == 0) {
-		std::string response = "PONG " + std::string(buffer + 5); // dynamic response
-		send(_fd_list[index].fd, response.c_str(), response.length(), 0);
-	} else if (strncmp(buffer, "NICK", 4) == 0 || strncmp(buffer, "USER", 4) == 0) {
-		// if message contains "NICK" or "USER" Send a welcome message after the handshake
-		const char *welcome = "Welcome to the We Read The Manual!\r\n"; // static response
-		send(_fd_list[index].fd, welcome, strlen(welcome), 0);
+		_clients.erase(_clients.begin() + index - 1);
 	} else {
-		// send a generic response
-		const char *answer = "Got some unconventional stuff from you\r\n";
-		send(_fd_list[index].fd, answer, strlen(answer), 0);
-	}
+		buffer[bytes_read] = '\0';
+		logMessage("RECEIVED", buffer);
 		
-
+		// handle command
+		_command_handler.handleCommand(_clients[index - 1], buffer);
+	}
 }
 
 
@@ -162,4 +156,8 @@ int Server::getPort() const {
 
 std::string Server::getPassword() const {
 	return _password;
+}
+
+std::vector<Client> Server::getClients() const {
+	return _clients;
 }

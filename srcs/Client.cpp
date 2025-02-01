@@ -1,0 +1,44 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
+/*   Updated: 2025/02/01 12:24:41 by yfontene         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../incs/Client.hpp"
+
+Client::Client(int fd) : _fd(fd), _nickname(""), _username("") {}
+
+Client::~Client() {}
+
+int Client::getFd() const
+{
+    return _fd;
+}
+
+std::string Client::getNickname() const
+{
+    return _nickname;
+}
+
+std::string Client::getUsername() const
+{
+    return _username;
+}
+
+void Client::setNickname(const std::string &nickname)
+{
+    _nickname = nickname;
+}
+
+void Client::setUsername(const std::string &username)
+{
+    _username = username;
+}
+
+

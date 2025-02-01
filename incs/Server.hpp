@@ -3,18 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 14:19:29 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/01 16:46:58 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-
+#include "Client.hpp"
 #include "utils.hpp"
+#include "CommandHandler.hpp"
 
 #include <sys/socket.h> // socket, bind, listen, accept, send
 #include <netinet/in.h> // sockaddr_in
@@ -33,13 +34,14 @@ class Server {
 		std::string getPassword() const;
 
 		void runServer(); //start server loop
-		
+		std::vector<Client> getClients() const;
 	private:
 		int _port;
 		std::string _password;
 		int _server_fd;
 		std::vector<pollfd> _fd_list;
-		
+		std::vector<Client> _clients;
+    	CommandHandler _command_handler;
 
 		void createSocket();
 		void acceptClient();
