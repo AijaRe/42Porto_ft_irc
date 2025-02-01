@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/29 20:59:04 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/01 14:12:56 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,10 @@ void	Server::createSocket() {
 		throw std::runtime_error("Error: setsockopt failed.");
 	}
 
-	// place for fcntl???
+	// set the socket to non-blocking mode
+	if (fcntl(_server_fd, F_SETFL, O_NONBLOCK) < 0) {
+		throw std::runtime_error("Error: failed to set socket to non-blocking mode.");
+	}
 	
 	// bind the socket to the IP address and port
 	if (bind(_server_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
@@ -106,7 +109,13 @@ void	Server::acceptClient() {
 		logMessage("ERROR", "Accept failed");
 		return;
 	}
-
+	// set the client socket to non-blocking mode
+	if (fcntl(client_fd, F_SETFL, O_NONBLOCK) < 0) {
+		logMessage("ERROR", "Failed to set client socket to non-blocking mode");
+		close(client_fd);
+		return;
+	}
+	
 	// initialize pollfd struct for client socket, POLLIN: there is data to read
 	pollfd client_poll = {client_fd, POLLIN, 0};
 	// add client socket to the list of file descriptors
@@ -116,31 +125,34 @@ void	Server::acceptClient() {
 }
 
 void	Server::handleClient(size_t index) {
+	int client_fd = _fd_list[index].fd;
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0, sizeof(buffer));
-	int bytes_read = read(_fd_list[index].fd, buffer, sizeof(buffer) - 1);
+	int bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
 	if (bytes_read <= 0) {
 		logMessage("ERROR", "Client disconnected");
-		close(_fd_list[index].fd);
+		close(client_fd);
 		_fd_list.erase(_fd_list.begin() + index);
+		return ;
+	} 
+
+	buffer[bytes_read] = '\0';
+	logMessage("RECEIVED", buffer);
+	// Handle PING/PONG from the client
+	if (strncmp(buffer, "PING", 4) == 0) {
+		std::string response = "PONG " + std::string(buffer + 5); // dynamic response
+		send(_fd_list[index].fd, response.c_str(), response.length(), 0);
+	} else if (strncmp(buffer, "NICK", 4) == 0 || strncmp(buffer, "USER", 4) == 0) {
+		// if message contains "NICK" or "USER" Send a welcome message after the handshake
+		const char *welcome = "Welcome to the We Read The Manual!\r\n"; // static response
+		send(_fd_list[index].fd, welcome, strlen(welcome), 0);
 	} else {
-		buffer[bytes_read] = '\0';
-		logMessage("RECEIVED", buffer);
-		// Handle PING/PONG from the client
-		if (strncmp(buffer, "PING", 4) == 0) {
-			std::string response = "PONG " + std::string(buffer + 5); // dynamic response
-			send(_fd_list[index].fd, response.c_str(), response.length(), 0);
-		} else if (strncmp(buffer, "NICK", 4) == 0 || strncmp(buffer, "USER", 4) == 0) {
-			// if message contains "NICK" or "USER" Send a welcome message after the handshake
-			const char *welcome = "Welcome to the We Read The Manual!\r\n"; // static response
-			send(_fd_list[index].fd, welcome, strlen(welcome), 0);
-		} else {
-			// send a generic response
-			const char *answer = "Got some unconventional stuff from you\r\n";
-			send(_fd_list[index].fd, answer, strlen(answer), 0);
-		}
-		
+		// send a generic response
+		const char *answer = "Got some unconventional stuff from you\r\n";
+		send(_fd_list[index].fd, answer, strlen(answer), 0);
 	}
+		
+
 }
 
 
