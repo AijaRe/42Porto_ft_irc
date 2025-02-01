@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 13:16:04 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 16:46:58 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@
 #include "Client.hpp"
 #include "utils.hpp"
 #include "CommandHandler.hpp"
+
+#include <sys/socket.h> // socket, bind, listen, accept, send
+#include <netinet/in.h> // sockaddr_in
+#include <poll.h> // poll
+#include <fcntl.h> // fcntl
 
 #define MAX_CONNECTIONS 5
 #define BUFFER_SIZE 1024

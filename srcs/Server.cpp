@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 13:16:01 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 16:52:50 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ void	Server::createSocket() {
 		throw std::runtime_error("Error: setsockopt failed.");
 	}
 
-	// place for fcntl???
+	// set the socket to non-blocking mode
+	if (fcntl(_server_fd, F_SETFL, O_NONBLOCK) < 0) {
+		throw std::runtime_error("Error: failed to set socket to non-blocking mode.");
+	}
 	
 	// bind the socket to the IP address and port
 	if (bind(_server_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
@@ -108,6 +111,13 @@ void	Server::acceptClient() {
 		logMessage("ERROR", "Accept failed");
 		return;
 	}
+	// set the client socket to non-blocking mode
+	if (fcntl(client_fd, F_SETFL, O_NONBLOCK) < 0) {
+		logMessage("ERROR", "Failed to set client socket to non-blocking mode");
+		close(client_fd);
+		return;
+	}
+	
 	//add client to the list of clients
 	Client new_client(client_fd);
     _clients.push_back(new_client);
@@ -121,12 +131,13 @@ void	Server::acceptClient() {
 }
 
 void	Server::handleClient(size_t index) {
+	int client_fd = _fd_list[index].fd;
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0, sizeof(buffer));
-	int bytes_read = read(_fd_list[index].fd, buffer, sizeof(buffer) - 1);
+	int bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
 	if (bytes_read <= 0) {
 		logMessage("ERROR", "Client disconnected");
-		close(_fd_list[index].fd);
+		close(client_fd);
 		_fd_list.erase(_fd_list.begin() + index);
 		_clients.erase(_clients.begin() + index - 1);
 	} else {
