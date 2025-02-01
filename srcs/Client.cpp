@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/01 12:24:41 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 16:27:03 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,16 @@ void Client::setNickname(const std::string &nickname)
 void Client::setUsername(const std::string &username)
 {
     _username = username;
+}
+
+bool Client::isAuthenticated() const
+{
+    return _authenticated;
+}
+
+void Client::setAuthenticated(bool status)
+{
+    _authenticated = status;
 }
 
 

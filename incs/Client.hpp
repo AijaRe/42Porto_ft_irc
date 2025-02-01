@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:02:57 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/01 12:24:46 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 19:05:21 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,21 @@ class Client
         Client(int fd);
         ~Client();
         
+        std::string buffer;
+        
         int getFd() const;
         std::string getNickname() const;
         std::string getUsername() const;
         void setNickname(const std::string &nickname);
         void setUsername(const std::string &username);
+        
+        bool isAuthenticated() const;
+        void setAuthenticated(bool status);
     private:
         int _fd;
         std::string _nickname;
         std::string _username;
+        bool _authenticated;
 };
 
 #endif
