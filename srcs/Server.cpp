@@ -6,14 +6,14 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/01/31 19:11:42 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 12:48:39 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/Server.hpp"
-#include "../incs/CommandHandler.hpp"
+#include "Command_handler.hpp"
 
-Server::Server (const std::string &port, const std::string &password) {
+Server::Server (const std::string &port, const std::string &password) : _port(0), _password(""), _command_handler(*this) {
 	// validate and save port number
 	char *end;
 	long tmp_port = std::strtol(port.c_str(), &end, 10);
@@ -36,7 +36,6 @@ Server::~Server() {
     for (size_t i = 1; i < _fd_list.size(); ++i) {
         close(_fd_list[i].fd);
     }
-	delete _commandHandler;
 }
 
 void	Server::createSocket() {
@@ -68,8 +67,9 @@ void	Server::createSocket() {
 	if (listen(_server_fd, MAX_CONNECTIONS) < 0) {
 		throw std::runtime_error("Error: Listen failed.");
 	}
-
-	logMessage("INFO", "Server listening on port " + std::to_string(_port));
+	std::stringstream ss;
+	ss << _port;
+	logMessage("INFO", "Server listening on port " + ss.str());
 
 	// initialize pollfd struct for server socket, POLLIN: there is data to read
 	pollfd server_poll = {_server_fd, POLLIN, 0};
@@ -108,7 +108,10 @@ void	Server::acceptClient() {
 		logMessage("ERROR", "Accept failed");
 		return;
 	}
-
+	//add client to the list of clients
+	Client new_client(client_fd);
+    _clients.push_back(new_client);
+	
 	// initialize pollfd struct for client socket, POLLIN: there is data to read
 	pollfd client_poll = {client_fd, POLLIN, 0};
 	// add client socket to the list of file descriptors
@@ -125,12 +128,16 @@ void	Server::handleClient(size_t index) {
 		logMessage("ERROR", "Client disconnected");
 		close(_fd_list[index].fd);
 		_fd_list.erase(_fd_list.begin() + index);
+		_clients.erase(_clients.begin() + index - 1);
 	} else {
 		buffer[bytes_read] = '\0';
 		logMessage("RECEIVED", buffer);
-		_commandHandler->executeCommand(_fd_list[index].fd, buffer);
+		
+		// handle command
+		_command_handler.handle_command(_clients[index - 1], buffer);
 	}
 }
+
 
 int Server::getPort() const {
 	return _port;
@@ -138,4 +145,8 @@ int Server::getPort() const {
 
 std::string Server::getPassword() const {
 	return _password;
+}
+
+std::vector<Client> Server::getClients() const {
+	return _clients;
 }

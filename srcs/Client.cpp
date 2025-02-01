@@ -1,35 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   User.cpp                                           :+:      :+:    :+:   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/31 18:44:04 by yfontene          #+#    #+#             */
-/*   Updated: 2025/01/31 18:44:05 by yfontene         ###   ########.fr       */
+/*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
+/*   Updated: 2025/02/01 12:24:41 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/User.hpp"
+#include "../incs/Client.hpp"
 
-User::User() : _nick(""), _username("") {}
+Client::Client(int fd) : _fd(fd), _nickname(""), _username("") {}
 
-void User::setNick(const std::string &nick) {
-    _nick = nick;
+Client::~Client() {}
+
+int Client::getFd() const
+{
+    return _fd;
 }
 
-void User::setUsername(const std::string &username) {
-    _username = username;
+std::string Client::getNickname() const
+{
+    return _nickname;
 }
 
-std::string User::getNick() const {
-    return _nick;
-}
-
-std::string User::getUsername() const {
+std::string Client::getUsername() const
+{
     return _username;
 }
 
-bool User::isRegistered() const {
-    return !_nick.empty() && !_username.empty();
+void Client::setNickname(const std::string &nickname)
+{
+    _nickname = nickname;
 }
+
+void Client::setUsername(const std::string &username)
+{
+    _username = username;
+}
+
+

@@ -1,4 +1,4 @@
-#include "utils.hpp"
+#include "../incs/utils.hpp"
 
 void logMessage(const std::string &type, const std::string &message)
 {
@@ -8,7 +8,9 @@ void logMessage(const std::string &type, const std::string &message)
         std::cout << "[" << type << "] " << message << std::endl;
 }
 
-void sendMessage(int client_fd, const std::string &message) {
-    std::string formattedMessage = message + "\r\n";
-    send(client_fd, formattedMessage.c_str(), formattedMessage.length(), 0);
+void sendError(int fd, const std::string& message)
+{
+    std::string errorMessage = "ERROR : " + message + "\r\n";
+    const char* error = errorMessage.c_str();
+    send(fd, error, errorMessage.length(), 0);
 }
