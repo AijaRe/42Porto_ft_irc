@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 16:52:50 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:31:48 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,22 +131,34 @@ void	Server::acceptClient() {
 }
 
 void	Server::handleClient(size_t index) {
-	int client_fd = _fd_list[index].fd;
+	Client &client = _clients[index - 1];
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0, sizeof(buffer));
-	int bytes_read = read(client_fd, buffer, sizeof(buffer) - 1);
+	
+	int bytes_read = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
 	if (bytes_read <= 0) {
 		logMessage("ERROR", "Client disconnected");
-		close(client_fd);
+		close(client.getFd());
 		_fd_list.erase(_fd_list.begin() + index);
 		_clients.erase(_clients.begin() + index - 1);
-	} else {
-		buffer[bytes_read] = '\0';
-		logMessage("RECEIVED", buffer);
-		
-		// handle command
-		_command_handler.handleCommand(_clients[index - 1], buffer);
-	}
+		return ;
+	} 
+	buffer[bytes_read] = '\0';
+	// Accumulate message
+    client.buffer += buffer;
+    
+    // Process complete messages
+    size_t pos;
+    if ((pos = client.buffer.find('\n')) != std::string::npos) {
+        std::string message = client.buffer.substr(0, pos);
+        client.buffer.erase(0, pos + 1);
+        
+        logMessage("RECEIVED", message.c_str());
+        
+        // Handle command
+        _command_handler.handleCommand(_clients[index - 1], message);
+    }
+	
 }
 
 
