@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 16:46:58 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:20:45 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <netinet/in.h> // sockaddr_in
 #include <poll.h> // poll
 #include <fcntl.h> // fcntl
+#include <vector> // std::vector
+#include <map> // std::map
 
 #define MAX_CONNECTIONS 5
 #define BUFFER_SIZE 1024
