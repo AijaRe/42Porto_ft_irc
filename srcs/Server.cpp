@@ -38,6 +38,7 @@ Server::~Server() {
     }
 }
 
+
 void	Server::createSocket() {
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_fd < 0)
@@ -83,7 +84,11 @@ void	Server::createSocket() {
 void	Server::runServer() {
 	while (true) {
 		// use poll to wait for events on the sockets
+		/*Another thing interesting in the approach is that the poll function will 
+		verify for new connection on the first _fd_list position (since its the _server_fd position)
+		and in the following ones (client connected) it will monitor for data to read.*/
 		int activity = poll(_fd_list.data(), _fd_list.size(), -1); // -1: wait indefinitely
+		
 		if (activity < 0) {
 			logMessage("ERROR", "Poll failed");
 			break;
