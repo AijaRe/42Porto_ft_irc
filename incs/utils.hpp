@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 17:40:09 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/03 21:28:18 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <unistd.h> // read, write, close
 #include <vector> // std::vector
 #include <sstream>
+#include <fstream> // std::ifstream
 #include <sys/socket.h> // socket, bind, listen, accept, send
 #include <netinet/in.h> // sockaddr_in
 #include <poll.h> // poll
