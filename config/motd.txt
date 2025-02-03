@@ -1,0 +1,13 @@
+Welcome to the We Read The Manual IRC Network!
+
+SERVICES
+* Set your nickname
+	/nick newNickname
+* Join a channel
+	/join #channelName
+* Send public message to all channel users
+	/msg #channelName Message to everyone!
+* Send a private message to another user
+	/msg userName Message to a particular user!
+
+Chat yourself away!
