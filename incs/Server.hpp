@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/03 22:03:41 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/01 18:20:45 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ class Server {
 	private:
 		int _port;
 		std::string _password;
-		std::string _motd;
 		int _server_fd;
 		std::vector<pollfd> _fd_list;
 		std::vector<Client> _clients;
@@ -49,8 +48,7 @@ class Server {
 		void createSocket();
 		void acceptClient();
 		void handleClient(size_t index);
-		void loadMotd(const std::string &filename);
-		void sendMotd(Client &client);
 };
+
 
 #endif
