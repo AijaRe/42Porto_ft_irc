@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
 /*   Updated: 2025/02/03 22:21:00 by arepsa           ###   ########.fr       */
@@ -162,8 +162,7 @@ void	Server::handleClient(size_t index) {
         
         // Handle command
         _command_handler.handleCommand(_clients[index - 1], message);
-    }
-	
+	}
 }
 
 void	Server::sendMotd(Client &client) {
