@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/01 16:27:03 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/04 16:07:07 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,3 @@ void Client::setAuthenticated(bool status)
 {
     _authenticated = status;
 }
-
-
