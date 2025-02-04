@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/03 22:21:00 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/04 21:04:41 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,6 @@ Server::Server (const std::string &port, const std::string &password) : _port(0)
 		throw std::runtime_error("Error: Password cannot be empty.");
 
 	createSocket();
-	// Load Message Of The Day from file
-    loadMotd("config/motd.txt");
-	if (_motd.empty())
-		throw std::runtime_error("Error: MOTD file is empty."); // ERR_NOMOTD (422)
 }
 
 Server::~Server() {
@@ -132,7 +128,6 @@ void	Server::acceptClient() {
 	_fd_list.push_back(client_poll);
 
 	logMessage("INFO", "New client connected");
-	// sendMotd(new_client);
 }
 
 void	Server::handleClient(size_t index) {
@@ -142,7 +137,10 @@ void	Server::handleClient(size_t index) {
 	
 	int bytes_read = recv(client.getFd(), buffer, sizeof(buffer) - 1, MSG_DONTWAIT);
 	if (bytes_read <= 0) {
-		logMessage("ERROR", "Client disconnected");
+		if (bytes_read == 0)
+			logMessage("INFO", "Client disconnected");
+		else
+			logMessage("ERROR", "Failed to receive data from client");
 		close(client.getFd());
 		_fd_list.erase(_fd_list.begin() + index);
 		_clients.erase(_clients.begin() + index - 1);
@@ -154,7 +152,7 @@ void	Server::handleClient(size_t index) {
     
     // Process complete messages
     size_t pos;
-    if ((pos = client.buffer.find('\n')) != std::string::npos) {
+    while ((pos = client.buffer.find('\n')) != std::string::npos) {
         std::string message = client.buffer.substr(0, pos);
         client.buffer.erase(0, pos + 1);
         
@@ -163,44 +161,6 @@ void	Server::handleClient(size_t index) {
         // Handle command
         _command_handler.handleCommand(_clients[index - 1], message);
     }
-	
-}
-
-void	Server::sendMotd(Client &client) {
-	if (_motd.empty()) {
-		std::string response = ":wrtm 422 " + client.getNickname() + " :MOTD is missing\r\n";
-        send(client.getFd(), response.c_str(), response.length(), 0);
-        return;
-	}
-	
-	std::string serverName = "wrtm";
-	// start the MOTD
-	std::string response = ":" + serverName + " 375 " + client.getNickname() + " :* " + serverName + " Message of the Day -\r\n";
-	send(client.getFd(), response.c_str(), response.length(), 0);
-	
-	std::stringstream ss(_motd);
-	std::string line;
-	// send each line of the MOTD
-	while (std::getline(ss, line, '\n')) {
-		response = ":" + serverName + " 372 " + client.getNickname() + " :* " + line + "\r\n";
-		send(client.getFd(), response.c_str(), response.length(), 0);
-	}
-	// end the MOTD
-	response = ":" + serverName + " 376 " + client.getNickname() + " :* End of /MOTD command.\r\n";
-	send(client.getFd(), response.c_str(), response.length(), 0);
-}
-
-void	Server::loadMotd(const std::string &filename) {
-	std::ifstream file(filename.c_str());
-	if (!file.is_open()) {
-		logMessage("ERROR", "Failed to open MOTD file");
-		return;
-	}
-	
-	std::stringstream buffer;
-	buffer << file.rdbuf(); // read entire file into buffer
-	_motd = buffer.str();
-	file.close();
 }
 
 int Server::getPort() const {
