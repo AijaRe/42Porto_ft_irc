@@ -15,6 +15,7 @@ class CommandHandler
     private:
         Server &_server;
 
+        void handlePass(Client &client, std::istringstream &iss);
         void handleNick(Client &client, std::istringstream &iss);
         void handleUser(Client &client, std::istringstream &iss);
         void handlePrivmsg(Client &client, std::istringstream &iss);

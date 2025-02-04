@@ -1,5 +1,5 @@
 #include "../incs/CommandHandler.hpp"
-#include "Server.hpp"
+#include "../incs/Server.hpp"
 
 CommandHandler::CommandHandler(Server &server) : _server(server) {}
 
@@ -7,10 +7,14 @@ CommandHandler::~CommandHandler() {}
 
 void CommandHandler::handleCommand(Client &client, const std::string &command)
 {
+    if (command.empty() || command == "\r" || command == "\n")
+        return;
     std::istringstream iss(command);
     std::string cmd;
     iss >> cmd;
-    if (cmd == "NICK")
+    if (cmd == "PASS")
+        handlePass(client, iss);   
+    else if (cmd == "NICK")
         handleNick(client, iss);
     else if (cmd == "USER")
         handleUser(client, iss);
@@ -24,23 +28,43 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         sendError(client.getFd(), "Unknown command: " + cmd);
 }
 
+void CommandHandler::handlePass(Client &client, std::istringstream &iss)
+{
+    std::string password;
+    iss >> password;
+
+    if (password.empty()) {
+        sendError(client.getFd(), "password required!!");
+        return;
+    }
+
+    if (password != _server.getPassword()) {
+        sendError(client.getFd(), "password incorrect! Please try again.");
+        //close(client.getFd());
+        return;
+    }
+
+    client.setAuthenticated(true);
+    logMessage("INFO", "Client authenticated");
+}
+
 void CommandHandler::handleNick(Client &client, std::istringstream &iss)
 {
     std::string nickname;
     iss >> nickname;
     if (nickname.empty())
     {
-        sendError(client.getFd(), "ERROR: No nickname given\n");
+        sendError(client.getFd(), "No nickname given\n");
         return;
     }
     for (size_t i = 0; i < _server.getClients().size(); i++) {
         if (_server.getClients()[i].getNickname() == nickname) {
-            sendError(client.getFd(), "ERROR: Nickname already in use\n");
+            sendError(client.getFd(), "Nickname already in use\n");
             return;
         }
     }
     client.setNickname(nickname);
-    logMessage("NICK", nickname);
+    logMessage("NICK", "Client set nickname to: " + nickname);
 }
 
 void CommandHandler::handleUser(Client &client, std::istringstream &iss)
@@ -49,7 +73,7 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     iss >> username;
     if (username.empty())
     {
-        sendError(client.getFd(), "ERROR: No username given\n");
+        sendError(client.getFd(), "No username given\n");
         return;
     }
     client.setUsername(username);
@@ -63,7 +87,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
     std::getline(iss, message);
     
     if (target.empty() || message.empty()) {
-        sendError(client.getFd(), "ERROR: Usage: PRIVMSG <nickname> <message>\n");
+        sendError(client.getFd(), "Usage: PRIVMSG <nickname> <message>\n");
         return;
     }
 
@@ -83,7 +107,7 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     iss >> channel;
     
     if (channel.empty()) {
-        sendError(client.getFd(), "ERROR: No channel given\n");
+        sendError(client.getFd(), "No channel given\n");
         return;
     }
 

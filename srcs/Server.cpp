@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/04 21:04:41 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/04 21:19:15 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ void	Server::handleClient(size_t index) {
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0, sizeof(buffer));
 	
-	int bytes_read = recv(client.getFd(), buffer, sizeof(buffer) - 1, MSG_DONTWAIT);
+	int bytes_read = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
 	if (bytes_read <= 0) {
 		if (bytes_read == 0)
 			logMessage("INFO", "Client disconnected");
