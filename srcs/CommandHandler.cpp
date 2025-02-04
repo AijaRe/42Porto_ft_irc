@@ -5,6 +5,29 @@ CommandHandler::CommandHandler(Server &server) : _server(server) {}
 
 CommandHandler::~CommandHandler() {}
 
+bool CommandHandler::isClientAllowedToProceed(Client &client, const std::string &cmd){
+    if(!client.isAuthenticated())
+    {
+        if(cmd != "PASS")
+        {
+            sendError(client.getFd(), "You must authenticate first! [PASS <password>]");
+            return false;
+        }
+        return true;
+    }
+    if (client.getNickname().empty() && cmd != "NICK")
+    {
+        sendError(client.getFd(), "You must set a nickname first! [NICK <nickname>]");
+        return false;
+    }
+    if (client.getUsername().empty() && cmd != "USER" && cmd != "NICK")
+    {
+        sendError(client.getFd(), "You must set a username first! [USER <username>]");
+        return false;
+    }
+    return true;
+}
+
 void CommandHandler::handleCommand(Client &client, const std::string &command)
 {
     if (command.empty() || command == "\r" || command == "\n")
@@ -12,6 +35,10 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
     std::istringstream iss(command);
     std::string cmd;
     iss >> cmd;
+
+    if (!isClientAllowedToProceed(client, cmd))
+        return;
+
     if (cmd == "PASS")
         handlePass(client, iss);   
     else if (cmd == "NICK")
@@ -24,6 +51,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handleJoin(client, iss);
     else if (cmd == "PING")
         handlePing(client, iss);
+    else if (cmd == "NOTICE")
+        handleNotice(client, iss);
     else
         sendError(client.getFd(), "Unknown command: " + cmd);
 }
@@ -94,7 +123,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
     //find the destination client
     for (size_t i = 0; i < _server.getClients().size(); i++) {
         if (_server.getClients()[i].getNickname() == target) {
-            std::string response = "PRIVMSG " + target + " :" + message;
+            std::string response = "PRIVMSG from" + client.getNickname() + " :" + message;
             send(_server.getClients()[i].getFd(), response.c_str(), response.length(), 0);
             return;
         }
@@ -118,4 +147,25 @@ void CommandHandler::handlePing(Client &client, std::istringstream &iss)
 {
     std::string response = "PONG " + std::string(iss.str().substr(5));
     send(client.getFd(), response.c_str(), response.length(), 0);
+}
+
+//Same as PRIVMSG but if there is no nick it does not return an error
+void CommandHandler::handleNotice(Client &client, std::istringstream &iss)
+{
+    std::string target, message;
+    iss >> target;
+    std::getline(iss, message);
+
+    if(target.empty() || message.empty())
+        return;
+    
+    for (size_t i = 0; i < _server.getClients().size(); i++)
+    {
+        if (_server.getClients()[i].getNickname() == target)
+        {
+            std::string response = "NOTICE from " + client.getNickname() + ": " + message;
+            send(_server.getClients()[i].getFd(), response.c_str(), response.length(), 0);
+            return;
+        }
+    }
 }

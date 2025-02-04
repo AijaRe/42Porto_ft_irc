@@ -12,6 +12,7 @@ class CommandHandler
         CommandHandler(Server &server);
         ~CommandHandler();
         void handleCommand(Client &client, const std::string &command);
+        bool isClientAllowedToProceed(Client &client, const std::string &cmd);
     private:
         Server &_server;
 
@@ -21,6 +22,7 @@ class CommandHandler
         void handlePrivmsg(Client &client, std::istringstream &iss);
         void handleJoin(Client &client, std::istringstream &iss);
         void handlePing(Client &client, std::istringstream &iss);
+        void handleNotice(Client &client, std::istringstream &iss);
 };
 
 #endif
