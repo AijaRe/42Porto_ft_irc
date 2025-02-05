@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 18:31:48 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/04 21:19:15 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,10 @@ void	Server::handleClient(size_t index) {
 	
 	int bytes_read = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
 	if (bytes_read <= 0) {
-		logMessage("ERROR", "Client disconnected");
+		if (bytes_read == 0)
+			logMessage("INFO", "Client disconnected");
+		else
+			logMessage("ERROR", "Failed to receive data from client");
 		close(client.getFd());
 		_fd_list.erase(_fd_list.begin() + index);
 		_clients.erase(_clients.begin() + index - 1);
@@ -155,7 +158,7 @@ void	Server::handleClient(size_t index) {
     
     // Process complete messages
     size_t pos;
-    if ((pos = client.buffer.find('\n')) != std::string::npos) {
+    while ((pos = client.buffer.find('\n')) != std::string::npos) {
         std::string message = client.buffer.substr(0, pos);
         client.buffer.erase(0, pos + 1);
         
@@ -165,7 +168,6 @@ void	Server::handleClient(size_t index) {
         _command_handler.handleCommand(_clients[index - 1], message);
 
     }
-	
 }
 
 int Server::getPort() const {
