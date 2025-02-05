@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/Server.hpp"
-#include "CommandHandler.hpp"
+#include "utils.hpp"
+
 
 Server::Server (const std::string &port, const std::string &password) : _port(0), _password(""), _command_handler(*this) {
 	// validate and save port number
@@ -106,6 +106,7 @@ void	Server::runServer() {
 			}
 		}
 	}
+	//Clean the code
 }
 
 void	Server::acceptClient() {
@@ -158,14 +159,14 @@ void	Server::handleClient(size_t index) {
         std::string message = client.buffer.substr(0, pos);
         client.buffer.erase(0, pos + 1);
         
-        logMessage("RECEIVED", message.c_str());
+        logMessage("RECEIVED >", message.c_str());
         
         // Handle command
         _command_handler.handleCommand(_clients[index - 1], message);
+
     }
 	
 }
-
 
 int Server::getPort() const {
 	return _port;
@@ -177,4 +178,21 @@ std::string Server::getPassword() const {
 
 std::vector<Client> Server::getClients() const {
 	return _clients;
+}
+
+void	Server::addChannel(const Client &client, const std::string &channel_name)
+{
+	//Verify if the channel already exists.
+	for (size_t i = 0; i < this->_channels.size(); i++)
+    {
+        if (this->_channels[i].getName() == channel_name)
+		{
+			this->_channels[i].addClient(client);
+			//NEED TO THINK HOW TO DEAL WITH CHANNEL PERMISSIONS.
+			return;
+		}
+    }
+	//If not, create a new channel and add it to the server _channel vector.
+	Channel new_channel(client, channel_name);
+	this->_channels.push_back(new_channel);
 }

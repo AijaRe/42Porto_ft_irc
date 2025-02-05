@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/Client.hpp"
+#include "utils.hpp"
 
 Client::Client(int fd) : _fd(fd), _nickname(""), _username("") {}
 

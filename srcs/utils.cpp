@@ -1,4 +1,4 @@
-#include "../incs/utils.hpp"
+#include "utils.hpp"
 
 void logMessage(const std::string &type, const std::string &message)
 {

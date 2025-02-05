@@ -1,5 +1,4 @@
-#include "../incs/CommandHandler.hpp"
-#include "Server.hpp"
+#include "utils.hpp"
 
 CommandHandler::CommandHandler(Server &server) : _server(server) {}
 
@@ -20,6 +19,10 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handleJoin(client, iss);
     else if (cmd == "PING")
         handlePing(client, iss);
+    else if (cmd == "TEST")
+        handleTest(client, iss);
+    else if (cmd == "TEST2")
+        handleTest2(client, iss);
     else
         sendError(client.getFd(), "Unknown command: " + cmd);
 }
@@ -79,19 +82,47 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
 
 void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
 {
-    std::string channel;
-    iss >> channel;
+    std::string channel_name;
+    iss >> channel_name;
     
-    if (channel.empty()) {
+    if (channel_name.empty()) {
         sendError(client.getFd(), "ERROR: No channel given\n");
         return;
     }
-
-    logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + channel);
+    this->_server.addChannel(client, channel_name);
 }
 
 void CommandHandler::handlePing(Client &client, std::istringstream &iss)
 {
     std::string response = "PONG " + std::string(iss.str().substr(5));
     send(client.getFd(), response.c_str(), response.length(), 0);
+}
+
+void CommandHandler::handleTest(Client &client, std::istringstream &iss)
+{
+    (void)client;
+    (void)iss;
+
+    std::cout << "PRINTING all channels" << std::endl;
+    for (size_t i = 0; i < this->_server._channels.size(); i++)
+    {
+        std::cout << this->_server._channels[i].getName() << std::endl;
+    }
+
+}
+
+void CommandHandler::handleTest2(Client &client, std::istringstream &iss)
+{
+    (void)client;
+    (void)iss;
+
+    std::cout << "PRINTING FULL composition of all channels" << std::endl;
+    for (size_t i = 0; i < this->_server._channels.size(); i++)
+    {
+        std::cout << "CHANNEL [" << i << "] " << this->_server._channels[i].getName() << std::endl;
+        for (size_t j = 0; j < this->_server._channels[i]._clients.size(); j++)
+            std::cout << "\tUSER [" << j << "] " << this->_server._channels[i]._clients[j]->getNickname() << std::endl;
+
+    }
+
 }

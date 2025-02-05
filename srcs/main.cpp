@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/utils.hpp"
-#include "../incs/Server.hpp"
+#include "utils.hpp"
 
 int main(int argc, char **argv) {
 	try {

@@ -13,7 +13,7 @@
 CXX = c++
 RM = rm -rf
 
-CXXFLAGS 	= -Wall -Werror -Wextra -pedantic-errors -fsanitize=address -std=c++98
+CXXFLAGS 	= -Wall -Werror -Wextra -pedantic-errors -std=c++98 #-fsanitize=address 
 
 #generate dependency files
 CPPFLAGS	= -MMD
@@ -22,7 +22,7 @@ NAME		= ircserv
 
 SRC_DIR		= srcs
 INC_DIR		= incs
-FILES		= main utils Server Client CommandHandler
+FILES		= main utils Server Client CommandHandler Channel
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(FILES)))
 OBJ			= $(addprefix $(SRC_DIR)/, $(addsuffix .o, $(FILES)))
 DEPS		= $(OBJ:.o=.d)

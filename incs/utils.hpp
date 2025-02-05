@@ -18,12 +18,21 @@
 #include <string.h> // strlen
 #include <unistd.h> // read, write, close
 #include <vector> // std::vector
+#include <map>
 #include <sstream>
 #include <sys/socket.h> // socket, bind, listen, accept, send
 #include <netinet/in.h> // sockaddr_in
 #include <poll.h> // poll
 #include <cstdlib> // strtol
 #include <cerrno> // errno
+#include <signal.h>
+#include <algorithm> //std::find()
+#include <fcntl.h>
+
+#include "Channel.hpp"
+#include "Server.hpp"
+#include "Client.hpp"
+#include "CommandHandler.hpp"
 
 
 #define RESET   "\033[0m"
