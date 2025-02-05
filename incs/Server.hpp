@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/04 21:21:00 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/05 20:03:28 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,14 @@ class Server {
 		std::string getPassword() const;
 
 		void runServer(); //start server loop
+		static void signalHandler(int signal);
+		void closeSockets();
 		std::vector<Client> getClients() const;
 	private:
 		int _port;
 		std::string _password;
 		int _server_fd;
+		static bool _running;
 		std::vector<pollfd> _fd_list;
 		std::vector<Client> _clients;
     	CommandHandler _command_handler;

@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/01 17:40:09 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/05 18:39:43 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <poll.h> // poll
 #include <cstdlib> // strtol
 #include <cerrno> // errno
+#include <signal.h> // signal
 
 
 #define RESET   "\033[0m"
