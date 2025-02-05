@@ -98,20 +98,8 @@ void CommandHandler::handlePing(Client &client, std::istringstream &iss)
     send(client.getFd(), response.c_str(), response.length(), 0);
 }
 
+
 void CommandHandler::handleTest(Client &client, std::istringstream &iss)
-{
-    (void)client;
-    (void)iss;
-
-    std::cout << "PRINTING all channels" << std::endl;
-    for (size_t i = 0; i < this->_server._channels.size(); i++)
-    {
-        std::cout << this->_server._channels[i].getName() << std::endl;
-    }
-
-}
-
-void CommandHandler::handleTest2(Client &client, std::istringstream &iss)
 {
     (void)client;
     (void)iss;
@@ -122,6 +110,22 @@ void CommandHandler::handleTest2(Client &client, std::istringstream &iss)
         std::cout << "CHANNEL [" << i << "] " << this->_server._channels[i].getName() << std::endl;
         for (size_t j = 0; j < this->_server._channels[i]._clients.size(); j++)
             std::cout << "\tUSER [" << j << "] " << this->_server._channels[i]._clients[j]->getNickname() << std::endl;
+
+    }
+
+}
+
+void CommandHandler::handleTest2(Client &client, std::istringstream &iss)
+{
+    (void)client;
+    (void)iss;
+
+    std::cout << "PRINTING ADMINS of all channels" << std::endl;
+    for (size_t i = 0; i < this->_server._channels.size(); i++)
+    {
+        std::cout << "CHANNEL [" << i << "] " << this->_server._channels[i].getName() << std::endl;
+        for (size_t j = 0; j < this->_server._channels[i]._admins.size(); j++)
+            std::cout << "\tADM [" << j << "] " << this->_server._channels[i]._admins[j]->getNickname() << std::endl;
 
     }
 

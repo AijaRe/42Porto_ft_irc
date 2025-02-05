@@ -22,18 +22,21 @@ class Channel
     public:
         Channel(const Client &client, const std::string &name);
         ~Channel();
-        void addClient(const Client &client);
         std::string getName();
-        
+
+        void addClient(const Client &client);
+        void addAdmin(const Client &client);
         //PUBLIC FOR TEST PURPOSES
+        
         std::vector<const Client *> _clients; //List of clients assigned to this channel.
+        std::vector<const Client *> _admins;
     private:
         std::string _name;
         std::string _topic;
-        std::vector<Client *> _admins;
+
+        const Client* findClient(std::vector<const Client*> &user_vec, const Client &user) const;
 
         
-        void addAdmin(const Client &client);
 
 
 };
