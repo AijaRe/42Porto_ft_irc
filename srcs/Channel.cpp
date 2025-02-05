@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.hpp"
+#include "Channel.hpp"
+#include "Server.hpp"
 
 Channel::Channel(const Client &client, const std::string &name) : _name(name), _topic("")
 {

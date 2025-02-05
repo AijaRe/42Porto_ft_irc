@@ -1,6 +1,7 @@
-#include "../incs/CommandHandler.hpp"
-#include "../incs/Server.hpp"
-#include "utils.hpp"
+#include "CommandHandler.hpp"
+#include "Server.hpp"
+#include "Channel.hpp"
+
 
 CommandHandler::CommandHandler(Server &server) : _server(server) {}
 

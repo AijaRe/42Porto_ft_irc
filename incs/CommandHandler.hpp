@@ -1,6 +1,8 @@
 #ifndef COMMANDHANDLER_HPP
 #define COMMANDHANDLER_HPP
 
+
+#include "Client.hpp"
 #include "utils.hpp"
 
 class Server;

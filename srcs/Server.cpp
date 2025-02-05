@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.hpp"
+#include "Server.hpp"
+#include "CommandHandler.hpp"
+#include "Channel.hpp"
 
 
 Server::Server (const std::string &port, const std::string &password) : _port(0), _password(""), _command_handler(*this) {

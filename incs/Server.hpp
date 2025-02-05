@@ -13,15 +13,23 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "utils.hpp"
-#include "Channel.hpp"
 #include "Client.hpp"
+#include "utils.hpp"
 #include "CommandHandler.hpp"
+
+#include <sys/socket.h> // socket, bind, listen, accept, send
+#include <netinet/in.h> // sockaddr_in
+#include <poll.h> // poll
+#include <fcntl.h> // fcntl
+#include <vector> // std::vector
+#include <map> // std::map
 
 #define MAX_CONNECTIONS 5
 #define BUFFER_SIZE 1024
 
 class Channel;
+class CommandHandler;
+
 
 class Server {
 	public:
