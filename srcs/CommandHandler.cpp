@@ -217,9 +217,6 @@ void CommandHandler::handleTest3()
     std::cout << "PRINTING CHANNEL LIST" << std::endl;
 
     std::map<std::string, Channel>::iterator it;
-    for (it = this->_server._channels.begin(); it != this->_server._channels.end(); ++it)
-    {
+    for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
         std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
-        // Assuming Channel has a method getName() or some other way to represent the Channel
-    }
 }

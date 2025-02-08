@@ -220,23 +220,18 @@ void	Server::addChannel(const Client &client, const std::string &channel_name)
 {
 
 	std::map<std::string, Channel>::iterator it = this->_channels.find(channel_name);
-	if (it != this->_channels.end()) //The channel name already exists.
+	if (it != this->_channels.end()) //The channel name already exists?
 	{
-
-		it->second.addClient(client); //Add the Client into the Ch1
+		it->second.addClient(client);
 		//NEED TO THINK HOW TO DEAL WITH CHANNEL PERMISSIONS.
 		return;
 	}
-	
 	//If not, create a new channel and add it to the server _channel map.
 	Channel new_channel(client, channel_name);
-	
 	std::pair<std::map<std::string, Channel>::iterator, bool> ret;
 	ret = this->_channels.insert(std::make_pair(new_channel.getName(), new_channel));
 	if (ret.second == false)
-	{
-		std::cout << "ERROR NAME IN USE" << std::endl;
-	}
+		sendError(client.getFd(), "There is already a channel called " + channel_name + ".\n");
 	return ;
 	
 }

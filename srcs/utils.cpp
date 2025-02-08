@@ -14,3 +14,10 @@ void sendError(int fd, const std::string& message)
     const char* error = errorMessage.c_str();
     send(fd, error, errorMessage.length(), 0);
 }
+
+void sendReturn(int fd, const std::string& message)
+{
+    std::string returnMessage = message + "\r\n";
+    const char* retMsg = returnMessage.c_str();
+    send(fd, retMsg, returnMessage.length(), 0);
+}

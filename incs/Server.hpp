@@ -48,7 +48,6 @@ class Server {
 
 
 		//TEMP PUBLIC TO DO TESTS
-		//std::vector<Channel> _channels; 
 		std::map<std::string, Channel> _channels;
 	private:
 		int _port;

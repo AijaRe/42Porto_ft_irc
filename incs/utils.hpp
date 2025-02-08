@@ -20,6 +20,7 @@
 #include <unistd.h> // read, write, close
 #include <vector> // std::vector
 #include <list>
+#include <map>
 #include <sstream>
 #include <sys/socket.h> // socket, bind, listen, accept, send
 #include <netinet/in.h> // sockaddr_in
@@ -42,5 +43,6 @@
 
 void logMessage(const std::string &type, const std::string &message);
 void sendError(int fd, const std::string& message);
+void sendReturn(int fd, const std::string& message);
 
 #endif

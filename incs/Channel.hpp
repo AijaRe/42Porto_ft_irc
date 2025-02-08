@@ -26,15 +26,15 @@ class Channel
 
         void addClient(const Client &client);
         void addAdmin(const Client &client);
-        //PUBLIC FOR TEST PURPOSES
         
-        std::vector<const Client *> _clients; //List of clients assigned to this channel.
-        std::vector<const Client *> _admins;
+        //PUBLIC FOR TEST PURPOSES
+        std::map<std::string, const Client *> _clients;
+        std::map<std::string, const Client *> _admins;
     private:
         std::string _name;
         std::string _topic;
 
-        const Client* findClient(std::vector<const Client*> &user_vec, const Client &user) const;
+        const Client* findClient(std::map<std::string, const Client*> &user_map, const Client &user) const;
 
         
 
