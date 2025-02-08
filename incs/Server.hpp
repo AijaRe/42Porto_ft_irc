@@ -45,7 +45,9 @@ class Server {
 		void addChannel(const Client &client, const std::string &name);
 
 
-		std::vector<Channel> _channels; //TEMP PUBLIC TO DO TESTS
+		//TEMP PUBLIC TO DO TESTS
+		//std::vector<Channel> _channels; 
+		std::map<std::string, Channel> _channels;
 	private:
 		int _port;
 		std::string _password;

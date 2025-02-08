@@ -33,10 +33,10 @@ void Channel::addClient(const Client &client)
         this->_clients.push_back(&client);
         logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);
 
-        
+        /*
         //CORRECT HERE!!!!!
         for (size_t j = 0; j < this->_clients.size(); j++)
-            std::cout << "\tUSER [" << j << "] " << this->_clients[j]->getNickname() << std::endl;
+            std::cout << "\tUSER [" << j << "] " << this->_clients[j]->getNickname() << std::endl;*/
 
         
     }

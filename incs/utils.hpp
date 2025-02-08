@@ -19,6 +19,7 @@
 #include <string.h> // strlen
 #include <unistd.h> // read, write, close
 #include <vector> // std::vector
+#include <list>
 #include <sstream>
 #include <sys/socket.h> // socket, bind, listen, accept, send
 #include <netinet/in.h> // sockaddr_in
