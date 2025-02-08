@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/04 16:06:29 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/05 21:26:30 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class Server {
 		std::string getPassword() const;
 
 		void runServer(); //start server loop
+		static void signalHandler(int signal);
+		void shutdownServer();
 		std::vector<Client> getClients() const;
 
 		void addChannel(const Client &client, const std::string &name);
@@ -52,6 +54,7 @@ class Server {
 		int _port;
 		std::string _password;
 		int _server_fd;
+		static bool _running;
 		std::vector<pollfd> _fd_list;
 		std::vector<Client> _clients;
 		

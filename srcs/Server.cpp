@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/04 21:19:15 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/08 16:14:37 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 #include "Channel.hpp"
 
 
-Server::Server (const std::string &port, const std::string &password) : _port(0), _password(""), _command_handler(*this) {
+bool Server::_running = true;
+
+Server::Server (const std::string &port, const std::string &password) : _port(0), _password(""), _server_fd(-1), _command_handler(*this) {
 	// validate and save port number
 	char *end;
 	long tmp_port = std::strtol(port.c_str(), &end, 10);
@@ -32,12 +34,30 @@ Server::Server (const std::string &port, const std::string &password) : _port(0)
 }
 
 Server::~Server() {
+	// shutdownServer();
+}
+
+void	Server::signalHandler(int signal) {
+	(void)signal;
+	_running = false;
+}
+
+void	Server::shutdownServer() {
+	/* if (!_running)
+		return; // server already shut down */
+	_running = false;
+	logMessage("INFO", "Shutting down server...");
 	// close server socket
-	close(_server_fd);
+	if (_server_fd >= 0)
+		close(_server_fd);
 	// Close all client sockets
-    for (size_t i = 1; i < _fd_list.size(); ++i) {
-        close(_fd_list[i].fd);
-    }
+	for (size_t i = 1; i < _fd_list.size(); ++i) {
+		if (_fd_list[i].fd >= 0)
+			close(_fd_list[i].fd);
+	}
+	// Reset the list of file descriptors and clients
+	_fd_list.clear();
+	_clients.clear();
 }
 
 
@@ -56,21 +76,25 @@ void	Server::createSocket() {
 	// reuse port after server restart
 	int opt = 1;
 	if (setsockopt(_server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+		close(_server_fd);
 		throw std::runtime_error("Error: setsockopt failed.");
 	}
 
 	// set the socket to non-blocking mode
 	if (fcntl(_server_fd, F_SETFL, O_NONBLOCK) < 0) {
+		close(_server_fd);
 		throw std::runtime_error("Error: failed to set socket to non-blocking mode.");
 	}
 	
 	// bind the socket to the IP address and port
 	if (bind(_server_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+		close(_server_fd);
 		throw std::runtime_error("Error: Bind failed.");
 	}
 	
 	// listen for incoming connections
 	if (listen(_server_fd, MAX_CONNECTIONS) < 0) {
+		close(_server_fd);
 		throw std::runtime_error("Error: Listen failed.");
 	}
 	std::stringstream ss;
@@ -84,7 +108,7 @@ void	Server::createSocket() {
 }
 
 void	Server::runServer() {
-	while (true) {
+	while (this->_running) {
 		// use poll to wait for events on the sockets
 		/*Another thing interesting in the approach is that the poll function will 
 		verify for new connection on the first _fd_list position (since its the _server_fd position)
@@ -92,8 +116,11 @@ void	Server::runServer() {
 		int activity = poll(_fd_list.data(), _fd_list.size(), -1); // -1: wait indefinitely
 		
 		if (activity < 0) {
-			logMessage("ERROR", "Poll failed");
-			break;
+			 if (_running) {
+                throw std::runtime_error("Error: Poll failed.");
+            } else {
+                break; // Exit the loop if _running is false
+            }
 		}
 
 		// check if the server socket has an event (new client connection)
@@ -132,6 +159,11 @@ void	Server::acceptClient() {
 	
 	// initialize pollfd struct for client socket, POLLIN: there is data to read
 	pollfd client_poll = {client_fd, POLLIN, 0};
+	if (client_poll.fd < 0) {
+		logMessage("ERROR", "Failed to create pollfd struct for client socket");
+		close(client_fd);
+		return;
+	}
 	// add client socket to the list of file descriptors
 	_fd_list.push_back(client_poll);
 
@@ -143,7 +175,7 @@ void	Server::handleClient(size_t index) {
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0, sizeof(buffer));
 	
-	int bytes_read = recv(client.getFd(), buffer, sizeof(buffer) - 1, 0);
+	int bytes_read = recv(client.getFd(), buffer, sizeof(buffer) - 1, MSG_DONTWAIT);
 	if (bytes_read <= 0) {
 		if (bytes_read == 0)
 			logMessage("INFO", "Client disconnected");
