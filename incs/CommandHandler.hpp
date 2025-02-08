@@ -1,11 +1,11 @@
 #ifndef COMMANDHANDLER_HPP
 #define COMMANDHANDLER_HPP
 
+
 #include "Client.hpp"
 #include "utils.hpp"
 
 class Server;
-
 class CommandHandler
 {
     public:
@@ -23,6 +23,8 @@ class CommandHandler
         void handleJoin(Client &client, std::istringstream &iss);
         void handlePing(Client &client, std::istringstream &iss);
         void handleNotice(Client &client, std::istringstream &iss);
+        void handleTest(Client &client, std::istringstream &iss);
+        void handleTest2(Client &client, std::istringstream &iss);
 };
 
 #endif

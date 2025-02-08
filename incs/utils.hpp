@@ -6,12 +6,13 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/05 20:58:02 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/08 16:35:00 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 #define UTILS_HPP
+
 
 #include <iostream>
 #include <exception>
@@ -24,6 +25,7 @@
 #include <poll.h> // poll
 #include <cstdlib> // strtol
 #include <cerrno> // errno
+#include <algorithm>
 #include <signal.h> // signal
 
 

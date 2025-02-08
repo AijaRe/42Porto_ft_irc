@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/utils.hpp"
-#include "../incs/Server.hpp"
+#include "utils.hpp"
+#include "Server.hpp"
 
 int main(int argc, char **argv) {
 	if (argc != 3)

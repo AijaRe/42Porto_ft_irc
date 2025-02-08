@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../incs/Server.hpp"
+#include "Server.hpp"
 #include "CommandHandler.hpp"
+#include "Channel.hpp"
+
 
 bool Server::_running = true;
 
@@ -57,6 +59,7 @@ void	Server::shutdownServer() {
 	_fd_list.clear();
 	_clients.clear();
 }
+
 
 void	Server::createSocket() {
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -107,7 +110,11 @@ void	Server::createSocket() {
 void	Server::runServer() {
 	while (this->_running) {
 		// use poll to wait for events on the sockets
+		/*Another thing interesting in the approach is that the poll function will 
+		verify for new connection on the first _fd_list position (since its the _server_fd position)
+		and in the following ones (client connected) it will monitor for data to read.*/
 		int activity = poll(_fd_list.data(), _fd_list.size(), -1); // -1: wait indefinitely
+		
 		if (activity < 0) {
 			 if (_running) {
                 throw std::runtime_error("Error: Poll failed.");
@@ -128,6 +135,7 @@ void	Server::runServer() {
 			}
 		}
 	}
+	//Clean the code
 }
 
 void	Server::acceptClient() {
@@ -188,10 +196,11 @@ void	Server::handleClient(size_t index) {
         std::string message = client.buffer.substr(0, pos);
         client.buffer.erase(0, pos + 1);
         
-        logMessage("RECEIVED", message.c_str());
+        logMessage("RECEIVED >", message.c_str());
         
         // Handle command
         _command_handler.handleCommand(_clients[index - 1], message);
+
     }
 }
 
@@ -205,4 +214,21 @@ std::string Server::getPassword() const {
 
 std::vector<Client> Server::getClients() const {
 	return _clients;
+}
+
+void	Server::addChannel(const Client &client, const std::string &channel_name)
+{
+	//Verify if the channel already exists.
+	for (size_t i = 0; i < this->_channels.size(); i++)
+    {
+        if (this->_channels[i].getName() == channel_name)
+		{
+			this->_channels[i].addClient(client);
+			//NEED TO THINK HOW TO DEAL WITH CHANNEL PERMISSIONS.
+			return;
+		}
+    }
+	//If not, create a new channel and add it to the server _channel vector.
+	Channel new_channel(client, channel_name);
+	this->_channels.push_back(new_channel);
 }

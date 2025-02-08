@@ -27,6 +27,10 @@
 #define MAX_CONNECTIONS 5
 #define BUFFER_SIZE 1024
 
+class Channel;
+class CommandHandler;
+
+
 class Server {
 	public:
 		Server(const std::string &port, const std::string &password);
@@ -39,6 +43,11 @@ class Server {
 		static void signalHandler(int signal);
 		void shutdownServer();
 		std::vector<Client> getClients() const;
+
+		void addChannel(const Client &client, const std::string &name);
+
+
+		std::vector<Channel> _channels; //TEMP PUBLIC TO DO TESTS
 	private:
 		int _port;
 		std::string _password;
@@ -46,11 +55,13 @@ class Server {
 		static bool _running;
 		std::vector<pollfd> _fd_list;
 		std::vector<Client> _clients;
+		
     	CommandHandler _command_handler;
 
 		void createSocket();
 		void acceptClient();
 		void handleClient(size_t index);
+	
 };
 
 
