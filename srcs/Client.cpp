@@ -50,3 +50,8 @@ void Client::setAuthenticated(bool status)
 {
     _authenticated = status;
 }
+
+bool Client::operator==(const Client &compare) const
+{
+    return this->getNickname() == compare.getNickname();
+}

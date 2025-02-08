@@ -29,13 +29,16 @@ void Channel::addClient(const Client &client)
 {
     if (findClient(this->_clients, client) == NULL)
     {
-        const Client *client_ptr = &client;
-        this->_clients.push_back(client_ptr);
+        //const Client *client_ptr = &client;
+        this->_clients.push_back(&client);
         logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);
 
+        
         //CORRECT HERE!!!!!
         for (size_t j = 0; j < this->_clients.size(); j++)
             std::cout << "\tUSER [" << j << "] " << this->_clients[j]->getNickname() << std::endl;
+
+        
     }
     else
         sendError(client.getFd(), "You are already part of "+ this->getName() + " channel.\n");
@@ -66,8 +69,11 @@ std::string Channel::getName()
 const Client* Channel::findClient(std::vector<const Client*> &user_vec, const Client &user) const
 {
     std::vector<const Client*>::const_iterator it;
-    it = std::find(user_vec.begin(), user_vec.end(), &user);
-    if (it != user_vec.end())
-        return *it;
+    //it = std::find(user_vec.begin(), user_vec.end(), &user);
+    for (it = user_vec.begin(); it != user_vec.end(); it++)
+    {
+        if (**it == user)
+            return *it;
+    }
     return NULL; //user not found in the vector provided.
 }

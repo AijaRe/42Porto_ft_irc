@@ -33,6 +33,8 @@ class Client
         
         bool isAuthenticated() const;
         void setAuthenticated(bool status);
+
+        bool operator==(const Client &compare) const; //Used inside Channel::findClient()
     private:
         int _fd;
         std::string _nickname;
