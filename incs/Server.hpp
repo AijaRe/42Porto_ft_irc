@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/05 20:57:10 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/05 21:26:30 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class Server {
 
 		void runServer(); //start server loop
 		static void signalHandler(int signal);
-		void closeSockets();
+		void shutdownServer();
 		std::vector<Client> getClients() const;
 	private:
 		int _port;

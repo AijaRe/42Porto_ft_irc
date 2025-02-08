@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/05 20:36:53 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/08 16:14:37 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,19 @@ Server::Server (const std::string &port, const std::string &password) : _port(0)
 }
 
 Server::~Server() {
-	closeSockets();
+	// shutdownServer();
 }
 
 void	Server::signalHandler(int signal) {
 	(void)signal;
 	_running = false;
-	logMessage("INFO", "Server shutting down");
 }
 
-void	Server::closeSockets() {
+void	Server::shutdownServer() {
+	/* if (!_running)
+		return; // server already shut down */
+	_running = false;
+	logMessage("INFO", "Shutting down server...");
 	// close server socket
 	if (_server_fd >= 0)
 		close(_server_fd);
@@ -106,8 +109,11 @@ void	Server::runServer() {
 		// use poll to wait for events on the sockets
 		int activity = poll(_fd_list.data(), _fd_list.size(), -1); // -1: wait indefinitely
 		if (activity < 0) {
-			logMessage("ERROR", "Poll failed");
-			break;
+			 if (_running) {
+                throw std::runtime_error("Error: Poll failed.");
+            } else {
+                break; // Exit the loop if _running is false
+            }
 		}
 
 		// check if the server socket has an event (new client connection)
@@ -167,7 +173,7 @@ void	Server::handleClient(size_t index) {
 			logMessage("INFO", "Client disconnected");
 		else
 			logMessage("ERROR", "Failed to receive data from client");
-		close(cli ent.getFd());
+		close(client.getFd());
 		_fd_list.erase(_fd_list.begin() + index);
 		_clients.erase(_clients.begin() + index - 1);
 		return ;
