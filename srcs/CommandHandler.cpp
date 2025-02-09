@@ -84,6 +84,7 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
     logMessage("INFO", "Client authenticated");
 }
 
+//unique nickname having a maximum length of nine (9) characters.
 void CommandHandler::handleNick(Client &client, std::istringstream &iss)
 {
     std::string nickname;
@@ -93,6 +94,13 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
         _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
         return;
     }
+    if (nickname.length() > 9)
+    {
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_ERRONEUSNICKNAME);
+        return;
+    }
+
+    //std::map<int, Client> &clients = _server.getClients();
     for (std::map<int, Client>::iterator it = _server.getClients().begin(); it != _server.getClients().end(); ++it) {
         if (it->second.getNickname() == nickname) {
             _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE);
@@ -103,17 +111,52 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     logMessage("NICK", "Client set nickname to: " + nickname);
 }
 
+//Parameters: <user> <mode> <unused> <realname>
+/*
+   USER guest 0 * :Ronnie Reagan   ; User registering themselves with a
+                                   username of "guest" and real name
+                                   "Ronnie Reagan".
+
+   USER guest 8 * :Ronnie Reagan   ; User registering themselves with a
+                                   username of "guest" and real name
+                                   "Ronnie Reagan", and asking to be set
+                                   invisible.
+*/
 void CommandHandler::handleUser(Client &client, std::istringstream &iss)
 {
-    std::string username;
-    iss >> username;
-    if (username.empty())
-    {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+    std::string username, modeStr, unused, realname;
+    iss >> username >> modeStr >> unused;
+    std::getline(iss >> std::ws, realname);//capture the rest of the line like realname
+    if (username.empty() || modeStr.empty() || unused.empty() || realname.empty()) {
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, "USER");
+        _replies.sendMessage(client.getFd(), "Usage: USER <username> <mode> <unused> <realname>");
         return;
     }
+
+    if (!client.isAuthenticated()) {
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
+        return;
+    }
+
+    if (client.getNickname().empty()) {
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN, ":No nickname given");
+        return;
+    }
+
     client.setUsername(username);
-    logMessage("USER", "Client set username to: " + username);
+    client.setRealname(realname);
+
+    //process the bitmask of mode
+    int mode = std::atoi(modeStr.c_str());
+    if (mode & 0x04) { // Bit 2 (valor 4): modo 'w'
+        client.setMode('w', true);
+    }
+    if (mode & 0x08) { // Bit 3 (valor 8): modo 'i'
+        client.setMode('i', true);
+    }
+
+    client.setAuthenticated(true);
+    logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
 }
 
 void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
