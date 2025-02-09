@@ -1,7 +1,7 @@
 #include "CommandHandler.hpp"
 #include "Server.hpp"
 #include "Channel.hpp"
-
+#include "Replies.hpp"
 
 CommandHandler::CommandHandler(Server &server) : _server(server) {}
 
@@ -69,13 +69,12 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
     iss >> password;
 
     if (password.empty()) {
-        sendError(client.getFd(), "password required!!");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, "PASS :Password required");
         return;
     }
 
     if (password != _server.getPassword()) {
-        sendError(client.getFd(), "password incorrect! Please try again.");
-        //close(client.getFd());
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH, ":Password incorrect");
         return;
     }
 
@@ -89,12 +88,12 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     iss >> nickname;
     if (nickname.empty())
     {
-        sendError(client.getFd(), "No nickname given\n");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN, ":No nickname given");
         return;
     }
-    for (size_t i = 0; i < _server.getClients().size(); i++) {
-        if (_server.getClients()[i].getNickname() == nickname) {
-            sendError(client.getFd(), "Nickname already in use\n");
+    for (std::map<int, Client>::iterator it = _server.getClients().begin(); it != _server.getClients().end(); ++it) {
+        if (it->second.getNickname() == nickname) {
+            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE, ":Nickname already in use");
             return;
         }
     }
@@ -108,7 +107,7 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     iss >> username;
     if (username.empty())
     {
-        sendError(client.getFd(), "No username given\n");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, "USER :No username given");
         return;
     }
     client.setUsername(username);
@@ -119,22 +118,26 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
 {
     std::string target, message;
     iss >> target;
-    std::getline(iss, message);
+    std::getline(iss >> std::ws, message);
     
     if (target.empty() || message.empty()) {
-        sendError(client.getFd(), "Usage: PRIVMSG <nickname> <message>\n");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT, ":No recipient given");
         return;
     }
 
-    //find the destination client
-    for (size_t i = 0; i < _server.getClients().size(); i++) {
-        if (_server.getClients()[i].getNickname() == target) {
-            std::string response = "PRIVMSG from" + client.getNickname() + " :" + message;
-            send(_server.getClients()[i].getFd(), response.c_str(), response.length(), 0);
+    // Buscar o destinatário na lista de clientes
+    std::map<int, Client> &clients = _server.getClients(); // Pegando referência ao mapa de clientes
+    for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        if (it->second.getNickname() == target) {
+            std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+            send(it->second.getFd(), response.c_str(), response.length(), 0);
             return;
         }
     }
+
+    _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK, ":No such nick");
 }
+
 
 void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
 {
@@ -143,7 +146,7 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     
 
     if (channel_name.empty()) {
-        sendError(client.getFd(), "ERROR: No channel given\n");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, "JOIN :No channel given");
         return;
     }
     this->_server.addChannel(client, channel_name);

@@ -1,11 +1,12 @@
 #ifndef COMMANDHANDLER_HPP
 #define COMMANDHANDLER_HPP
 
-
 #include "Client.hpp"
 #include "utils.hpp"
+#include "Replies.hpp"
 
 class Server;
+
 class CommandHandler
 {
     public:
@@ -15,6 +16,7 @@ class CommandHandler
         bool isClientAllowedToProceed(Client &client, const std::string &cmd);
     private:
         Server &_server;
+        Replies _replies;
 
         void handlePass(Client &client, std::istringstream &iss);
         void handleNick(Client &client, std::istringstream &iss);

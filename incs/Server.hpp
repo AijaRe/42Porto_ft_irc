@@ -3,19 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/05 21:26:30 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/09 17:55:10 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "Client.hpp"
 #include "utils.hpp"
-#include "CommandHandler.hpp"
+#include "Replies.hpp"
 
 #include <sys/socket.h> // socket, bind, listen, accept, send
 #include <netinet/in.h> // sockaddr_in
@@ -27,9 +26,9 @@
 #define MAX_CONNECTIONS 5
 #define BUFFER_SIZE 1024
 
+class Client;
 class Channel;
 class CommandHandler;
-
 
 class Server {
 	public:
@@ -38,31 +37,30 @@ class Server {
 
 		int getPort() const;
 		std::string getPassword() const;
+		std::string getName() const;
 
 		void runServer(); //start server loop
 		static void signalHandler(int signal);
 		void shutdownServer();
-		std::vector<Client> getClients() const;
+		std::map<int, Client>&getClients();
 
 		void addChannel(const Client &client, const std::string &name);
 
-
 		std::vector<Channel> _channels; //TEMP PUBLIC TO DO TESTS
 	private:
+		std::string _name;
 		int _port;
 		std::string _password;
 		int _server_fd;
 		static bool _running;
-		std::vector<pollfd> _fd_list;
-		std::vector<Client> _clients;
+		std::map<int, pollfd> _fd_map;
+		std::map<int, Client> _clients;
 		
-    	CommandHandler _command_handler;
+    	CommandHandler* _command_handler;
 
 		void createSocket();
 		void acceptClient();
-		void handleClient(size_t index);
-	
+		void handleClient(int client_fd);
 };
-
 
 #endif

@@ -6,11 +6,13 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/04 16:07:07 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/09 16:37:19 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+
+Client::Client() : _fd(-1) {} //fd -1 means not connected
 
 Client::Client(int fd) : _fd(fd), _nickname(""), _username("") {}
 
@@ -50,3 +52,5 @@ void Client::setAuthenticated(bool status)
 {
     _authenticated = status;
 }
+
+bool Client::isConnected() const { return _fd != -1; }
