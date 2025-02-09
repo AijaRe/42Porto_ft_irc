@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/09 15:01:39 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/09 18:42:00 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #define RPL_INVITING               "341" // INVITE sent to the one doing the inviting
 #define RPL_YOUREOPER              "381" // OPER Success Reply
 
+#define ERR_UNKNOWNERROR           "400"
 #define ERR_NOSUCHNICK             "401" // No such nick/channel PRIVMSG / MODE / KICK / WHOIS / WHOWAS / INVITE / TOPIC / NAMES / LIST / ISON
 #define ERR_CANNOTSENDTOCHAN       "404" // Cannot send to channel
 #define ERR_TOOMANYCHANNELS        "405" // JOIN & PART when a user wants to access multiple channels
@@ -66,5 +67,6 @@ class Replies{
     private:
         std::map<std::string, std::string> ircReplies;
 };
+
 
 #endif

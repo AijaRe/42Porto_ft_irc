@@ -71,12 +71,12 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
     iss >> password;
 
     if (password.empty()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, "PASS :Password required");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
         return;
     }
 
     if (password != _server.getPassword()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH, ":Password incorrect");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH);
         return;
     }
 
@@ -90,12 +90,12 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     iss >> nickname;
     if (nickname.empty())
     {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN, ":No nickname given");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
         return;
     }
     for (std::map<int, Client>::iterator it = _server.getClients().begin(); it != _server.getClients().end(); ++it) {
         if (it->second.getNickname() == nickname) {
-            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE, ":Nickname already in use");
+            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE);
             return;
         }
     }
@@ -109,7 +109,7 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     iss >> username;
     if (username.empty())
     {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, "USER :No username given");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
         return;
     }
     client.setUsername(username);
@@ -123,7 +123,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
     std::getline(iss >> std::ws, message);
     
     if (target.empty() || message.empty()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT, ":No recipient given");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT);
         return;
     }
 
@@ -137,7 +137,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         }
     }
 
-    _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK, ":No such nick");
+    _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
 }
 
 
@@ -148,7 +148,7 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     
 
     if (channel_name.empty()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, "JOIN :No channel given");
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
         return;
     }
     this->_server.addChannel(client, channel_name);

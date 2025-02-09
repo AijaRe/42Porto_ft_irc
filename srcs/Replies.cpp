@@ -1,6 +1,7 @@
 #include "Replies.hpp"
 
 Replies::Replies() {
+    ircReplies[ERR_UNKNOWNERROR] = "Unknown error occurred";
     ircReplies[ERR_NONICKNAMEGIVEN] = "No nickname given";
     ircReplies[ERR_NICKNAMEINUSE] = "Nickname is already in use";
     ircReplies[ERR_NICKCOLLISION] = "Nickname collision";
@@ -34,18 +35,23 @@ Replies::Replies() {
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
 }
 
+
+//:<servidor> <código numérico> <nickname> :<mensagem textual>
+
 void Replies::sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage)
 {
-    // Buscar a mensagem de erro no mapa
+    std::string targetNickname = nickname.empty() ? "[user_not_registered]" : nickname;
+
     std::map<std::string, std::string>::const_iterator it = ircReplies.find(errorCode);
     if (it == ircReplies.end())
     {
-        sendMessage(fd, ":" + server.getName() + " 400 " + nickname + " :Unknown error occurred\r\n");
-        return;
+        it = ircReplies.find("400");
+        if (it == ircReplies.end()) {
+            return;
+        }
     }
 
-    // Construir a mensagem de erro
-    std::string errorMessage = ":" + server.getName() + " " + errorCode + " " + nickname + " :" + it->second;
+    std::string errorMessage = ":" + server.getName() + " " + errorCode + " " + targetNickname + " :" + it->second;
     if (!additionalMessage.empty()) {
         errorMessage += " " + additionalMessage;
     }
