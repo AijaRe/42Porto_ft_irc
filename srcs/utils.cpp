@@ -17,3 +17,9 @@ void sendError(int fd, const std::string& message)
         std::cerr << "[ERROR] Failed to send error message to client " << fd << std::endl;
 }
 
+void sendReturn(int fd, const std::string& message)
+{
+    std::string returnMessage = message + "\r\n";
+    const char* retMsg = returnMessage.c_str();
+    send(fd, retMsg, returnMessage.length(), 0);
+}
