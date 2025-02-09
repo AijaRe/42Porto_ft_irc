@@ -19,10 +19,6 @@ Channel::Channel(const Client &client, const std::string &name) : _name(name), _
     addClient(client);
     addAdmin(client);
 
-    //OP
-    
-    //The nickname will be the op if the channel doesn't exist.
-
 }
 
 void Channel::addClient(const Client &client)
@@ -30,8 +26,14 @@ void Channel::addClient(const Client &client)
     if (findClient(this->_clients, client) == NULL)
     {
         const Client *client_ptr = &client;
-        this->_clients.push_back(client_ptr);
+        this->_clients[client.getNickname()] = client_ptr;
         logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);
+        sendReturn(client.getFd(), "Congratulations! "+ client.getNickname() + " you joined the channel " + this->getName() + ".\n");
+
+        /*
+        //CORRECT HERE!!!!!
+        for (size_t j = 0; j < this->_clients.size(); j++)
+            std::cout << "\tUSER [" << j << "] " << this->_clients[j]->getNickname() << std::endl;*/
     }
     else
         sendError(client.getFd(), "You are already part of "+ this->getName() + " channel.\n");
@@ -39,10 +41,10 @@ void Channel::addClient(const Client &client)
 
 void Channel::addAdmin(const Client &admin)
 {
-    if (findClient(this->_admins, admin) == NULL)
+    if (findClient(this->_admins, admin) == NULL)//findClient if found return the client obj.
     {
         const Client *admin_ptr = &admin;
-        this->_admins.push_back(admin_ptr);
+        this->_admins[admin.getNickname()] = admin_ptr;
         logMessage("NEW ADMIN", "Congratulations " + admin.getNickname() + ", you are admin of the channel " + _name);
     }
     else
@@ -59,11 +61,13 @@ std::string Channel::getName()
     return this->_name;
 }
 
-const Client* Channel::findClient(std::vector<const Client*> &user_vec, const Client &user) const
+const Client* Channel::findClient(std::map<std::string, const Client*> &user_map, const Client &user) const
 {
-    std::vector<const Client*>::const_iterator it;
-    it = std::find(user_vec.begin(), user_vec.end(), &user);
-    if (it != user_vec.end())
-        return *it;
-    return NULL; //user not found in the vector provided.
+    std::map<std::string, const Client*>::const_iterator it;
+    for (it = user_map.begin(); it != user_map.end(); it++)
+    {
+        if (*(it->second) == user)
+            return it->second;
+    }
+    return NULL; //user not found in the data structure provided.
 }

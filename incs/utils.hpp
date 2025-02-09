@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/09 15:50:21 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/09 18:14:32 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <string.h> // strlen
 #include <unistd.h> // read, write, close
 #include <vector> // std::vector
+#include <list>
+#include <map>
 #include <sstream>
 #include <sys/socket.h> // socket, bind, listen, accept, send
 #include <netinet/in.h> // sockaddr_in
@@ -44,5 +46,6 @@
 void logMessage(const std::string &type, const std::string &message);
 void sendError(int fd, const std::string& message);
 void sendMessage(int fd, const std::string &message);
+void sendReturn(int fd, const std::string& message);
 
 #endif

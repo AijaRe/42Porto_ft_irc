@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/09 17:55:10 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/09 18:14:22 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ class Server {
 
 		void addChannel(const Client &client, const std::string &name);
 
-		std::vector<Channel> _channels; //TEMP PUBLIC TO DO TESTS
+
+		//TEMP PUBLIC TO DO TESTS
+		std::map<std::string, Channel> _channels;
 	private:
 		std::string _name;
 		int _port;

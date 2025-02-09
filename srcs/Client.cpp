@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/09 16:37:19 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/09 18:14:44 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,3 +54,8 @@ void Client::setAuthenticated(bool status)
 }
 
 bool Client::isConnected() const { return _fd != -1; }
+
+bool Client::operator==(const Client &compare) const
+{
+    return this->getNickname() == compare.getNickname();
+}

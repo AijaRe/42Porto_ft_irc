@@ -55,10 +55,12 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handlePing(client, iss);
     else if (cmd == "NOTICE")
         handleNotice(client, iss);
-    else if (cmd == "TEST")
+    else if (cmd == "TEST3")
+        handleTest3();
+    /*else if (cmd == "TEST")
         handleTest(client, iss);
     else if (cmd == "TEST2")
-        handleTest2(client, iss);
+        handleTest2(client, iss);*/
     else
         sendError(client.getFd(), "Unknown command: " + cmd);
 }
@@ -180,7 +182,7 @@ void CommandHandler::handleNotice(Client &client, std::istringstream &iss)
 }
 
 
-
+/*
 void CommandHandler::handleTest(Client &client, std::istringstream &iss)
 {
     (void)client;
@@ -211,4 +213,13 @@ void CommandHandler::handleTest2(Client &client, std::istringstream &iss)
 
     }
 
+}*/
+
+void CommandHandler::handleTest3()
+{
+    std::cout << "PRINTING CHANNEL LIST" << std::endl;
+
+    std::map<std::string, Channel>::iterator it;
+    for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
+        std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
 }
