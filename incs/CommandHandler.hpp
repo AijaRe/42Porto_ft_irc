@@ -25,6 +25,7 @@ class CommandHandler
         void handleNotice(Client &client, std::istringstream &iss);
         void handleTest(Client &client, std::istringstream &iss);
         void handleTest2(Client &client, std::istringstream &iss);
+        void handleCap(Client &client, std::istringstream &iss);
 };
 
 #endif

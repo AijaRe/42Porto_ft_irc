@@ -59,6 +59,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handleTest(client, iss);
     else if (cmd == "TEST2")
         handleTest2(client, iss);
+    else if (cmd == "CAP")
+        handleCap(client, iss);
     else
         sendError(client.getFd(), "Unknown command: " + cmd);
 }
@@ -208,4 +210,12 @@ void CommandHandler::handleTest2(Client &client, std::istringstream &iss)
 
     }
 
+}
+
+void CommandHandler::handleCap(Client &client, std::istringstream &iss)
+{   
+    (void)iss;
+    logMessage("CAP", "Client requested capabilities");
+    send(client.getFd(), "CAP * LS :\r\n", 10, 0);
+    send(client.getFd(), "CAP END\r\n", 9, 0);
 }

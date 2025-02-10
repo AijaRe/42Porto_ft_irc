@@ -4,7 +4,8 @@
 *.d
 */*.d
 ircserv
+objs/
 tests_irc/*.out
-.vscode
+.vscode/
 autocomplete/
 jsconfig.json
