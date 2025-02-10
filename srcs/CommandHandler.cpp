@@ -217,5 +217,4 @@ void CommandHandler::handleCap(Client &client, std::istringstream &iss)
     (void)iss;
     logMessage("CAP", "Client requested capabilities");
     send(client.getFd(), "CAP * LS :\r\n", 10, 0);
-    send(client.getFd(), "CAP END\r\n", 9, 0);
 }
