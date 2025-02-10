@@ -1,0 +1,65 @@
+#include "Replies.hpp"
+
+Replies::Replies() {
+    ircReplies[ERR_UNKNOWNERROR] = "Unknown error occurred";
+    ircReplies[ERR_NONICKNAMEGIVEN] = "No nickname given";
+    ircReplies[ERR_NICKNAMEINUSE] = "Nickname is already in use";
+    ircReplies[ERR_NICKCOLLISION] = "Nickname collision";
+    ircReplies[ERR_NEEDMOREPARAMS] = "Not enough parameters";
+    ircReplies[ERR_INVITEONLYCHAN] = "Cannot join channel (+i)";
+    ircReplies[ERR_USERNOTINCHANNEL] = "User not in channel";
+    ircReplies[ERR_CHANOPRIVSNEEDED] = "You're not a channel operator";
+    ircReplies[ERR_ERRONEUSNICKNAME] = "Erroneous nickname";
+    ircReplies[ERR_ALREADYREGISTERED] = "You may not reregister";
+    ircReplies[ERR_TOOMANYCHANNELS] = "You have joined too many channels";
+    ircReplies[ERR_BADCHANNELKEY] = "Cannot join channel (+k)";
+    ircReplies[ERR_NOSUCHCHANNEL] = "No such channel";
+    ircReplies[ERR_CHANNELISFULL] = "Cannot join channel (+l)";
+    ircReplies[ERR_NOPRIVS] = "No privileges";
+    ircReplies[ERR_PASSWDMISMATCH] = "Password incorrect";
+    ircReplies[ERR_KEYSET] = "Channel key already set";
+    ircReplies[ERR_KICKEDFROMCHAN] = "You have been kicked from the channel";
+    ircReplies[ERR_NOCHANMODES] = "Channel doesn't support modes";
+    ircReplies[ERR_CANNOTCHANGECHANMODE] = "Cannot change channel mode";
+    ircReplies[ERR_CANNOTCHANGEUMODE] = "Cannot change user mode";
+    ircReplies[ERR_UNKNOWNMODE] = "Unknown mode";
+    ircReplies[ERR_USERONCHANNEL] = "User is already on channel";
+    ircReplies[ERR_NOSUCHNICK] = "No such nick/channel";
+    ircReplies[ERR_CANNOTSENDTOCHAN] = "Cannot send to channel";
+    ircReplies[ERR_NORECIPIENT] = "No recipient given";
+    ircReplies[RPL_WELCOME] = "Welcome to the server";
+    ircReplies[RPL_TOPIC] = "Channel topic is";
+    ircReplies[RPL_NOTOPIC] = "No topic is set";
+    ircReplies[RPL_INVITING] = "Inviting user to channel";
+    ircReplies[RPL_YOUREOPER] = "You are now an operator";
+    ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
+}
+
+
+//:<servidor> <código numérico> <nickname> :<mensagem textual>
+
+void Replies::sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage)
+{
+    std::string targetNickname = nickname.empty() ? "[user_not_registered]" : nickname;
+
+    std::map<std::string, std::string>::const_iterator it = ircReplies.find(errorCode);
+    if (it == ircReplies.end())
+    {
+        it = ircReplies.find("400");
+        if (it == ircReplies.end()) {
+            return;
+        }
+    }
+
+    std::string errorMessage = ":" + server.getName() + " " + errorCode + " " + targetNickname + " :" + it->second;
+    if (!additionalMessage.empty()) {
+        errorMessage += " " + additionalMessage;
+    }
+    errorMessage += "\r\n";
+
+    sendMessage(fd, errorMessage);
+}
+
+void Replies::sendMessage(int fd, const std::string &message) {
+    send(fd, message.c_str(), message.length(), 0);
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/04 14:41:20 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/09 18:13:56 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 #define CHANNEL_HPP
 
 #include "utils.hpp"
+#include "Client.hpp"
 
-class Client;
+//class Client;
 
 class Channel
 {
@@ -26,19 +27,15 @@ class Channel
 
         void addClient(const Client &client);
         void addAdmin(const Client &client);
-        //PUBLIC FOR TEST PURPOSES
         
-        std::vector<const Client *> _clients; //List of clients assigned to this channel.
-        std::vector<const Client *> _admins;
+        //PUBLIC FOR TEST PURPOSES
+        std::map<std::string, const Client *> _clients;
+        std::map<std::string, const Client *> _admins;
     private:
         std::string _name;
         std::string _topic;
 
-        const Client* findClient(std::vector<const Client*> &user_vec, const Client &user) const;
-
-        
-
-
+        const Client* findClient(std::map<std::string, const Client*> &user_map, const Client &user) const;
 };
 
 #endif

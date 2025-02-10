@@ -6,14 +6,14 @@
 #    By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 19:53:42 by arepsa            #+#    #+#              #
-#    Updated: 2025/02/10 20:13:22 by arepsa           ###   ########.fr        #
+#    Updated: 2025/02/10 20:31:19 by arepsa           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CXX = c++
 RM = rm -rf
 
-CXXFLAGS 	= -Wall -Werror -Wextra -pedantic-errors -std=c++98 -fsanitize=address 
+CXXFLAGS 	= -Wall -Werror -Wextra -pedantic-errors -std=c++98 #-fsanitize=address 
 
 #generate dependency files
 CPPFLAGS	= -MMD
@@ -23,7 +23,7 @@ NAME		= ircserv
 SRC_DIR		= srcs
 INC_DIR		= incs
 OBJ_DIR		= objs
-FILES		= main utils Server Client CommandHandler Channel
+FILES		= main utils Server Client CommandHandler Channel Replies
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(FILES)))
 OBJ			= $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(FILES)))
 DEPS		= $(OBJ:.o=.d)
