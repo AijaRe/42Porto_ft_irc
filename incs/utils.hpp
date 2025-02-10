@@ -43,6 +43,12 @@
 #define BOLD    "\033[1m"
 #define UNDERLINE "\033[4m"
 
+#define USER            0; //No special symbol found before the target.
+#define CH_STANDARD     1; //#
+#define CH_LOCAL        2; //&
+#define CH_NO_EXT       3; //+
+#define CH_SAFE         4; //!
+
 void logMessage(const std::string &type, const std::string &message);
 void sendError(int fd, const std::string& message);
 void sendMessage(int fd, const std::string &message);

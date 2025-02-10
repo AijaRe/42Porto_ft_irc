@@ -14,6 +14,7 @@ class CommandHandler
         ~CommandHandler();
         void handleCommand(Client &client, const std::string &command);
         bool isClientAllowedToProceed(Client &client, const std::string &cmd);
+        int  targetType(const std::string &target);
     private:
         Server &_server;
         Replies _replies;
@@ -25,8 +26,9 @@ class CommandHandler
         void handleJoin(Client &client, std::istringstream &iss);
         void handlePing(Client &client, std::istringstream &iss);
         void handleNotice(Client &client, std::istringstream &iss);
-        void handleTest(Client &client, std::istringstream &iss);
-        void handleTest2(Client &client, std::istringstream &iss);
+        void handleKick(Client &client, std::istringstream &iss);
+        void handleTest();
+        void handleTest2();
         void handleTest3();
 };
 

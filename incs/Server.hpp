@@ -45,6 +45,8 @@ class Server {
 		std::map<int, Client>&getClients();
 
 		void addChannel(const Client &client, const std::string &name);
+		Channel &findChannel();
+
 
 
 		//TEMP PUBLIC TO DO TESTS

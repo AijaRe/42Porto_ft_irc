@@ -55,12 +55,14 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handlePing(client, iss);
     else if (cmd == "NOTICE")
         handleNotice(client, iss);
+    /*else if (cmd == "KICK")
+        handleKick(client, iss);*/
     else if (cmd == "TEST3")
         handleTest3();
-    /*else if (cmd == "TEST")
-        handleTest(client, iss);
+    else if (cmd == "TEST")
+        handleTest();
     else if (cmd == "TEST2")
-        handleTest2(client, iss);*/
+        handleTest2();
     else
         sendError(client.getFd(), "Unknown command: " + cmd);
 }
@@ -159,9 +161,28 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
 }
 
+/*Return the target type see utils.hpp */
+int CommandHandler::targetType(const std::string &target)
+{
+    switch (target[0])
+    {
+        case '#':
+            return CH_STANDARD;
+        case '&':
+            return CH_LOCAL;
+        case '+':
+            return CH_NO_EXT;
+        case '!':
+            return CH_SAFE;
+        default:
+            return USER;
+    }
+}
+
 void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
 {
     std::string target, message;
+   
     iss >> target;
     std::getline(iss >> std::ws, message);
     
@@ -169,18 +190,46 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT);
         return;
     }
-
-    // Buscar o destinatário na lista de clientes
-    std::map<int, Client> &clients = _server.getClients(); // Pegando referência ao mapa de clientes
-    for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it) {
-        if (it->second.getNickname() == target) {
-            std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
-            send(it->second.getFd(), response.c_str(), response.length(), 0);
-            return;
+    if (targetType(target) == 0) //Target Type is a user.
+    {
+        // Buscar o destinatário na lista de clientes
+        std::map<int, Client> &clients = _server.getClients(); // Pegando referência ao mapa de clientes
+        for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it) {
+            if (it->second.getNickname() == target) {
+                std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+                send(it->second.getFd(), response.c_str(), response.length(), 0);
+                return;
+            }
         }
     }
+    else //Não estou fazendo qualquer distinção entre tipos de canal por enquanto.
+    {
+        //Retire o primeiro caracter
+        target = target.substr(1);
+        std::cout << "MY CHANNEL: " << target << std::endl;
+    {   
+        //Verifique se o canal existe
+        std::map<std::string, Channel>::iterator it2;
+        for (it2 = this->_server._channels.begin(); it2 != this->_server._channels.end(); it2++)
+        {
+            if (it2->second.getName() == target)
+            {
+                //Rode o map enviando a mensagem para todos os usuarios dentro do channel.
+                std::map<std::string, const Client*>::const_iterator it3;
+                for (it3 = it2->second._clients.begin(); it3 != it2->second._clients.end(); it3++)
+                {
+                    std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+                    send(it3->second->getFd(), response.c_str(), response.length(), 0);
+                }
+            }
+        }
 
+
+        
+    }
+    std::cout << "ALGO DEU ERRADO" << std::endl;
     _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
+    }
 }
 
 
@@ -196,6 +245,19 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     }
     this->_server.addChannel(client, channel_name);
 }
+
+/*
+void CommandHandler::handleKick(Client &client, std::istringstream &iss)
+{
+    std::string user_to_kick;
+    iss >> user_to_kick;
+
+    if (user_to_kick.empty()){
+        //Return the error log.
+        return;
+    }
+    
+}*/
 
 void CommandHandler::handlePing(Client &client, std::istringstream &iss)
 {
@@ -225,38 +287,38 @@ void CommandHandler::handleNotice(Client &client, std::istringstream &iss)
 }
 
 
-/*
-void CommandHandler::handleTest(Client &client, std::istringstream &iss)
+
+
+
+
+
+
+void CommandHandler::handleTest()
 {
-    (void)client;
-    (void)iss;
 
     std::cout << "PRINTING FULL composition of all channels" << std::endl;
-    for (size_t i = 0; i < this->_server._channels.size(); i++)
+    std::map<std::string, Channel>::iterator it;
+    for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
     {
-        std::cout << "CHANNEL [" << i << "] " << this->_server._channels[i].getName() << std::endl;
-        for (size_t j = 0; j < this->_server._channels[i]._clients.size(); j++)
-            std::cout << "\tUSER [" << j << "] " << this->_server._channels[i]._clients[j]->getNickname() << std::endl;
-
+        std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
+        std::map<std::string, const Client*>::const_iterator it2;
+        for (it2 = it->second._clients.begin(); it2 != it->second._clients.end(); it2++) //it.second is the _channel object.
+           std::cout << "\tUSER [" << it2->first << "] " << it2->second->getUsername() << std::endl;
     }
-
 }
 
-void CommandHandler::handleTest2(Client &client, std::istringstream &iss)
+void CommandHandler::handleTest2()
 {
-    (void)client;
-    (void)iss;
-
     std::cout << "PRINTING ADMINS of all channels" << std::endl;
-    for (size_t i = 0; i < this->_server._channels.size(); i++)
+    std::map<std::string, Channel>::iterator it;
+    for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
     {
-        std::cout << "CHANNEL [" << i << "] " << this->_server._channels[i].getName() << std::endl;
-        for (size_t j = 0; j < this->_server._channels[i]._admins.size(); j++)
-            std::cout << "\tADM [" << j << "] " << this->_server._channels[i]._admins[j]->getNickname() << std::endl;
-
+        std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
+        std::map<std::string, const Client*>::const_iterator it2;
+        for (it2 = it->second._admins.begin(); it2 != it->second._admins.end(); it2++)
+            std::cout << "\tADMIN [" << it2->first << "] " << it2->second->getUsername() << std::endl;
     }
-
-}*/
+}
 
 void CommandHandler::handleTest3()
 {
