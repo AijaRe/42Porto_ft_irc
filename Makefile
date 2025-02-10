@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+         #
+#    By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 19:53:42 by arepsa            #+#    #+#              #
-#    Updated: 2025/02/09 13:47:25 by yfontene         ###   ########.fr        #
+#    Updated: 2025/02/10 20:31:19 by arepsa           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,9 +22,10 @@ NAME		= ircserv
 
 SRC_DIR		= srcs
 INC_DIR		= incs
+OBJ_DIR		= objs
 FILES		= main utils Server Client CommandHandler Channel Replies
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(FILES)))
-OBJ			= $(addprefix $(SRC_DIR)/, $(addsuffix .o, $(FILES)))
+OBJ			= $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(FILES)))
 DEPS		= $(OBJ:.o=.d)
 
 all: $(NAME)
@@ -37,11 +38,14 @@ $(NAME): $(OBJ)
 # if an included file doesn't exist
 -include $(DEPS)
 
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -I $(INC_DIR) -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir $(OBJ_DIR)
 	
 clean:
-	@$(RM) $(OBJ) $(DEPS)
+	@$(RM) $(OBJ_DIR)
 	echo "\033[31mDeleted object files and dependencies\033[0m"
 
 fclean: clean
