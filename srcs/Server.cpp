@@ -3,28 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/08 16:14:37 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/09 17:59:28 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "CommandHandler.hpp"
 #include "Channel.hpp"
-
+#include "Client.hpp"
 
 bool Server::_running = true;
 
-Server::Server (const std::string &port, const std::string &password) : _port(0), _password(""), _server_fd(-1), _command_handler(*this) {
+Server::Server (const std::string &port, const std::string &password) : _name("42_IRC"), _port(0), _password(""), _server_fd(-1) /*_command_handler(*this)*/ {
 	// validate and save port number
 	char *end;
 	long tmp_port = std::strtol(port.c_str(), &end, 10);
 	if (*end != '\0' || tmp_port < 1 || tmp_port > 65535)
 		throw std::runtime_error("Error: Invalid port number.");
 	_port = static_cast<int>(tmp_port);
-
+	
+	_command_handler = new CommandHandler(*this);
 	// save password
 	_password = password;
 	if (_password.empty())
@@ -34,6 +35,7 @@ Server::Server (const std::string &port, const std::string &password) : _port(0)
 }
 
 Server::~Server() {
+	delete _command_handler; 
 	// shutdownServer();
 }
 
@@ -51,12 +53,12 @@ void	Server::shutdownServer() {
 	if (_server_fd >= 0)
 		close(_server_fd);
 	// Close all client sockets
-	for (size_t i = 1; i < _fd_list.size(); ++i) {
-		if (_fd_list[i].fd >= 0)
-			close(_fd_list[i].fd);
+	for (std::map<int, pollfd>::iterator it = _fd_map.begin(); it != _fd_map.end(); ++it) {
+		if (it->first >= 0)
+			close(it->first);
 	}
 	// Reset the list of file descriptors and clients
-	_fd_list.clear();
+	_fd_map.clear();
 	_clients.clear();
 }
 
@@ -104,7 +106,7 @@ void	Server::createSocket() {
 	// initialize pollfd struct for server socket, POLLIN: there is data to read
 	pollfd server_poll = {_server_fd, POLLIN, 0};
 	// add server socket to the list of file descriptors (fd with index 0)
-	_fd_list.push_back(server_poll); 
+	_fd_map[_server_fd] = server_poll;
 }
 
 void	Server::runServer() {
@@ -113,7 +115,12 @@ void	Server::runServer() {
 		/*Another thing interesting in the approach is that the poll function will 
 		verify for new connection on the first _fd_list position (since its the _server_fd position)
 		and in the following ones (client connected) it will monitor for data to read.*/
-		int activity = poll(_fd_list.data(), _fd_list.size(), -1); // -1: wait indefinitely
+		// Convert the map to a vector of pollfd for the poll function
+        std::vector<pollfd> poll_fds;
+        for (std::map<int, pollfd>::const_iterator it = _fd_map.begin(); it != _fd_map.end(); ++it) {
+            poll_fds.push_back(it->second);
+        }
+		int activity = poll(poll_fds.data(), poll_fds.size(), -1); // -1: wait indefinitely
 		
 		if (activity < 0) {
 			 if (_running) {
@@ -124,14 +131,14 @@ void	Server::runServer() {
 		}
 
 		// check if the server socket has an event (new client connection)
-		if (_fd_list[0].revents & POLLIN) {
+		if (poll_fds[0].revents & POLLIN) {
 			acceptClient();
 		}
 
 		// check existing clients for events (incoming messages)
-		for (size_t i = 1; i < _fd_list.size(); ++i) {
-			if (_fd_list[i].revents & POLLIN) {
-				handleClient(i);
+		for (size_t i = 1; i < poll_fds.size(); ++i) {
+			if (poll_fds[i].revents & POLLIN) {
+				handleClient(poll_fds[i].fd);
 			}
 		}
 	}
@@ -154,8 +161,8 @@ void	Server::acceptClient() {
 	}
 	
 	//add client to the list of clients
-	Client new_client(client_fd);
-    _clients.push_back(new_client);
+	//_clients[client_fd] = Client(client_fd);
+	_clients.insert(std::make_pair(client_fd, Client(client_fd)));
 	
 	// initialize pollfd struct for client socket, POLLIN: there is data to read
 	pollfd client_poll = {client_fd, POLLIN, 0};
@@ -165,13 +172,18 @@ void	Server::acceptClient() {
 		return;
 	}
 	// add client socket to the list of file descriptors
-	_fd_list.push_back(client_poll);
-
+	_fd_map[client_fd] = client_poll;
 	logMessage("INFO", "New client connected");
 }
 
-void	Server::handleClient(size_t index) {
-	Client &client = _clients[index - 1];
+void	Server::handleClient(int client_fd) {
+	if (_clients.find(client_fd) == _clients.end()){
+		logMessage("ERROR", "Client not found in the list of clients");
+		return;
+	}
+	
+	Client &client = _clients[client_fd];
+
 	char buffer[BUFFER_SIZE];
 	memset(buffer, 0, sizeof(buffer));
 	
@@ -182,8 +194,8 @@ void	Server::handleClient(size_t index) {
 		else
 			logMessage("ERROR", "Failed to receive data from client");
 		close(client.getFd());
-		_fd_list.erase(_fd_list.begin() + index);
-		_clients.erase(_clients.begin() + index - 1);
+		_fd_map.erase(client_fd);
+		_clients.erase(client_fd);
 		return ;
 	} 
 	buffer[bytes_read] = '\0';
@@ -199,8 +211,7 @@ void	Server::handleClient(size_t index) {
         logMessage("RECEIVED >", message.c_str());
         
         // Handle command
-        _command_handler.handleCommand(_clients[index - 1], message);
-
+		_command_handler->handleCommand(client, message);
     }
 }
 
@@ -212,8 +223,12 @@ std::string Server::getPassword() const {
 	return _password;
 }
 
-std::vector<Client> Server::getClients() const {
+std::map<int, Client>&Server::getClients() {
 	return _clients;
+}
+
+std::string Server::getName() const{
+	return _name;
 }
 
 void	Server::addChannel(const Client &client, const std::string &channel_name)

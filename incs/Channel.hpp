@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/04 14:41:20 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/09 18:13:56 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 #define CHANNEL_HPP
 
 #include "utils.hpp"
+#include "Client.hpp"
 
-class Client;
+//class Client;
 
 class Channel
 {
@@ -35,10 +36,6 @@ class Channel
         std::string _topic;
 
         const Client* findClient(std::map<std::string, const Client*> &user_map, const Client &user) const;
-
-        
-
-
 };
 
 #endif
