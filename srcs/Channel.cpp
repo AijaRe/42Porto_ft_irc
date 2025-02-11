@@ -13,12 +13,18 @@
 #include "Channel.hpp"
 #include "Server.hpp"
 
-Channel::Channel(const Client &client, const std::string &name) : _name(name), _topic("")
-{
-    
-    addClient(client);
-    addAdmin(client);
 
+Channel::Channel()
+{
+
+}
+
+Channel::Channel(const Client &client, const std::string &name, const int &type)
+        : _name(name.substr(1)), _topic(""), _created_by(client.getNickname()), _type(type)
+{
+    //Set the creator of the channel.
+    addClient(client);
+    addOp(client);
 }
 
 void Channel::addClient(const Client &client)
@@ -29,26 +35,21 @@ void Channel::addClient(const Client &client)
         this->_clients[client.getNickname()] = client_ptr;
         logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);
         sendReturn(client.getFd(), "Congratulations! "+ client.getNickname() + " you joined the channel " + this->getName() + ".\n");
-
-        /*
-        //CORRECT HERE!!!!!
-        for (size_t j = 0; j < this->_clients.size(); j++)
-            std::cout << "\tUSER [" << j << "] " << this->_clients[j]->getNickname() << std::endl;*/
     }
     else
         sendError(client.getFd(), "You are already part of "+ this->getName() + " channel.\n");
 }
 
-void Channel::addAdmin(const Client &admin)
+void Channel::addOp(const Client &op)
 {
-    if (findClient(this->_admins, admin) == NULL)//findClient if found return the client obj.
+    if (findClient(this->_ops, op) == NULL)//findClient if found return the client obj.
     {
-        const Client *admin_ptr = &admin;
-        this->_admins[admin.getNickname()] = admin_ptr;
-        logMessage("NEW ADMIN", "Congratulations " + admin.getNickname() + ", you are admin of the channel " + _name);
+        const Client *op_ptr = &op;
+        this->_ops[op.getNickname()] = op_ptr;
+        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + _name);
     }
     else
-        sendError(admin.getFd(), "You are already admin of " + this->getName() + "channel.\n");
+        sendError(op.getFd(), "You are already admin of " + this->getName() + "channel.\n");
 }
 
 Channel::~Channel()
@@ -70,4 +71,29 @@ const Client* Channel::findClient(std::map<std::string, const Client*> &user_map
             return it->second;
     }
     return NULL; //user not found in the data structure provided.
+}
+
+
+void Channel::setType(int new_type)
+{
+    switch (new_type)
+    {
+        case 1:
+            this->_type = CH_STANDARD;
+            break;
+        case 2:
+            this->_type = CH_LOCAL;
+            break;
+        case 3:
+            this->_type = CH_NO_EXT;
+            break;
+        case 4:
+            this->_type = CH_SAFE;
+            break;
+    }
+}
+
+int Channel::getType()
+{
+    return this->_type;
 }

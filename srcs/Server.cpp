@@ -231,11 +231,41 @@ std::string Server::getName() const{
 	return _name;
 }
 
-void	Server::addChannel(const Client &client, const std::string &channel_name)
+int		Server::checkChannelType(std::string &channel_name)
 {
+	char type = channel_name[0];
+	switch (type)
+    {
+        case '#':
+            return CH_STANDARD;
+        case '&':
+            return CH_LOCAL;
+        case '+':
+            return CH_NO_EXT;
+        case '!':
+            return CH_SAFE;
+        default:
+            return USER;
+    }
+}
 
-	std::map<std::string, Channel>::iterator it = this->_channels.find(channel_name);
+//Verifica se o channel está no map e caso positivo retorna true.
+bool Server::getChannel(const std::string &channel_key, Channel& channel_found)
+{
+	std::map<std::string, Channel>::iterator it;
+	for (it = this->_channels.begin(); it != this->_channels.end(); it++)
+	{
+		if (it->first == channel_key)
+		{
+			channel_found = it->second;
+			return true;
+		}
+	};
+	return false;
+}
 
+void	Server::addChannel(const Client &client, std::string &channel_key) //Channel Key = [Key + Channel name], for example #chan1 or !eita or &alochannel
+{
 	/*Needs to add a verifications to the channel name, before even joining the channel, here are some errors:
     Error Code	HexChat Error Message	            Description
     461	        Not enough parameters	            The JOIN command requires a channel name, but none was provided.
@@ -253,17 +283,31 @@ void	Server::addChannel(const Client &client, const std::string &channel_name)
     443	        is already on channel	            The user is already on the specified channel.
     442	        You're not on that channel	        The user is not on the specified channel.
     407     	Too many targets	                The user is trying to join too many channels at once.*/
-	if (it != this->_channels.end()) //The channel name already exists?
+	int channel_type = this->checkChannelType(channel_key);
+	if (channel_type == 0)
 	{
-		it->second.addClient(client);
+		std::cout << "[TO DO] ERROR: Invalid Channel name." << std::endl;
 		return;
 	}
-	//If not, create a new channel and add it to the server _channel map.
-	Channel new_channel(client, channel_name);
-	std::pair<std::map<std::string, Channel>::iterator, bool> ret;
-	ret = this->_channels.insert(std::make_pair(new_channel.getName(), new_channel));
-	if (ret.second == false)
-		sendError(client.getFd(), "There is already a channel called " + channel_name + ".\n");
-	return ;
-	
+	else
+	{
+		Channel channel_found;
+		if (this->getChannel(channel_key, channel_found)) //if True, a channel with this channel_key was found;
+		{
+			std::cout << "[TO DO] Check user permissions to access this channel before JOIN." << std::endl;
+			channel_found.addClient(client);
+		}
+		else
+		{
+			std::cout << "[TO DO] Check user permissions to create this type of channel." << std::endl;
+			Channel new_channel(client, channel_key, channel_type);
+			std::pair<std::map<std::string, Channel>::iterator, bool> ret;
+			ret = this->_channels.insert(std::make_pair(channel_key, new_channel));
+			if (ret.second == false)
+				sendError(client.getFd(), "There is already a channel called " + channel_key + ".\n");
+		}
+	}
 }
+	
+
+	

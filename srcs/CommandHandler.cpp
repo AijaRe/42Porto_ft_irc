@@ -186,50 +186,50 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
     iss >> target;
     std::getline(iss >> std::ws, message);
     
-    if (target.empty() || message.empty()) {
+    if (target.empty() || message.empty())
+    {
         _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT);
         return;
     }
-    if (targetType(target) == 0) //Target Type is a user.
+        
+    //Estou considerando que caso seja um user, o nick dele já foi feito o parsing.
+    int target_type = this->_server.checkChannelType(target); //0 for users or errors.
+    
+    if (target_type == 0)
     {
-        // Buscar o destinatário na lista de clientes
-        std::map<int, Client> &clients = _server.getClients(); // Pegando referência ao mapa de clientes
-        for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it) {
-            if (it->second.getNickname() == target) {
+        //Buscar o destinatário na lista de clientes
+        //Caso não seja um user válido deve enviar algum erro?
+        std::map<int, Client> &clients = _server.getClients();
+        for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it) 
+        {
+            if (it->second.getNickname() == target) 
+            {
                 std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
                 send(it->second.getFd(), response.c_str(), response.length(), 0);
                 return;
             }
         }
     }
-    else //Não estou fazendo qualquer distinção entre tipos de canal por enquanto.
+    else
     {
-        //Retire o primeiro caracter
-        target = target.substr(1);
-        std::cout << "MY CHANNEL: " << target << std::endl;
-    {   
-        //Verifique se o canal existe
-        std::map<std::string, Channel>::iterator it2;
-        for (it2 = this->_server._channels.begin(); it2 != this->_server._channels.end(); it2++)
+        Channel channel_found;
+        if (this->_server.getChannel(target, channel_found))
         {
-            if (it2->second.getName() == target)
+            std::map<std::string, const Client*>::const_iterator it2;
+            for (it2 = channel_found._clients.begin(); it2 != channel_found._clients.end(); it2++)
             {
-                //Rode o map enviando a mensagem para todos os usuarios dentro do channel.
-                std::map<std::string, const Client*>::const_iterator it3;
-                for (it3 = it2->second._clients.begin(); it3 != it2->second._clients.end(); it3++)
-                {
-                    std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
-                    send(it3->second->getFd(), response.c_str(), response.length(), 0);
-                }
+                std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+                send(it2->second->getFd(), response.c_str(), response.length(), 0);
             }
         }
+        else
+            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
 
-
-        
-    }
-    std::cout << "ALGO DEU ERRADO" << std::endl;
-    _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
-    }
+        //Encontrar o channel
+        //Confirmar permissões do usuário
+        //Caso encontrado enviar mensagem
+        //Caso nao erro.
+    }    
 }
 
 
@@ -286,13 +286,6 @@ void CommandHandler::handleNotice(Client &client, std::istringstream &iss)
     }
 }
 
-
-
-
-
-
-
-
 void CommandHandler::handleTest()
 {
 
@@ -300,7 +293,7 @@ void CommandHandler::handleTest()
     std::map<std::string, Channel>::iterator it;
     for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
     {
-        std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
+        std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << " Type: " << it->second.getType() << std::endl;
         std::map<std::string, const Client*>::const_iterator it2;
         for (it2 = it->second._clients.begin(); it2 != it->second._clients.end(); it2++) //it.second is the _channel object.
            std::cout << "\tUSER [" << it2->first << "] " << it2->second->getUsername() << std::endl;
@@ -315,7 +308,7 @@ void CommandHandler::handleTest2()
     {
         std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
         std::map<std::string, const Client*>::const_iterator it2;
-        for (it2 = it->second._admins.begin(); it2 != it->second._admins.end(); it2++)
+        for (it2 = it->second._ops.begin(); it2 != it->second._ops.end(); it2++)
             std::cout << "\tADMIN [" << it2->first << "] " << it2->second->getUsername() << std::endl;
     }
 }

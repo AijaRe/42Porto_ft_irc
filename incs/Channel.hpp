@@ -21,20 +21,26 @@
 class Channel
 {
     public:
-        Channel(const Client &client, const std::string &name);
+        Channel();
+        Channel(const Client &client, const std::string &name, const int &type);
         ~Channel();
-        std::string getName();
 
         void addClient(const Client &client);
-        void addAdmin(const Client &client);
+        void addOp(const Client &op); //Channel operators
+
+        std::string getName();
+        //Uma função setName precisa ser feita, mas apenas usuários do tipo OP podem ter acesso.
         
+        void setType(int new_type);
+        int  getType();
         //PUBLIC FOR TEST PURPOSES
         std::map<std::string, const Client *> _clients;
-        std::map<std::string, const Client *> _admins;
+        std::map<std::string, const Client *> _ops;
     private:
         std::string _name;
         std::string _topic;
-
+        std::string _created_by;
+        int         _type; //Check utils.hpp
         const Client* findClient(std::map<std::string, const Client*> &user_map, const Client &user) const;
 };
 

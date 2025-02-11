@@ -44,8 +44,9 @@ class Server {
 		void shutdownServer();
 		std::map<int, Client>&getClients();
 
-		void addChannel(const Client &client, const std::string &name);
-		Channel &findChannel();
+		void addChannel(const Client &client, std::string &name);
+		int  checkChannelType(std::string &channel_name);
+		bool getChannel(const std::string &channel_name, Channel& channel_found);
 
 
 
