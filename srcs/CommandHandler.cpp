@@ -38,10 +38,15 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
     std::string cmd;
     iss >> cmd;
 
+    if (cmd == "CAP") {
+        handleCap(client, iss);
+        return ;
+    }
+
     if (!isClientAllowedToProceed(client, cmd))
         return;
 
-    if (cmd == "PASS")
+    else if (cmd == "PASS")
         handlePass(client, iss);   
     else if (cmd == "NICK")
         handleNick(client, iss);
@@ -320,4 +325,16 @@ void CommandHandler::handleTest3()
     std::map<std::string, Channel>::iterator it;
     for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
         std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
+}
+
+
+void CommandHandler::handleCap(Client &client, std::istringstream &iss)
+{   
+    (void)iss;
+    logMessage("CAP", "Client requested capabilities");
+    std::string capResponse = "CAP * LS :\r\n";
+    send(client.getFd(), capResponse.c_str(), capResponse.size(), 0);
+
+    std::string capEnd = "CAP END\r\n";
+    send(client.getFd(), capEnd.c_str(), capEnd.size(), 0);
 }

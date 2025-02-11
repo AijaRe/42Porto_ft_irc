@@ -29,6 +29,7 @@ class CommandHandler
         void handleKick(Client &client, std::istringstream &iss);
         void handleTest();
         void handleTest2();
+        void handleCap(Client &client, std::istringstream &iss);
         void handleTest3();
 };
 
