@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/12 20:45:49 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/12 21:02:04 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,13 @@ bool Client::hasMode(char mode) const {
     return _modes.find(mode) != std::string::npos;
 }
 
-bool Client::isAuthenticated() const
+bool Client::passAuthenticated() const
 {
     return _authenticated;
+}
+
+bool Client::isFullyAuthenticated() const {
+    return passAuthenticated() && !getNickname().empty() && !getUsername().empty();
 }
 
 void Client::setAuthenticated(bool status)
