@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/09 18:42:00 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/12 18:22:16 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class Replies{
     public:
         Replies();//for initialization of the map
         void sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage = "");
+        void sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params = std::vector<std::string>(), const std::string &additionalMessage = "");
         void sendMessage(int fd, const std::string &message);
     private:
         std::map<std::string, std::string> ircReplies;

@@ -8,7 +8,7 @@ CommandHandler::CommandHandler(Server &server) : _server(server) {}
 CommandHandler::~CommandHandler() {}
 
 bool CommandHandler::isClientAllowedToProceed(Client &client, const std::string &cmd){
-    if(!client.isAuthenticated())
+    if(!client.passAuthenticated())
     {
         if(cmd != "PASS")
         {
@@ -27,6 +27,7 @@ bool CommandHandler::isClientAllowedToProceed(Client &client, const std::string 
         sendError(client.getFd(), "You must set a username first! [USER <username>]");
         return false;
     }
+
     return true;
 }
 
@@ -78,17 +79,24 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
     iss >> password;
 
     if (password.empty()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+        //_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, std::vector<std::string>(), "PASS");
+        
         return;
     }
 
     if (password != _server.getPassword()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH);
+        //_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH);
         return;
     }
 
     client.setAuthenticated(true);
     logMessage("INFO", "Client authenticated");
+
+    if (client.isFullyAuthenticated()) {
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
+    }
 }
 
 //unique nickname having a maximum length of nine (9) characters.
@@ -98,12 +106,14 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     iss >> nickname;
     if (nickname.empty())
     {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
+        //_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
         return;
     }
     if (nickname.length() > 9)
     {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_ERRONEUSNICKNAME);
+        //_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_ERRONEUSNICKNAME);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ERRONEUSNICKNAME);
         return;
     }
 
@@ -111,11 +121,16 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     for (std::map<int, Client>::iterator it = _server.getClients().begin(); it != _server.getClients().end(); ++it) {
         if (it->second.getNickname() == nickname) {
             _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE);
+            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE);
             return;
         }
     }
     client.setNickname(nickname);
     logMessage("NICK", "Client set nickname to: " + nickname);
+
+    if (client.isFullyAuthenticated()) {
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
+    }
 }
 
 //Parameters: <user> <mode> <unused> <realname>
@@ -140,7 +155,7 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
         return;
     }
 
-    if (!client.isAuthenticated()) {
+    if (!client.passAuthenticated()) {
         _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
         return;
     }
@@ -164,6 +179,10 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
 
     client.setAuthenticated(true);
     logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
+
+    if (client.isFullyAuthenticated()) {
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
+    }
 }
 
 /*Return the target type see utils.hpp */
