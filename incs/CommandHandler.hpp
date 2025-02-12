@@ -31,6 +31,7 @@ class CommandHandler
         void handleTest2();
         void handleCap(Client &client, std::istringstream &iss);
         void handleTest3();
+        void updateNickname(Client &client, const std::string &newNickname);
 };
 
 #endif

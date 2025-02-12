@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/09 19:22:17 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/12 20:45:49 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,18 @@
 
 Client::Client() : _fd(-1) {} //fd -1 means not connected
 
-Client::Client(int fd) : _fd(fd), _nickname(""), _username("") {}
+Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _nickname(""), _username("") {}
 
 Client::~Client() {}
 
 int Client::getFd() const
 {
     return _fd;
+}
+
+std::string Client::getHost() const
+{
+    return _host;
 }
 
 std::string Client::getNickname() const
