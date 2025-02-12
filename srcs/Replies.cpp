@@ -59,6 +59,33 @@ void Replies::sendIrcError(int fd, const Server &server, const std::string &nick
 
     sendMessage(fd, errorMessage);
 }
+void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params, const std::string &additionalMessage) {
+    std::string targetNickname = nickname.empty() ? "*" : nickname;
+
+    std::map<std::string, std::string>::const_iterator it = ircReplies.find(code);
+    if (it == ircReplies.end()) {
+        it = ircReplies.find(ERR_UNKNOWNERROR);
+        if (it == ircReplies.end()) {
+            return;
+        }
+    }
+
+    std::string ircMessage = ":" + server.getName() + " " + code + " " + targetNickname;
+
+    // Adiciona os parâmetros
+    for (std::vector<std::string>::const_iterator it = params.begin(); it != params.end(); ++it) {
+    ircMessage += " " + *it;
+    }
+
+    ircMessage += " :" + it->second;
+    if (!additionalMessage.empty()) {
+        ircMessage += " " + additionalMessage;
+    }
+    ircMessage += "\r\n";
+
+    sendMessage(fd, ircMessage);
+}
+
 
 void Replies::sendMessage(int fd, const std::string &message) {
     send(fd, message.c_str(), message.length(), 0);

@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/09 19:22:17 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/12 18:38:35 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,13 @@ bool Client::hasMode(char mode) const {
     return _modes.find(mode) != std::string::npos;
 }
 
-bool Client::isAuthenticated() const
+bool Client::passAuthenticated() const
 {
     return _authenticated;
+}
+
+bool Client::isFullyAuthenticated() const {
+    return passAuthenticated() && !getNickname().empty() && !getUsername().empty();
 }
 
 void Client::setAuthenticated(bool status)
