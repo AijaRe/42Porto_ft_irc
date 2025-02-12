@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:34 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/08 14:57:34 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/12 21:31:48 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 #include "Server.hpp"
 
 int main(int argc, char **argv) {
-	if (argc != 3)
-		throw std::runtime_error("Usage: ./ircserv <port> <password>");
+	if (argc != 3) {
+		std::cerr << "Usage: ./ircserv <port> <password>" << std::endl;
+		return 1;
+	}
 	Server server(argv[1], argv[2]);
 	try {
 		signal(SIGINT, Server::signalHandler); // handle (ctrl-c)
