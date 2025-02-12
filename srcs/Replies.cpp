@@ -27,7 +27,7 @@ Replies::Replies() {
     ircReplies[ERR_NOSUCHNICK] = "No such nick/channel";
     ircReplies[ERR_CANNOTSENDTOCHAN] = "Cannot send to channel";
     ircReplies[ERR_NORECIPIENT] = "No recipient given";
-    ircReplies[RPL_WELCOME] = "Welcome to the server";
+    ircReplies[RPL_WELCOME] = "Welcome to the We Read The Manual Netwok!";
     ircReplies[RPL_TOPIC] = "Channel topic is";
     ircReplies[RPL_NOTOPIC] = "No topic is set";
     ircReplies[RPL_INVITING] = "Inviting user to channel";

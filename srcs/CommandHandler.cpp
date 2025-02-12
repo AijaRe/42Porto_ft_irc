@@ -132,39 +132,6 @@ void    CommandHandler::updateNickname(Client &client, const std::string &newNic
     send(client.getFd(), message.c_str(), message.length(), 0);
 }
 
-/* 
-** Helper function to validate nickname 
-** A nickname cannot contain leading digits
-** A nickname can contain only alphanumerical characters, ([]{}), (\), (|) characters
-*/
-bool isValidNickname(const std::string &nickname)
-{
-    if (std::isdigit(nickname[0]))
-        return false;
-    for (size_t i = 0; i < nickname.length(); i++)
-    {
-        if (!std::isalnum(nickname[i]) && nickname[i] != '[' && nickname[i] != ']' && 
-            nickname[i] != '{' && nickname[i] != '}' && nickname[i] != '\\' && 
-            nickname[i] != '|')
-            return false;
-    }
-    return true;
-}
-
-void    CommandHandler::updateNickname(Client &client, const std::string &newNickname)
-{
-    std::string oldNickname = client.getNickname();
-    std::string user = client.getUsername();
-    std::string host = client.getHost();
-
-    client.setNickname(newNickname);
-    logMessage("NICK", "You are now known as " + newNickname);
-
-    // send NICK confirmation to client
-    std::string message = ":" + oldNickname + "!" + user + "@" + host + " NICK " + newNickname + "\r\n";
-    send(client.getFd(), message.c_str(), message.length(), 0);
-}
-
 //unique nickname having a maximum length of nine (9) characters.
 void CommandHandler::handleNick(Client &client, std::istringstream &iss)
 {
