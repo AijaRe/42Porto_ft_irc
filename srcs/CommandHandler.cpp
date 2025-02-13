@@ -7,6 +7,11 @@ CommandHandler::CommandHandler(Server &server) : _server(server) {}
 
 CommandHandler::~CommandHandler() {}
 
+const Server &CommandHandler::getServer() const
+{
+    return this->_server;
+}
+
 bool CommandHandler::isClientAllowedToProceed(Client &client, const std::string &cmd){
     if(!client.isAuthenticated())
     {

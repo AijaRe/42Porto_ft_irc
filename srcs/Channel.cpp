@@ -116,6 +116,7 @@ void Channel::addClient(const Client &client)
     ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
     if (ret.second == false)
         sendError(client.getFd(), "The user " + client.getNickname() + "is already part of " + this->getName() +".\n");
+        //this->_commandHandler->_replies.sendIrcError(client.getFd(), this->_commandHandler->getServer(), client.getNickname(), ERR_USERONCHANNEL);
     else
     {
         logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);

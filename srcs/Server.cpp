@@ -290,8 +290,8 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 {
 	/*Needs to add a verifications to the channel name, before even joining the channel, here are some errors:
     Error Code	HexChat Error Message	            Description
-    461	        Not enough parameters	            The JOIN command requires a channel name, but none was provided.
-    403	        No such channel	                    The channel name is invalid (e.g., missing # or contains illegal characters).
+    DONE461	        Not enough parameters	            The JOIN command requires a channel name, but none was provided.
+    DONE403	        No such channel	                    The channel name is invalid (e.g., missing # or contains illegal characters).
     405	        You have joined too many channels	The user has exceeded the server's limit for the number of joined channels.
     474     	Cannot join channel (+b)	        The user is banned from the channel.
     473	        Cannot join channel (+i)	        The channel is invite-only, and the user has not been invited.
@@ -308,8 +308,7 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 	int channel_type = this->checkChannelType(channel_key);
 	if (channel_type == 0)
 	{
-		//this->_replies.sendIrcError(client.getFd(), this, client.getNickname(), ERR_NOSUCHCHANNEL);
-		std::cout << "[TO DO] ERROR: Invalid Channel name." << std::endl;
+		this->_command_handler->_replies.sendIrcError(client.getFd(), *this, client.getNickname(), ERR_NOSUCHCHANNEL);
 		return;
 	}
 	else
