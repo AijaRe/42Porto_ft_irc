@@ -27,12 +27,19 @@ class Channel
 
         void addClient(const Client &client);
         void addOp(const Client &op); //Channel operators
+        bool verifyUser(const Client &user, std::map<std::string, const Client *> map);
+        const Client* findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const;
+
 
         std::string getName();
-        //Uma função setName precisa ser feita, mas apenas usuários do tipo OP podem ter acesso.
+        void setName(const std::string new_name);
         
-        void setType(int new_type);
         int  getType();
+        void setType(int new_type);
+
+        std::string getCreator();
+
+        const std::map<std::string, const Client*> &getClients() const;
         //PUBLIC FOR TEST PURPOSES
         std::map<std::string, const Client *> _clients;
         std::map<std::string, const Client *> _ops;
@@ -41,7 +48,7 @@ class Channel
         std::string _topic;
         std::string _created_by;
         int         _type; //Check utils.hpp
-        const Client* findClient(std::map<std::string, const Client*> &user_map, const Client &user) const;
+        const Client* findUser(const std::map<std::string, const Client*> &user_map, const Client &user) const;
 };
 
 #endif

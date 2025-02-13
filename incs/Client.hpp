@@ -40,7 +40,7 @@ class Client
         bool isConnected() const;
         bool hasMode(char mode) const;
 
-        bool operator==(const Client &compare) const; //Used inside Channel::findClient()
+        bool operator==(const Client &compare) const; //Used inside Channel::findUser()
     private:
         int _fd;
         std::string _nickname;

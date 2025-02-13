@@ -60,8 +60,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handlePing(client, iss);
     else if (cmd == "NOTICE")
         handleNotice(client, iss);
-    /*else if (cmd == "KICK")
-        handleKick(client, iss);*/
+    else if (cmd == "KICK")
+        handleKick(client, iss);
     else if (cmd == "TEST3")
         handleTest3();
     else if (cmd == "TEST")
@@ -166,24 +166,6 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
 }
 
-/*Return the target type see utils.hpp */
-int CommandHandler::targetType(const std::string &target)
-{
-    switch (target[0])
-    {
-        case '#':
-            return CH_STANDARD;
-        case '&':
-            return CH_LOCAL;
-        case '+':
-            return CH_NO_EXT;
-        case '!':
-            return CH_SAFE;
-        default:
-            return USER;
-    }
-}
-
 void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
 {
     std::string target, message;
@@ -198,28 +180,27 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
     }
         
     //Estou considerando que caso seja um user, o nick dele já foi feito o parsing.
-    int target_type = this->_server.checkChannelType(target); //0 for users or errors.
+    int target_type = this->_server.checkChannelType(target); 
     
-    if (target_type == 0)
+    if (target_type == 0) //0 for users or errors.
     {
-        //Buscar o destinatário na lista de clientes
-        //Caso não seja um user válido deve enviar algum erro?
-        std::map<int, Client> &clients = _server.getClients();
-        for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it) 
-        {
-            if (it->second.getNickname() == target) 
-            {
-                std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
-                send(it->second.getFd(), response.c_str(), response.length(), 0);
-                return;
-            }
-        }
+       Client client_found;
+       if (this->_server.clientExists(target, client_found))
+       {
+            std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+            send(client_found.getFd(), response.c_str(), response.length(), 0);
+            return;
+       }
+       else //client não encontrado.
+            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
     }
     else
     {
         Channel channel_found;
-        if (this->_server.getChannel(target, channel_found))
+        if (this->_server.channelExists(target, channel_found)) //ATENÇÃO A ESSA FUNÇÃO
         {
+            //Falta confirmar as permissões do usuário dentro do channel.
+            
             std::map<std::string, const Client*>::const_iterator it2;
             for (it2 = channel_found._clients.begin(); it2 != channel_found._clients.end(); it2++)
             {
@@ -229,21 +210,14 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         }
         else
             _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
-
-        //Encontrar o channel
-        //Confirmar permissões do usuário
-        //Caso encontrado enviar mensagem
-        //Caso nao erro.
     }    
 }
-
 
 void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
 {
     std::string channel_name;
     iss >> channel_name;
     
-
     if (channel_name.empty()) {
         _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
         return;
@@ -251,18 +225,53 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     this->_server.addChannel(client, channel_name);
 }
 
-/*
 void CommandHandler::handleKick(Client &client, std::istringstream &iss)
 {
-    std::string user_to_kick;
-    iss >> user_to_kick;
+    std::string channel_key, user_to_kick, reason;
 
-    if (user_to_kick.empty()){
-        //Return the error log.
+    iss >> channel_key;
+    iss >> user_to_kick;
+    std::getline(iss >> std::ws, reason);
+    (void)client;
+
+    if (channel_key.empty() || user_to_kick.empty()){
+        //Should this print be sent to the client application? (Hexchat).
+        std::cout << "Usage: KICK <nick> [reason], kicks the nick from the current channel" << std::endl;
         return;
     }
     
-}*/
+    //Esse canal existe?
+    Channel channel_found;
+    if (this->_server.channelExists(channel_key, channel_found)) // ATENºÃO A ESSA FUNCAO
+    {
+        //O request partiu de um OP?
+        if (channel_found.verifyUser(client, channel_found._ops))
+        {
+            //Verificar se o usuário existe dentro do channel desejado.
+            std::cout << "Channel: [" << channel_key << "] to kick: [" << user_to_kick << "]" << std::endl;
+            const Client *User = channel_found.findUserByName(channel_found._clients, user_to_kick);
+            if (User != NULL)
+            {
+                std::cout << "User will be deleted." << std::endl;
+            }
+            else
+                std::cout << "[TO DO] User not foung in this channel." << std::endl;
+
+        }
+
+        else
+            std::cout << "[TO DO] User is not OP." << std::endl;
+    }
+    else
+        std::cout << "[TO DO] The channel wasn't found." << std::endl;
+    
+
+    
+    //Caso positivo, deletar o usuário
+    //Caso negativo, retornar erro explicando que o usuário não existe,
+
+    
+}
 
 void CommandHandler::handlePing(Client &client, std::istringstream &iss)
 {
@@ -294,20 +303,22 @@ void CommandHandler::handleNotice(Client &client, std::istringstream &iss)
 void CommandHandler::handleTest()
 {
 
-    std::cout << "PRINTING FULL composition of all channels" << std::endl;
+    std::cout << "======== PRINTING FULL composition of all channels" << std::endl;
     std::map<std::string, Channel>::iterator it;
     for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
     {
-        std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << " Type: " << it->second.getType() << std::endl;
+        std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() 
+            << " Type: " << it->second.getType() 
+            << " Created by:  " << it->second.getCreator() << std::endl;
         std::map<std::string, const Client*>::const_iterator it2;
         for (it2 = it->second._clients.begin(); it2 != it->second._clients.end(); it2++) //it.second is the _channel object.
-           std::cout << "\tUSER [" << it2->first << "] " << it2->second->getUsername() << std::endl;
+           std::cout << "\tUSER [" << it2->first << "] " << it2->second->getNickname() << std::endl;
     }
 }
 
 void CommandHandler::handleTest2()
 {
-    std::cout << "PRINTING ADMINS of all channels" << std::endl;
+    std::cout << "======== PRINTING ADMINS of all channels" << std::endl;
     std::map<std::string, Channel>::iterator it;
     for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
     {
@@ -320,7 +331,7 @@ void CommandHandler::handleTest2()
 
 void CommandHandler::handleTest3()
 {
-    std::cout << "PRINTING CHANNEL LIST" << std::endl;
+    std::cout << "======== PRINTING CHANNEL LIST" << std::endl;
 
     std::map<std::string, Channel>::iterator it;
     for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)

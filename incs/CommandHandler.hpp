@@ -14,7 +14,6 @@ class CommandHandler
         ~CommandHandler();
         void handleCommand(Client &client, const std::string &command);
         bool isClientAllowedToProceed(Client &client, const std::string &cmd);
-        int  targetType(const std::string &target);
     private:
         Server &_server;
         Replies _replies;

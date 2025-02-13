@@ -227,6 +227,26 @@ std::map<int, Client>&Server::getClients() {
 	return _clients;
 }
 
+bool Server::clientExists(const std::string &nick, Client& client_found)
+{
+	if (this->_clients.empty())
+		return false;
+	std::map<int, Client>::iterator it;
+	for (it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		if (it->second.getNickname() == nick)
+		{
+			client_found = it->second;
+			return true;
+		}
+	}
+	return false;
+}
+
+std::map<std::string, Channel>&Server::getChannels(){
+	return this->_channels;
+}
+
 std::string Server::getName() const{
 	return _name;
 }
@@ -249,9 +269,11 @@ int		Server::checkChannelType(std::string &channel_name)
     }
 }
 
-//Verifica se o channel está no map e caso positivo retorna true.
-bool Server::getChannel(const std::string &channel_key, Channel& channel_found)
+//Verifica se o channel está no map e caso positivo retorna true e assina a variavel com o channel encontrado.
+bool Server::channelExists(const std::string &channel_key, Channel& channel_found)
 {
+	if (this->_channels.empty())
+		return false;
 	std::map<std::string, Channel>::iterator it;
 	for (it = this->_channels.begin(); it != this->_channels.end(); it++)
 	{
@@ -260,7 +282,7 @@ bool Server::getChannel(const std::string &channel_key, Channel& channel_found)
 			channel_found = it->second;
 			return true;
 		}
-	};
+	}
 	return false;
 }
 
@@ -291,23 +313,55 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 	}
 	else
 	{
-		Channel channel_found;
-		if (this->getChannel(channel_key, channel_found)) //if True, a channel with this channel_key was found;
+		std::map<std::string, Channel>::iterator it = this->_channels.find(channel_key);
+		if (it != this->_channels.end())
 		{
-			std::cout << "[TO DO] Check user permissions to access this channel before JOIN." << std::endl;
-			channel_found.addClient(client);
+
+			it->second.addClient(client);
+
+			//===========================================================
+			//Running the channel list.
+			std::map<std::string, Channel>::iterator it;
+			for (it = this->_channels.begin(); it != this->_channels.end(); it++)
+			{
+				std::cout << "\tChannel [" << it->first << "] " << it->second.getName() << std::endl;
+				std::map<std::string, const Client*>::const_iterator it2;
+				for (it2 = it->second._clients.begin(); it2 != it->second._clients.end(); it2++)
+				{
+					std::cout << "\t\tUSER [" << it2->first << "] " << it2->second->getNickname() << std::endl;
+				}
+			}
 		}
 		else
 		{
 			std::cout << "[TO DO] Check user permissions to create this type of channel." << std::endl;
+			
+			//Building a new channel here, same as addClient + addOp.
 			Channel new_channel(client, channel_key, channel_type);
+
+			//Inserting the channel in the server._channels map.
 			std::pair<std::map<std::string, Channel>::iterator, bool> ret;
 			ret = this->_channels.insert(std::make_pair(channel_key, new_channel));
 			if (ret.second == false)
 				sendError(client.getFd(), "There is already a channel called " + channel_key + ".\n");
+
+
+
+			//===========================================================
+			//Running the channel list.
+			std::map<std::string, Channel>::iterator it;
+			for (it = this->_channels.begin(); it != this->_channels.end(); it++)
+			{
+				std::cout << "\tChannel [" << it->first << "] " << it->second.getName() << std::endl;
+				std::map<std::string, const Client*>::const_iterator it2;
+				for (it2 = it->second._clients.begin(); it2 != it->second._clients.end(); it2++)
+				{
+					std::cout << "\t\tUSER [" << it2->first << "] " << it2->second->getNickname() << std::endl;
+				}
+			}
 		}
 	}
 }
-	
+
 
 	
