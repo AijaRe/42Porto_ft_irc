@@ -40,14 +40,14 @@ class Channel
         std::string getCreator();
 
         const std::map<std::string, const Client*> &getClients() const;
-        //PUBLIC FOR TEST PURPOSES
-        std::map<std::string, const Client *> _clients;
-        std::map<std::string, const Client *> _ops;
+        const std::map<std::string, const Client*> &getOps() const;
     private:
         std::string _name;
         std::string _topic;
         std::string _created_by;
         int         _type; //Check utils.hpp
+        std::map<std::string, const Client *> _clients;
+        std::map<std::string, const Client *> _ops;
         const Client* findUser(const std::map<std::string, const Client*> &user_map, const Client &user) const;
 };
 

@@ -308,6 +308,7 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 	int channel_type = this->checkChannelType(channel_key);
 	if (channel_type == 0)
 	{
+		//this->_replies.sendIrcError(client.getFd(), this, client.getNickname(), ERR_NOSUCHCHANNEL);
 		std::cout << "[TO DO] ERROR: Invalid Channel name." << std::endl;
 		return;
 	}
@@ -315,23 +316,7 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 	{
 		std::map<std::string, Channel>::iterator it = this->_channels.find(channel_key);
 		if (it != this->_channels.end())
-		{
-
 			it->second.addClient(client);
-
-			//===========================================================
-			//Running the channel list.
-			std::map<std::string, Channel>::iterator it;
-			for (it = this->_channels.begin(); it != this->_channels.end(); it++)
-			{
-				std::cout << "\tChannel [" << it->first << "] " << it->second.getName() << std::endl;
-				std::map<std::string, const Client*>::const_iterator it2;
-				for (it2 = it->second._clients.begin(); it2 != it->second._clients.end(); it2++)
-				{
-					std::cout << "\t\tUSER [" << it2->first << "] " << it2->second->getNickname() << std::endl;
-				}
-			}
-		}
 		else
 		{
 			std::cout << "[TO DO] Check user permissions to create this type of channel." << std::endl;
@@ -344,21 +329,6 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 			ret = this->_channels.insert(std::make_pair(channel_key, new_channel));
 			if (ret.second == false)
 				sendError(client.getFd(), "There is already a channel called " + channel_key + ".\n");
-
-
-
-			//===========================================================
-			//Running the channel list.
-			std::map<std::string, Channel>::iterator it;
-			for (it = this->_channels.begin(); it != this->_channels.end(); it++)
-			{
-				std::cout << "\tChannel [" << it->first << "] " << it->second.getName() << std::endl;
-				std::map<std::string, const Client*>::const_iterator it2;
-				for (it2 = it->second._clients.begin(); it2 != it->second._clients.end(); it2++)
-				{
-					std::cout << "\t\tUSER [" << it2->first << "] " << it2->second->getNickname() << std::endl;
-				}
-			}
 		}
 	}
 }

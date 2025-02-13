@@ -22,9 +22,8 @@ Channel::Channel()
 Channel::Channel(const Client &client, const std::string &name, const int &type)
         : _name(name.substr(1)), _topic(""), _created_by(client.getNickname()), _type(type)
 {
-    //Set the creator of the channel.
     addClient(client);
-    //addOp(client);
+    addOp(client);
 }
 
 Channel::~Channel()
@@ -106,47 +105,32 @@ const std::map<std::string, const Client*> &Channel::getClients() const
     return this->_clients;
 }
 
+const std::map<std::string, const Client*> &Channel::getOps() const
+{
+    return this->_ops;
+}
+
 void Channel::addClient(const Client &client)
 {
-
-     //Inserting the channel in the server._channels map.
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
     ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
     if (ret.second == false)
         sendError(client.getFd(), "The user " + client.getNickname() + "is already part of " + this->getName() +".\n");
     else
-        std::cout << "SUCESS addition" << std::endl;
-
-
-    /*
-    if (findUserByName(this->_clients, client.getNickname()) == NULL)
     {
-        std::cout << "\n\n\t\tUSER [" << client.getNickname() << "] NAO econtrado!" << std::endl;
-
-
-        const Client *client_ptr = &client;
-        this->_clients[client.getNickname()] = client_ptr;
         logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);
         sendReturn(client.getFd(), "Congratulations! "+ client.getNickname() + " you joined the channel " + this->getName() + ".\n");
-
     }
-    else
-    {
-        sendError(client.getFd(), "You are already part of "+ this->getName() + " channel.\n");
-        std::cout << "\n\n\t\tUSER [" << client.getNickname() << "] econtrado!" << std::endl;
-    }*/
 }
 
 void Channel::addOp(const Client &op)
 {
-    if (findUser(this->_ops, op) == NULL)
-    {
-        const Client *op_ptr = &op;
-        this->_ops[op.getNickname()] = op_ptr;
-        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + _name);
-    }
+    std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
+    ret = this->_ops.insert(std::make_pair(op.getNickname(), &op));
+    if (ret.second == false)
+        sendError(op.getFd(), "The user " + op.getNickname() + "is already OP .\n");
     else
-        sendError(op.getFd(), "You are already admin of " + this->getName() + "channel.\n");
+        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + _name);
 }
 
 bool Channel::verifyUser(const Client& user, std::map<std::string, const Client *> map)

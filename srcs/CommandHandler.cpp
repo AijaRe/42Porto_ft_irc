@@ -200,9 +200,9 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         if (this->_server.channelExists(target, channel_found)) //ATENÇÃO A ESSA FUNÇÃO
         {
             //Falta confirmar as permissões do usuário dentro do channel.
-            
+            std::map<std::string, const Client*> clients = channel_found.getClients();
             std::map<std::string, const Client*>::const_iterator it2;
-            for (it2 = channel_found._clients.begin(); it2 != channel_found._clients.end(); it2++)
+            for (it2 = clients.begin(); it2 != clients.end(); it2++)
             {
                 std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
                 send(it2->second->getFd(), response.c_str(), response.length(), 0);
@@ -245,11 +245,11 @@ void CommandHandler::handleKick(Client &client, std::istringstream &iss)
     if (this->_server.channelExists(channel_key, channel_found)) // ATENºÃO A ESSA FUNCAO
     {
         //O request partiu de um OP?
-        if (channel_found.verifyUser(client, channel_found._ops))
+        if (channel_found.verifyUser(client, channel_found.getOps()))
         {
             //Verificar se o usuário existe dentro do channel desejado.
             std::cout << "Channel: [" << channel_key << "] to kick: [" << user_to_kick << "]" << std::endl;
-            const Client *User = channel_found.findUserByName(channel_found._clients, user_to_kick);
+            const Client *User = channel_found.findUserByName(channel_found.getClients(), user_to_kick);
             if (User != NULL)
             {
                 std::cout << "User will be deleted." << std::endl;
@@ -304,14 +304,18 @@ void CommandHandler::handleTest()
 {
 
     std::cout << "======== PRINTING FULL composition of all channels" << std::endl;
+    std::map<std::string, Channel> channels = this->_server.getChannels();
     std::map<std::string, Channel>::iterator it;
-    for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
+    
+    for (it = channels.begin(); it != channels.end(); it++)
     {
         std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() 
             << " Type: " << it->second.getType() 
             << " Created by:  " << it->second.getCreator() << std::endl;
+        
+        std::map<std::string, const Client*> clients = it->second.getClients();
         std::map<std::string, const Client*>::const_iterator it2;
-        for (it2 = it->second._clients.begin(); it2 != it->second._clients.end(); it2++) //it.second is the _channel object.
+        for (it2 = clients.begin(); it2 != clients.end(); it2++) //it.second is the _channel object.
            std::cout << "\tUSER [" << it2->first << "] " << it2->second->getNickname() << std::endl;
     }
 }
@@ -319,12 +323,15 @@ void CommandHandler::handleTest()
 void CommandHandler::handleTest2()
 {
     std::cout << "======== PRINTING ADMINS of all channels" << std::endl;
+    std::map<std::string, Channel> channels = this->_server.getChannels();
     std::map<std::string, Channel>::iterator it;
-    for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
+    for (it = channels.begin(); it != channels.end(); it++)
     {
         std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
+
+         std::map<std::string, const Client*> op = it->second.getOps();
         std::map<std::string, const Client*>::const_iterator it2;
-        for (it2 = it->second._ops.begin(); it2 != it->second._ops.end(); it2++)
+        for (it2 = op.begin(); it2 != op.end(); it2++)
             std::cout << "\tADMIN [" << it2->first << "] " << it2->second->getUsername() << std::endl;
     }
 }
@@ -332,9 +339,9 @@ void CommandHandler::handleTest2()
 void CommandHandler::handleTest3()
 {
     std::cout << "======== PRINTING CHANNEL LIST" << std::endl;
-
+    std::map<std::string, Channel> channels = this->_server.getChannels();
     std::map<std::string, Channel>::iterator it;
-    for (it = this->_server._channels.begin(); it != this->_server._channels.end(); it++)
+    for (it = channels.begin(); it != channels.end(); it++)
         std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
 }
 

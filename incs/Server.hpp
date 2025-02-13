@@ -51,10 +51,6 @@ class Server {
 		std::map<std::string, Channel> &getChannels();
 		bool channelExists(const std::string &channel_name, Channel& channel_found);
 
-
-
-		//TEMP PUBLIC TO DO TESTS
-		std::map<std::string, Channel> _channels;
 	private:
 		std::string _name;
 		int _port;
@@ -63,6 +59,7 @@ class Server {
 		static bool _running;
 		std::map<int, pollfd> _fd_map;
 		std::map<int, Client> _clients;
+		std::map<std::string, Channel> _channels;
 		
     	CommandHandler* _command_handler;
 
