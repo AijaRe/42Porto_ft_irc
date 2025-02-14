@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/14 17:56:32 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/14 19:41:46 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Client::Client() : _fd(-1) {} //fd -1 means not connected
 
-Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _passAuthenticated(false), _nickname(""), _username("") {}
+Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _passAuthenticated(false), _nickname(""), _username(""), _welcomed(false) {}
 
 Client::~Client() {}
 
@@ -93,4 +93,12 @@ bool Client::isConnected() const { return _fd != -1; }
 bool Client::operator==(const Client &compare) const
 {
     return this->getNickname() == compare.getNickname();
+}
+
+bool Client::isWelcomed() const{
+    return _welcomed;
+}
+
+void Client::setWelcomed(bool welcomed) {
+    _welcomed = welcomed;
 }

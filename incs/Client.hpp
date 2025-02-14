@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:02:57 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/14 17:57:30 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/14 19:41:34 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@ class Client
         void setRealname(const std::string &realname);
         void setMode(char mode, bool enable);
         void setPassAuthenticated(bool status);
+        void setWelcomed(bool welcomed);
 
         //bool isAuthenticated() const;
         bool passAuthenticated() const;
         bool isFullyAuthenticated() const;
         bool isConnected() const;
+        bool isWelcomed() const;
         bool hasMode(char mode) const;
 
         bool operator==(const Client &compare) const; //Used inside Channel::findClient()
@@ -52,8 +54,7 @@ class Client
         std::string _username;
         std::string _realname;
         std::string _modes;
-
-        //bool _authenticated;
+        bool _welcomed; // Flag para indicar se o cliente já recebeu a mensagem de boas-vindas
 };
 
 #endif

@@ -85,14 +85,12 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
     iss >> password;
 
     if (password.empty()) {
-        //_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, std::vector<std::string>(), "PASS");
         
         return;
     }
 
     if (password != _server.getPassword()) {
-        //_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH);
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH);
         return;
     }
@@ -100,8 +98,9 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
     client.setPassAuthenticated(true);
     logMessage("INFO", "Client authenticated");
 
-    if (client.isFullyAuthenticated()) {
+    if (client.isFullyAuthenticated() && !client.isWelcomed()) {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
+        client.setWelcomed(true); // Marca o cliente como tendo recebido a mensagem de boas-vindas
     }
 }
 
@@ -146,14 +145,12 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     // ERR_NONICKNAMEGIVEN (431) - No nickname provided
     if (nickname.empty())
     {
-        //_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
         return;
     }
     // ERR_ERRONEUSNICKNAME (432) - Invalid characters or format
     if (nickname.length() > 9 || !isValidNickname(nickname))
     {
-        //_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_ERRONEUSNICKNAME);
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ERRONEUSNICKNAME);
         return;
     }
@@ -162,7 +159,6 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     // ERR_NICKNAMEINUSE (433) - Nickname already in use
     for (std::map<int, Client>::iterator it = _server.getClients().begin(); it != _server.getClients().end(); ++it) {
         if (it->second.getNickname() == nickname) {
-            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE);
             _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE);
             return;
         }
@@ -170,8 +166,9 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     // Change nickname and send confirmation
     updateNickname(client, nickname);
 
-    if (client.isFullyAuthenticated()) {
+    if (client.isFullyAuthenticated() && !client.isWelcomed()) {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
+        client.setWelcomed(true);
     }
 }
 
@@ -222,8 +219,9 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     client.setPassAuthenticated(true);
     logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
 
-    if (client.isFullyAuthenticated()) {
+    if (client.isFullyAuthenticated() && !client.isWelcomed()) {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
+        client.setWelcomed(true); // Marca o cliente como tendo recebido a mensagem de boas-vindas
     }
 }
 
@@ -274,7 +272,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             }
         }
         //se o usuario nao for encontrado
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
     }
     else
     {
