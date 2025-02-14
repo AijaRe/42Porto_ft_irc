@@ -91,7 +91,7 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
         return;
     }
 
-    client.setAuthenticated(true);
+    client.setPassAuthenticated(true);
     logMessage("INFO", "Client authenticated");
 
     if (client.isFullyAuthenticated()) {
@@ -213,7 +213,7 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
         client.setMode('i', true);
     }
 
-    client.setAuthenticated(true);
+    client.setPassAuthenticated(true);
     logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
 
     if (client.isFullyAuthenticated()) {

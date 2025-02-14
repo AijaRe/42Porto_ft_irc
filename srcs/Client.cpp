@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/12 21:02:04 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/14 17:56:32 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Client::Client() : _fd(-1) {} //fd -1 means not connected
 
-Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _nickname(""), _username("") {}
+Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _passAuthenticated(false), _nickname(""), _username("") {}
 
 Client::~Client() {}
 
@@ -76,16 +76,16 @@ bool Client::hasMode(char mode) const {
 
 bool Client::passAuthenticated() const
 {
-    return _authenticated;
+    return _passAuthenticated;
 }
 
 bool Client::isFullyAuthenticated() const {
     return passAuthenticated() && !getNickname().empty() && !getUsername().empty();
 }
 
-void Client::setAuthenticated(bool status)
+void Client::setPassAuthenticated(bool status)
 {
-    _authenticated = status;
+    _passAuthenticated = status;
 }
 
 bool Client::isConnected() const { return _fd != -1; }
