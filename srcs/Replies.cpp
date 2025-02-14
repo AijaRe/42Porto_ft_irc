@@ -39,7 +39,7 @@ Replies::Replies() {
 
 //:<servidor> <código numérico> <nickname> :<mensagem textual>
 
-void Replies::sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage)
+/*void Replies::sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage)
 {
     std::string targetNickname = nickname.empty() ? "[user_not_registered]" : nickname;
 
@@ -59,7 +59,8 @@ void Replies::sendIrcError(int fd, const Server &server, const std::string &nick
     errorMessage += "\r\n";
 
     sendMessage(fd, errorMessage);
-}
+}*/
+
 void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params, const std::string &additionalMessage) {
     std::string targetNickname = nickname.empty() ? "*" : nickname;
 

@@ -189,18 +189,20 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     iss >> username >> modeStr >> unused;
     std::getline(iss >> std::ws, realname);//capture the rest of the line like realname
     if (username.empty() || modeStr.empty() || unused.empty() || realname.empty()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, "USER");
+        std::vector<std::string> params;
+        params.push_back("USER");
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, params);
         _replies.sendMessage(client.getFd(), "Usage: USER <username> <mode> <unused> <realname>");
         return;
     }
 
     if (!client.passAuthenticated()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
         return;
     }
 
     if (client.getNickname().empty()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN, ":No nickname given");
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
         return;
     }
 
@@ -251,7 +253,10 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
     
     if (target.empty() || message.empty())
     {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT);
+        std::vector<std::string> params;
+        params.push_back("PRIVMSG");
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT, params);
+
         return;
     }
         
@@ -272,7 +277,9 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             }
         }
         //se o usuario nao for encontrado
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
+        std::vector<std::string> params;
+        params.push_back(target);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK, params);
     }
     else
     {
@@ -286,9 +293,13 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
                 send(it2->second->getFd(), response.c_str(), response.length(), 0);
             }
         }
-        else
-            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
+        else{
+            std::vector<std::string> params;
+            params.push_back(target);
+            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK, params);
+        }
 
+        
         //Encontrar o channel
         //Confirmar permissões do usuário
         //Caso encontrado enviar mensagem
@@ -301,10 +312,11 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
 {
     std::string channel_name;
     iss >> channel_name;
-    
 
     if (channel_name.empty()) {
-        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+        std::vector<std::string> params;
+        params.push_back("JOIN");
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, params);
         return;
     }
     this->_server.addChannel(client, channel_name);
