@@ -75,6 +75,12 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
 
 void CommandHandler::handlePass(Client &client, std::istringstream &iss)
 {
+    // Verifica se o cliente já está autenticado
+    if (client.passAuthenticated()) {
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
+        return;
+    }
+
     std::string password;
     iss >> password;
 
@@ -242,7 +248,6 @@ int CommandHandler::targetType(const std::string &target)
 void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
 {
     std::string target, message;
-   
     iss >> target;
     std::getline(iss >> std::ws, message);
     
@@ -258,7 +263,6 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
     if (target_type == 0)
     {
         //Buscar o destinatário na lista de clientes
-        //Caso não seja um user válido deve enviar algum erro?
         std::map<int, Client> &clients = _server.getClients();
         for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it) 
         {
@@ -269,6 +273,8 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
                 return;
             }
         }
+        //se o usuario nao for encontrado
+        _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
     }
     else
     {

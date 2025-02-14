@@ -33,6 +33,7 @@ Replies::Replies() {
     ircReplies[RPL_INVITING] = "Inviting user to channel";
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
+    ircReplies[ERR_NOTREGISTERED] = "You have not registered";
 }
 
 

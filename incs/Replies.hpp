@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/12 18:22:16 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/14 18:32:36 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 #define ERR_NONICKNAMEGIVEN        "431" // NICK when Nickname isn't provided
 #define ERR_USERNOTINCHANNEL       "441" // KICK when trying to kick a user who isn't in channel 
 #define ERR_USERONCHANNEL          "443" // When User is already on channel and is invited to
+#define ERR_NOTREGISTERED          "451" // When a user tries to send a message before registering
 #define ERR_NEEDMOREPARAMS         "461" // When a command has more or less params
 #define ERR_ALREADYREGISTERED      "462" 
 #define ERR_PASSWDMISMATCH         "464" // Join and Oper
