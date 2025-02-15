@@ -13,7 +13,6 @@
 #include "Channel.hpp"
 #include "Server.hpp"
 
-
 Channel::Channel()
 {
 
