@@ -27,18 +27,19 @@ Replies::Replies() {
     ircReplies[ERR_NOSUCHNICK] = "No such nick/channel";
     ircReplies[ERR_CANNOTSENDTOCHAN] = "Cannot send to channel";
     ircReplies[ERR_NORECIPIENT] = "No recipient given";
-    ircReplies[RPL_WELCOME] = "Welcome to the server";
+    ircReplies[RPL_WELCOME] = "Welcome to the We Read The Manual Netwok!";
     ircReplies[RPL_TOPIC] = "Channel topic is";
     ircReplies[RPL_NOTOPIC] = "No topic is set";
     ircReplies[RPL_INVITING] = "Inviting user to channel";
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
+    ircReplies[ERR_NOTREGISTERED] = "You have not registered";
 }
 
 
 //:<servidor> <código numérico> <nickname> :<mensagem textual>
 
-void Replies::sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage)
+/*void Replies::sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage)
 {
     std::string targetNickname = nickname.empty() ? "[user_not_registered]" : nickname;
 
@@ -58,7 +59,35 @@ void Replies::sendIrcError(int fd, const Server &server, const std::string &nick
     errorMessage += "\r\n";
 
     sendMessage(fd, errorMessage);
+}*/
+
+void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params, const std::string &additionalMessage) {
+    std::string targetNickname = nickname.empty() ? "*" : nickname;
+
+    std::map<std::string, std::string>::const_iterator it = ircReplies.find(code);
+    if (it == ircReplies.end()) {
+        it = ircReplies.find(ERR_UNKNOWNERROR);
+        if (it == ircReplies.end()) {
+            return;
+        }
+    }
+
+    std::string ircMessage = ":" + server.getName() + " " + code + " " + targetNickname;
+
+    // Adiciona os parâmetros
+    for (std::vector<std::string>::const_iterator it = params.begin(); it != params.end(); ++it) {
+    ircMessage += " " + *it;
+    }
+
+    ircMessage += " :" + it->second;
+    if (!additionalMessage.empty()) {
+        ircMessage += " " + additionalMessage;
+    }
+    ircMessage += "\r\n";
+
+    sendMessage(fd, ircMessage);
 }
+
 
 void Replies::sendMessage(int fd, const std::string &message) {
     send(fd, message.c_str(), message.length(), 0);

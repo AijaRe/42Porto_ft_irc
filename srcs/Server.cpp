@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/09 17:59:28 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/12 19:41:19 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,9 +160,13 @@ void	Server::acceptClient() {
 		return;
 	}
 	
+	// get client's IP address (host)
+	char host[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &client_addr.sin_addr, host, INET_ADDRSTRLEN);
+	
 	//add client to the list of clients
 	//_clients[client_fd] = Client(client_fd);
-	_clients.insert(std::make_pair(client_fd, Client(client_fd)));
+	_clients.insert(std::make_pair(client_fd, Client(client_fd, host)));
 	
 	// initialize pollfd struct for client socket, POLLIN: there is data to read
 	pollfd client_poll = {client_fd, POLLIN, 0};

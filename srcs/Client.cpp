@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/09 19:22:17 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/14 19:41:46 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,18 @@
 
 Client::Client() : _fd(-1) {} //fd -1 means not connected
 
-Client::Client(int fd) : _fd(fd), _nickname(""), _username("") {}
+Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _passAuthenticated(false), _nickname(""), _username(""), _welcomed(false) {}
 
 Client::~Client() {}
 
 int Client::getFd() const
 {
     return _fd;
+}
+
+std::string Client::getHost() const
+{
+    return _host;
 }
 
 std::string Client::getNickname() const
@@ -69,14 +74,18 @@ bool Client::hasMode(char mode) const {
     return _modes.find(mode) != std::string::npos;
 }
 
-bool Client::isAuthenticated() const
+bool Client::passAuthenticated() const
 {
-    return _authenticated;
+    return _passAuthenticated;
 }
 
-void Client::setAuthenticated(bool status)
+bool Client::isFullyAuthenticated() const {
+    return passAuthenticated() && !getNickname().empty() && !getUsername().empty();
+}
+
+void Client::setPassAuthenticated(bool status)
 {
-    _authenticated = status;
+    _passAuthenticated = status;
 }
 
 bool Client::isConnected() const { return _fd != -1; }
@@ -84,4 +93,12 @@ bool Client::isConnected() const { return _fd != -1; }
 bool Client::operator==(const Client &compare) const
 {
     return this->getNickname() == compare.getNickname();
+}
+
+bool Client::isWelcomed() const{
+    return _welcomed;
+}
+
+void Client::setWelcomed(bool welcomed) {
+    _welcomed = welcomed;
 }

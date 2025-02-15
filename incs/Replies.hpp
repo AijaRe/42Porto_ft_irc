@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/09 18:42:00 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/14 18:32:36 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 #define ERR_NONICKNAMEGIVEN        "431" // NICK when Nickname isn't provided
 #define ERR_USERNOTINCHANNEL       "441" // KICK when trying to kick a user who isn't in channel 
 #define ERR_USERONCHANNEL          "443" // When User is already on channel and is invited to
+#define ERR_NOTREGISTERED          "451" // When a user tries to send a message before registering
 #define ERR_NEEDMOREPARAMS         "461" // When a command has more or less params
 #define ERR_ALREADYREGISTERED      "462" 
 #define ERR_PASSWDMISMATCH         "464" // Join and Oper
@@ -63,6 +64,7 @@ class Replies{
     public:
         Replies();//for initialization of the map
         void sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage = "");
+        void sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params = std::vector<std::string>(), const std::string &additionalMessage = "");
         void sendMessage(int fd, const std::string &message);
     private:
         std::map<std::string, std::string> ircReplies;

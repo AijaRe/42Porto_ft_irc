@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/10 20:36:25 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/12 20:43:30 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 #include <sys/socket.h> // socket, bind, listen, accept, send
 #include <netinet/in.h> // sockaddr_in
+#include <arpa/inet.h> // inet_ntop
 #include <poll.h> // poll
 #include <fcntl.h> // fcntl
 #include <vector> // std::vector

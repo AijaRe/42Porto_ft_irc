@@ -31,6 +31,7 @@ class CommandHandler
         void handleTest();
         void handleTest2();
         void handleTest3();
+        void updateNickname(Client &client, const std::string &newNickname);
 };
 
 #endif
