@@ -9,6 +9,7 @@ Replies::Replies() {
     ircReplies[ERR_INVITEONLYCHAN] = "Cannot join channel (+i)";
     ircReplies[ERR_USERNOTINCHANNEL] = "User not in channel";
     ircReplies[ERR_CHANOPRIVSNEEDED] = "You're not a channel operator";
+    ircReplies[ERR_NOORIGIN] = "No origin specified";
     ircReplies[ERR_ERRONEUSNICKNAME] = "Erroneous nickname";
     ircReplies[ERR_ALREADYREGISTERED] = "You may not reregister";
     ircReplies[ERR_TOOMANYCHANNELS] = "You have joined too many channels";

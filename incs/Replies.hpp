@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/14 18:32:36 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/15 15:07:10 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 #define ERR_CANNOTSENDTOCHAN       "404" // Cannot send to channel
 #define ERR_TOOMANYCHANNELS        "405" // JOIN & PART when a user wants to access multiple channels
 #define ERR_NOSUCHCHANNEL          "403" // When the channel doesn't exist // MODE / JOIN / INVITE / TOPIC 
+#define ERR_NOORIGIN               "409" // PING with no token
 #define ERR_NORECIPIENT            "411" // No recipient given
 #define ERR_ERRONEUSNICKNAME       "432" // NICK : Invalid NickName
 #define ERR_NICKNAMEINUSE          "433" // NICK when a nickname is already in use
