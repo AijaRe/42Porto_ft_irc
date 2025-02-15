@@ -26,7 +26,7 @@ class CommandHandler
         void handleJoin(Client &client, std::istringstream &iss);
         void handlePing(Client &client, std::istringstream &iss);
         void handleNotice(Client &client, std::istringstream &iss);
-        void handleKick(Client &client, std::istringstream &iss);
+        //void handleKick(Client &client, std::istringstream &iss);
         void handleCap(Client &client, std::istringstream &iss);
         void handleTest();
         void handleTest2();

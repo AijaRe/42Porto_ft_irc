@@ -65,8 +65,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handlePing(client, iss);
     else if (cmd == "NOTICE")
         handleNotice(client, iss);
-    else if (cmd == "KICK")
-        handleKick(client, iss);
+    /*else if (cmd == "KICK")
+        handleKick(client, iss);*/
     else if (cmd == "TEST3")
         handleTest3();
     else if (cmd == "TEST")
@@ -230,7 +230,7 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     this->_server.addChannel(client, channel_name);
 }
 
-void CommandHandler::handleKick(Client &client, std::istringstream &iss)
+/*void CommandHandler::handleKick(Client &client, std::istringstream &iss)
 {
     std::string channel_key, user_to_kick, reason;
 
@@ -276,7 +276,7 @@ void CommandHandler::handleKick(Client &client, std::istringstream &iss)
     //Caso negativo, retornar erro explicando que o usuário não existe,
 
     
-}
+}*/
 
 void CommandHandler::handlePing(Client &client, std::istringstream &iss)
 {
