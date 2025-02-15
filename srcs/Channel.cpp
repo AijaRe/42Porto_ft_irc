@@ -60,14 +60,18 @@ const Client* Channel::findUserByName(const std::map<std::string, const Client*>
     std::map<std::string, const Client*>::const_iterator it;
     for (it = user_map.begin(); it != user_map.end(); it++)
     {
-        std::cout << "\n\t\t\t Goal: " << name << " Current: " << it->second->getNickname() << std::endl;
         if ((it->second->getNickname()) == name)
-        {
-            std::cout << "\n\t\t\t\t Found!" << std::endl;
             return it->second;
-        }
     }
     return NULL; //user not found in the data structure provided.
+}
+
+bool    Channel::removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove)
+{
+    size_t removed = user_map.erase(user_to_remove);
+    if (removed == 1)
+        return true;
+    return false;
 }
 
 void Channel::setType(int new_type)
@@ -99,12 +103,12 @@ std::string Channel::getCreator()
     return this->_created_by;
 }
 
-const std::map<std::string, const Client*> &Channel::getClients() const
+std::map<std::string, const Client*> &Channel::getClients()
 {
     return this->_clients;
 }
 
-const std::map<std::string, const Client*> &Channel::getOps() const
+std::map<std::string, const Client*> &Channel::getOps()
 {
     return this->_ops;
 }
@@ -131,14 +135,4 @@ void Channel::addOp(const Client &op)
         sendError(op.getFd(), "The user " + op.getNickname() + "is already OP .\n");
     else
         logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + _name);
-}
-
-bool Channel::verifyUser(const Client& user, std::map<std::string, const Client *> map)
-{
-    if (map.empty())
-        return false;
-    const std::map<std::string, const Client*> &channel_map = map;
-    if (findUser(channel_map, user))
-        return true;
-    return false;    
 }

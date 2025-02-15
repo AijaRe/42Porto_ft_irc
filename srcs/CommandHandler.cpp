@@ -66,8 +66,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handlePing(client, iss);
     else if (cmd == "NOTICE")
         handleNotice(client, iss);
-    /*else if (cmd == "KICK")
-        handleKick(client, iss);*/
+    else if (cmd == "KICK")
+        handleKick(client, iss);
     else if (cmd == "TEST3")
         handleTest3();
     else if (cmd == "TEST")
@@ -280,7 +280,6 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
 {
     std::string channel_name;
     iss >> channel_name;
-    
     if (channel_name.empty()) {
         std::vector<std::string> params;
         params.push_back("JOIN");
@@ -290,7 +289,7 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     this->_server.addChannel(client, channel_name);
 }
 
-/*void CommandHandler::handleKick(Client &client, std::istringstream &iss)
+void CommandHandler::handleKick(Client &client, std::istringstream &iss)
 {
     std::string channel_key, user_to_kick, reason;
 
@@ -304,39 +303,29 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
         std::cout << "Usage: KICK <nick> [reason], kicks the nick from the current channel" << std::endl;
         return;
     }
-    
+
     //Esse canal existe?
-    Channel channel_found;
-    if (this->_server.channelExists(channel_key, channel_found)) // ATENºÃO A ESSA FUNCAO
+    std::map<std::string, Channel>::iterator it = this->_server.getChannels().find(channel_key);
+    if (it != this->_server.getChannels().end())
     {
         //O request partiu de um OP?
-        if (channel_found.verifyUser(client, channel_found.getOps()))
+        if (it->second.findUserByName(it->second.getOps(), client.getNickname()))
         {
-            //Verificar se o usuário existe dentro do channel desejado.
-            std::cout << "Channel: [" << channel_key << "] to kick: [" << user_to_kick << "]" << std::endl;
-            const Client *User = channel_found.findUserByName(channel_found.getClients(), user_to_kick);
-            if (User != NULL)
-            {
-                std::cout << "User will be deleted." << std::endl;
-            }
+            //Verificar se o usuário existe dentro do channel desejado.            
+            if (it->second.findUserByName(it->second.getClients(), user_to_kick))
+                if (it->second.removeUser(it->second.getClients(), user_to_kick))
+                    std::cout << "Success to delete" << std::endl;
+                else
+                    std::cout << "Not sucess to delete" << std::endl;
             else
-                std::cout << "[TO DO] User not foung in this channel." << std::endl;
-
+                std::cout << "[TO DO] User not found in this channel." << std::endl;
         }
-
         else
             std::cout << "[TO DO] User is not OP." << std::endl;
     }
     else
         std::cout << "[TO DO] The channel wasn't found." << std::endl;
-    
-
-    
-    //Caso positivo, deletar o usuário
-    //Caso negativo, retornar erro explicando que o usuário não existe,
-
-    
-}*/
+}
 
 void CommandHandler::handlePing(Client &client, std::istringstream &iss)
 {

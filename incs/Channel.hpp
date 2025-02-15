@@ -27,8 +27,8 @@ class Channel
 
         void addClient(const Client &client);
         void addOp(const Client &op); //Channel operators
-        bool verifyUser(const Client &user, std::map<std::string, const Client *> map);
         const Client* findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const;
+        bool removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove);
 
 
         std::string getName();
@@ -38,8 +38,8 @@ class Channel
         int  getType();
         void setType(int new_type);
 
-        const std::map<std::string, const Client*> &getClients() const;
-        const std::map<std::string, const Client*> &getOps() const;
+        std::map<std::string, const Client*> &getClients();
+        std::map<std::string, const Client*> &getOps();
     private:
         Replies _replies;
     

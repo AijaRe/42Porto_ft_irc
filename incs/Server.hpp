@@ -30,6 +30,7 @@
 class Client;
 class Channel;
 class CommandHandler;
+class Replies;
 
 class Server {
 	public:
@@ -51,6 +52,8 @@ class Server {
 		int  checkChannelType(std::string &channel_name);
 		std::map<std::string, Channel> &getChannels();
 		bool channelExists(const std::string &channel_name, Channel& channel_found);
+
+		Replies *_replies;
 
 	private:
 		std::string _name;
