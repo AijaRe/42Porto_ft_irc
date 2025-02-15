@@ -291,12 +291,33 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
 
 void CommandHandler::handleKick(Client &client, std::istringstream &iss)
 {
+
+            /*Numeric Replies:
+
+                ERR_NEEDMOREPARAMS (461)
+                ERR_NOSUCHCHANNEL (403)
+                ERR_CHANOPRIVSNEEDED (482)
+                ERR_USERNOTINCHANNEL (441)
+                ERR_NOTONCHANNEL (442)
+
+            Deprecated Numeric Reply:
+
+                ERR_BADCHANMASK (476)
+        */
+
+    (void)client;
     std::string channel_key, user_to_kick, reason;
+    std::vector<std::string> users_to_kick;
 
     iss >> channel_key;
-    iss >> user_to_kick;
-    std::getline(iss >> std::ws, reason);
-    (void)client;
+
+    while (iss >> user_to_kick)
+        users_to_kick.push_back(user_to_kick);
+    for (std::vector<std::string>::iterator it = users_to_kick.begin(); it != users_to_kick.end(); it++)
+        std::cout << "[" << *it << "]" << std::endl;
+    
+    /*iss >> user_to_kick;
+    std::getline(iss >> std::ws, reason); //Can have multiple users to kick.
 
     if (channel_key.empty() || user_to_kick.empty()){
         //Should this print be sent to the client application? (Hexchat).
@@ -324,7 +345,7 @@ void CommandHandler::handleKick(Client &client, std::istringstream &iss)
             std::cout << "[TO DO] User is not OP." << std::endl;
     }
     else
-        std::cout << "[TO DO] The channel wasn't found." << std::endl;
+        std::cout << "[TO DO] The channel wasn't found." << std::endl;*/
 }
 
 void CommandHandler::handlePing(Client &client, std::istringstream &iss)
