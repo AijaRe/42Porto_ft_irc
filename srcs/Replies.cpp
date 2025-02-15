@@ -35,6 +35,10 @@ Replies::Replies() {
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
     ircReplies[ERR_NOTREGISTERED] = "You have not registered";
+    ircReplies[RPL_UMODEIS] = "User mode is";
+    ircReplies[ERR_USERSDONTMATCH] = "Users don't match";
+    ircReplies[ERR_UMODEUNKNOWNFLAG] = "Unknown user mode flag";
+    
 }
 
 

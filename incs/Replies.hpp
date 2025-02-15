@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/15 15:07:10 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/15 18:25:19 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 //numeric replies
 #define RPL_WELCOME                "001" // Authentication
 
+#define RPL_UMODEIS                "221" // User mode is
 #define RPL_CHANNELMODEIS          "324" // MODE <channel> <mode> <param>
 
 #define RPL_NOTOPIC                "331" // TOPIC no topic has been set
@@ -44,7 +45,7 @@
 #define ERR_USERONCHANNEL          "443" // When User is already on channel and is invited to
 #define ERR_NOTREGISTERED          "451" // When a user tries to send a message before registering
 #define ERR_NEEDMOREPARAMS         "461" // When a command has more or less params
-#define ERR_ALREADYREGISTERED      "462" 
+#define ERR_ALREADYREGISTERED      "462" // When a user tries to register again
 #define ERR_PASSWDMISMATCH         "464" // Join and Oper
 #define ERR_KEYSET                 "467" // Mode +k : case of when the key is already set and the user wants to set it again
 #define ERR_CHANNELISFULL          "471" // Join when User wants to join a Mode +l channel and is full
@@ -55,7 +56,9 @@
 #define ERR_KICKEDFROMCHAN         "470" // Join when the user is kicked & Kick when the user has been kicked
 #define ERR_CHANOPRIVSNEEDED       "482" // Returned by commands that need special ChanOp prevs :: KICK,INVITE,MODE,TOPIC
 #define ERR_NOPRIVILEGES           "481" // MODE RETURNED BY MODE +o/-o to set a Chanop
-#define ERR_NOPRIVS                "491"
+#define ERR_NOPRIVS                "491" // MODE RETURNED BY MODE +o/-o to set a Chanop
+#define ERR_USERSDONTMATCH         "502" // When the user and the target are different
+#define ERR_UMODEUNKNOWNFLAG       "501" // When the user sends a mode that doesn't exist
 #define ERR_CANNOTCHANGEUMODE      "973" // When at authentication Mode +i is sent by irssi
 #define ERR_CANNOTCHANGECHANMODE   "974" // When Mode fails
 

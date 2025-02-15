@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/09 18:14:32 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:15:59 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #include <cerrno> // errno
 #include <algorithm>
 #include <signal.h> // signal
+#include <sstream>//std::istringstream
 
 #include "Server.hpp"
 #include "Client.hpp"
