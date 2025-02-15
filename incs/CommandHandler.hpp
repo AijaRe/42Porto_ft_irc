@@ -6,6 +6,7 @@
 #include "Replies.hpp"
 
 class Server;
+class Client;
 
 class CommandHandler
 {

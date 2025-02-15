@@ -312,7 +312,7 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 	int channel_type = this->checkChannelType(channel_key);
 	if (channel_type == 0)
 	{
-		this->_command_handler->_replies.sendIrcError(client.getFd(), *this, client.getNickname(), ERR_NOSUCHCHANNEL);
+		std::cout << "this->_command_handler->_replies.sendIrcError(client.getFd(), *this, client.getNickname(), ERR_NOSUCHCHANNEL);" << std::endl;
 		return;
 	}
 	else

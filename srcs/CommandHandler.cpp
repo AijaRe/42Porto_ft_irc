@@ -255,7 +255,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             return;
        }
        else //client não encontrado.
-            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
+            std::cout << "_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);" << std::endl;
     }
     else
     {
@@ -272,7 +272,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             }
         }
         else
-            _replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
+            std::cout << "_replies.sendIrcError(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);" << std::endl;
     }    
 }
 
