@@ -338,9 +338,14 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     
 }*/
 
-void CommandHandler::handlePing(Client &client, std::istringstream &iss)
-{
-    std::string response = "PONG " + std::string(iss.str().substr(5));
+void CommandHandler::handlePing(Client &client, std::istringstream &iss){    
+    std::string token;    
+    iss >> token;
+    if (token.empty()){        
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOORIGIN);        
+        return;    
+    }    
+    std::string response = ":" + _server.getName() + " PONG " + _server.getName() + " :" + token + "\r\n";    
     send(client.getFd(), response.c_str(), response.length(), 0);
 }
 
@@ -411,13 +416,16 @@ void CommandHandler::handleTest3()
 }
 
 
-void CommandHandler::handleCap(Client &client, std::istringstream &iss)
-{   
-    (void)iss;
-    logMessage("CAP", "Client requested capabilities");
-    std::string capResponse = "CAP * LS :\r\n";
-    send(client.getFd(), capResponse.c_str(), capResponse.size(), 0);
 
-    std::string capEnd = "CAP END\r\n";
-    send(client.getFd(), capEnd.c_str(), capEnd.size(), 0);
+void CommandHandler::handleCap(Client &client, std::istringstream &iss){
+    std::string subcmd;    
+    iss >> subcmd;    
+    if (subcmd == "LS"){        
+        std::string capResponse = ":CAP * LS :\r\n"; // Empty capability        
+        send(client.getFd(), capResponse.c_str(), capResponse.size(), 0);    
+    } else if (subcmd == "END") {        
+        logMessage("CAP", "Client finished requesting capabilities");    
+    } else {        
+        logMessage("CAP", "Unknown CAP subcommand: " + subcmd);    
+    }
 }
