@@ -4,6 +4,7 @@
 #include "Client.hpp"
 #include "utils.hpp"
 #include "Replies.hpp"
+#include "Channel.hpp"
 
 class Server;
 class Client;
@@ -19,6 +20,7 @@ class CommandHandler
         Replies _replies;
     private:
         Server &_server;
+        Channel _channel;
 
         void handlePass(Client &client, std::istringstream &iss);
         void handleNick(Client &client, std::istringstream &iss);
@@ -29,6 +31,7 @@ class CommandHandler
         void handleNotice(Client &client, std::istringstream &iss);
         //void handleKick(Client &client, std::istringstream &iss);
         void handleCap(Client &client, std::istringstream &iss);
+        void handleMode(Client &client, const std::vector<std::string> &params);
         void handleTest();
         void handleTest2();
         void handleTest3();

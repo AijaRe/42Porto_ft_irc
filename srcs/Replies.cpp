@@ -9,6 +9,7 @@ Replies::Replies() {
     ircReplies[ERR_INVITEONLYCHAN] = "Cannot join channel (+i)";
     ircReplies[ERR_USERNOTINCHANNEL] = "User not in channel";
     ircReplies[ERR_CHANOPRIVSNEEDED] = "You're not a channel operator";
+    ircReplies[ERR_NOORIGIN] = "No origin specified";
     ircReplies[ERR_ERRONEUSNICKNAME] = "Erroneous nickname";
     ircReplies[ERR_ALREADYREGISTERED] = "You may not reregister";
     ircReplies[ERR_TOOMANYCHANNELS] = "You have joined too many channels";
@@ -34,6 +35,10 @@ Replies::Replies() {
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
     ircReplies[ERR_NOTREGISTERED] = "You have not registered";
+    ircReplies[RPL_UMODEIS] = "User mode is";
+    ircReplies[ERR_USERSDONTMATCH] = "Users don't match";
+    ircReplies[ERR_UMODEUNKNOWNFLAG] = "Unknown user mode flag";
+    
 }
 
 
