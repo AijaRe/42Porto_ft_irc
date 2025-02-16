@@ -56,7 +56,6 @@ void Client::setUsername(const std::string &username)
     _username = username;
 }
 
-
 void Client::setRealname(const std::string &realname) {
     _realname = realname;
 }
@@ -102,3 +101,4 @@ bool Client::isWelcomed() const{
 void Client::setWelcomed(bool welcomed) {
     _welcomed = welcomed;
 }
+

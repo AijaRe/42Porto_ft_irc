@@ -76,7 +76,6 @@ void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickn
             return;
         }
     }
-
     std::string ircMessage = ":" + server.getName() + " " + code + " " + targetNickname;
 
     // Adiciona os parâmetros
@@ -93,7 +92,7 @@ void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickn
     sendMessage(fd, ircMessage);
 }
 
-
 void Replies::sendMessage(int fd, const std::string &message) {
     send(fd, message.c_str(), message.length(), 0);
 }
+

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/16 19:32:34 by uviana-a          #+#    #+#             */
+/*   Updated: 2025/02/16 19:32:36 by uviana-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "utils.hpp"
 
 void logMessage(const std::string &type, const std::string &message)
@@ -23,3 +35,4 @@ void sendReturn(int fd, const std::string& message)
     const char* retMsg = returnMessage.c_str();
     send(fd, retMsg, returnMessage.length(), 0);
 }
+

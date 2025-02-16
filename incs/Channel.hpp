@@ -56,7 +56,6 @@ class Channel
         int         _type; //Check utils.hpp
         std::map<std::string, const Client *> _clients;
         std::map<std::string, const Client *> _ops;
-        const Client* findUser(const std::map<std::string, const Client*> &user_map, const Client &user) const;
 
         //para MODES
         std::string _modes;
