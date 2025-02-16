@@ -66,8 +66,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handlePing(client, iss);
     else if (cmd == "NOTICE")
         handleNotice(client, iss);
-    else if (cmd == "KICK")
-        handleKick(client, iss);
+    /*else if (cmd == "KICK")
+        handleKick(client, iss);*/
     else if (cmd == "TEST3")
         handleTest3();
     else if (cmd == "TEST")
@@ -289,10 +289,10 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
     this->_server.addChannel(client, channel_name);
 }
 
-void CommandHandler::handleKick(Client &client, std::istringstream &iss)
+/*void CommandHandler::handleKick(Client &client, std::istringstream &iss)
 {
 
-            /*Numeric Replies:
+            Numeric Replies:
 
                 ERR_NEEDMOREPARAMS (461)
                 ERR_NOSUCHCHANNEL (403)
@@ -303,10 +303,14 @@ void CommandHandler::handleKick(Client &client, std::istringstream &iss)
             Deprecated Numeric Reply:
 
                 ERR_BADCHANMASK (476)
-        */
+        
 
     (void)client;
-    std::string channel_key, user_to_kick, reason;
+    std::string channel_key, user_to_kick, reason;*/
+
+    /*
+    
+    WORKING ON THIS
     std::vector<std::string> users_to_kick;
 
     iss >> channel_key;
@@ -314,7 +318,7 @@ void CommandHandler::handleKick(Client &client, std::istringstream &iss)
     while (iss >> user_to_kick)
         users_to_kick.push_back(user_to_kick);
     for (std::vector<std::string>::iterator it = users_to_kick.begin(); it != users_to_kick.end(); it++)
-        std::cout << "[" << *it << "]" << std::endl;
+        std::cout << "[" << *it << "]" << std::endl;*/
     
     /*iss >> user_to_kick;
     std::getline(iss >> std::ws, reason); //Can have multiple users to kick.
@@ -345,8 +349,8 @@ void CommandHandler::handleKick(Client &client, std::istringstream &iss)
             std::cout << "[TO DO] User is not OP." << std::endl;
     }
     else
-        std::cout << "[TO DO] The channel wasn't found." << std::endl;*/
-}
+        std::cout << "[TO DO] The channel wasn't found." << std::endl;
+}*/
 
 void CommandHandler::handlePing(Client &client, std::istringstream &iss)
 {
