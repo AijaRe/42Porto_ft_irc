@@ -475,9 +475,9 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHCHANNEL);
         return;
     }
-     Channel* channel = &(it->second);//ponteiro para o canal encontrado.
+    Channel* channel = &(it->second);//ponteiro para o canal encontrado.
 
-    if (!channel->verifyUser(client, channel->getOps()))//verifica se o usuario é um OP
+    if (!channel->findUserByName(channel->getOps(), client.getNickname()))//verifica se o usuario é um OP
     {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_CHANOPRIVSNEEDED);
         return;
