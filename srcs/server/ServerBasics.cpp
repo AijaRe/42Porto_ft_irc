@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/12 19:41:19 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/17 21:51:27 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,18 @@
 
 bool Server::_running = true;
 
-Server::Server (const std::string &port, const std::string &password) : _name("42_IRC"), _port(0), _password(""), _server_fd(-1) /*_command_handler(*this)*/ {
-	// validate and save port number
-	char *end;
-	long tmp_port = std::strtol(port.c_str(), &end, 10);
-	if (*end != '\0' || tmp_port < 1 || tmp_port > 65535)
-		throw std::runtime_error("Error: Invalid port number.");
-	_port = static_cast<int>(tmp_port);
-	
+Server::Server (const int &port, const std::string &password) : _name("42_IRC"), _port(port), _password(password), _server_fd(-1) /*_command_handler(*this)*/ {
+	if (_port < 1024 || _port > 65535) {
+		std::cerr << "Error: Invalid or restricted port number." << std::endl;
+		_running = false;
+		return;
+	}
 	_command_handler = new CommandHandler(*this);
-	// save password
-	_password = password;
-	if (_password.empty())
-		throw std::runtime_error("Error: Password cannot be empty.");
-
+	if (_password.empty()) {
+		std::cerr << "Error: Password cannot be empty." << std::endl;
+		_running = false;
+		return;
+	}
 	createSocket();
 }
 
