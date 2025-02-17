@@ -12,42 +12,54 @@
 
 #include "CommandHandler.hpp"
 
-/*void CommandHandler::handleKick(Client &client, std::istringstream &iss)
+/*Numeric Replies:
+
+    ERR_NEEDMOREPARAMS (461)
+    ERR_NOSUCHCHANNEL (403)
+    ERR_CHANOPRIVSNEEDED (482)
+    ERR_USERNOTINCHANNEL (441)
+    ERR_NOTONCHANNEL (442)
+
+Deprecated Numeric Reply:
+
+    ERR_BADCHANMASK (476)*/
+
+
+void parseTargets(std::istringstream &iss, std::vector<std::string> &users_to_kick, std::string &reason)
 {
+    std::string user_to_kick;
 
-            Numeric Replies:
+    while (iss >> user_to_kick && !user_to_kick.empty())
+    {
+        if (user_to_kick[0] == ':') //Check for colon
+        {
+            reason = user_to_kick.substr(1);
+            std::string temp;
+            while (iss >> temp)
+            reason += " " + temp;
+            break;
+        }
+        if (user_to_kick[user_to_kick.length() - 1] == ',')
+            user_to_kick = user_to_kick.substr(0, user_to_kick.length() - 1); //Remove the comma at the end.
+        std::istringstream users_stream(user_to_kick);
+        std::string single_user;
+        while (std::getline(users_stream, single_user, ',')) //Verify if there are comma in the middle of the string.
+            if (!single_user.empty())
+                users_to_kick.push_back(single_user);
+    }
+}
 
-                ERR_NEEDMOREPARAMS (461)
-                ERR_NOSUCHCHANNEL (403)
-                ERR_CHANOPRIVSNEEDED (482)
-                ERR_USERNOTINCHANNEL (441)
-                ERR_NOTONCHANNEL (442)
-
-            Deprecated Numeric Reply:
-
-                ERR_BADCHANMASK (476)
-        
-
+void CommandHandler::handleKick(Client &client, std::istringstream &iss)
+{
     (void)client;
-    std::string channel_key, user_to_kick, reason;*/
-
-    /*
-    
-    WORKING ON THIS
+    std::string channel_key, reason;
     std::vector<std::string> users_to_kick;
 
     iss >> channel_key;
-
-    while (iss >> user_to_kick)
-        users_to_kick.push_back(user_to_kick);
-    for (std::vector<std::string>::iterator it = users_to_kick.begin(); it != users_to_kick.end(); it++)
-        std::cout << "[" << *it << "]" << std::endl;*/
-    
-    /*iss >> user_to_kick;
-    std::getline(iss >> std::ws, reason); //Can have multiple users to kick.
-
-    if (channel_key.empty() || user_to_kick.empty()){
-        //Should this print be sent to the client application? (Hexchat).
+    parseTargets(iss, users_to_kick, reason);
+    //Verify if no channel was informed or the vector was empty.
+    if (channel_key.empty() || users_to_kick.empty())
+    {
         std::cout << "Usage: KICK <nick> [reason], kicks the nick from the current channel" << std::endl;
         return;
     }
@@ -59,19 +71,24 @@
         //O request partiu de um OP?
         if (it->second.findUserByName(it->second.getOps(), client.getNickname()))
         {
-            //Verificar se o usuário existe dentro do channel desejado.            
-            if (it->second.findUserByName(it->second.getClients(), user_to_kick))
-                if (it->second.removeUser(it->second.getClients(), user_to_kick))
-                    std::cout << "Success to delete" << std::endl;
+            //Verificar se o usuário existe dentro do channel desejado.      
+            for (std::vector<std::string>::iterator it2 = users_to_kick.begin(); it2 != users_to_kick.end(); it2++)
+                if (it->second.findUserByName(it->second.getClients(), *it2))
+                    if (it->second.removeUser(it->second.getClients(), *it2))
+                        std::cout << "Success to delete" << std::endl; //If reason is empty add a specific comment.
+                    else
+                        std::cout << "Not sucess to delete" << std::endl;
                 else
-                    std::cout << "Not sucess to delete" << std::endl;
-            else
-                std::cout << "[TO DO] User not found in this channel." << std::endl;
+                    std::cout << "[TO DO] User not found in this channel." << std::endl;
         }
         else
             std::cout << "[TO DO] User is not OP." << std::endl;
     }
     else
         std::cout << "[TO DO] The channel wasn't found." << std::endl;
-}*/
+}
+
+//Se o op tentar deletar a si proprio?
+    //Ele se kicka e nao ficam OPS
+
 
