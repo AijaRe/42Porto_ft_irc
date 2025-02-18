@@ -69,3 +69,12 @@ std::string Channel::getCreator()
     return this->_created_by;
 }
 
+std::string Channel::getTopic()
+{
+    return this->_topic;
+}
+
+void    Channel::setTopic(std::string &new_topic)
+{
+    this->_topic = new_topic;
+}

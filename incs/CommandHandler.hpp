@@ -24,6 +24,7 @@ class CommandHandler
 
         void handlePass(Client &client, std::istringstream &iss);
         void handleNick(Client &client, std::istringstream &iss);
+        void updateNickname(Client &client, const std::string &newNickname);
         void handleUser(Client &client, std::istringstream &iss);
         void handlePrivmsg(Client &client, std::istringstream &iss);
         void handleJoin(Client &client, std::istringstream &iss);
@@ -32,10 +33,10 @@ class CommandHandler
         void handleKick(Client &client, std::istringstream &iss);
         void handleCap(Client &client, std::istringstream &iss);
         void handleMode(Client &client, const std::vector<std::string> &params);
+        void handleTopic(Client &client, std::istringstream &iss);
         void handleTest();
         void handleTest2();
         void handleTest3();
-        void updateNickname(Client &client, const std::string &newNickname);
 };
 
 #endif

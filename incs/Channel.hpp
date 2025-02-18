@@ -38,6 +38,9 @@ class Channel
         int  getType();
         void setType(int new_type);
 
+        std::string getTopic();
+        void        setTopic(std::string &new_topic);
+
         void setMode(char mode, bool enable);
         void setModePass(const std::string &modepass);
         void setModeLimit(int limit);
