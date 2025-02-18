@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/17 22:01:12 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/18 22:06:06 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,19 @@ void Channel::addClient(const Client &client)
 		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
 						" JOIN " + this->getName() + "\r\n";
 		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
+        
+        if (this->_topic.empty()) {
+            // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
+            std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
+            " " + this->getName() + " :No topic is set\r\n";
+            send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
+        }
+        else {
+            // TOPIC message: :<server_name> 332 <nickname> <channel> :<topic>
+            std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
+            " " + this->getName() + " :" + this->_topic + "\r\n";
+            send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
+        }
 	}
 }
 
