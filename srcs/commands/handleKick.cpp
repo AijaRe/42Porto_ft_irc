@@ -88,7 +88,4 @@ void CommandHandler::handleKick(Client &client, std::istringstream &iss)
         std::cout << "[TO DO] The channel wasn't found." << std::endl;
 }
 
-//Se o op tentar deletar a si proprio?
-    //Ele se kicka e nao ficam OPS
-
 
