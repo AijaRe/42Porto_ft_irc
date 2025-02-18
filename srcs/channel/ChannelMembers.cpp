@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelMembers.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/16 19:39:32 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/17 22:01:12 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,18 @@
 void Channel::addClient(const Client &client)
 {
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
-    ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
-    if (ret.second == false)
-        sendError(client.getFd(), "The user " + client.getNickname() + "is already part of " + this->getName() +".\n");
-        //this->_commandHandler->_replies.sendIrcError(client.getFd(), this->_commandHandler->getServer(), client.getNickname(), ERR_USERONCHANNEL);
-    else
-    {
-        logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);
-        sendReturn(client.getFd(), "Congratulations! "+ client.getNickname() + " you joined the channel " + this->getName() + ".\n");
-    }
+	ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
+	if (ret.second == false)
+		sendError(client.getFd(), "The user " + client.getNickname() + "is already part of " + this->getName() +".\n");
+		//this->_commandHandler->_replies.sendIrcError(client.getFd(), this->_commandHandler->getServer(), client.getNickname(), ERR_USERONCHANNEL);
+	else
+	{
+		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);
+		// JOIN message: :<nickname>!<username>@<host> JOIN <channel>
+		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
+						" JOIN " + this->getName() + "\r\n";
+		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
+	}
 }
 
 void Channel::addOp(const Client &op)
