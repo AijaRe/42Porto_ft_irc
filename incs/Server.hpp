@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/17 21:37:47 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/18 21:31:56 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@
 #include <vector> // std::vector
 #include <map> // std::map
 
-#define MAX_CONNECTIONS 5
+#define MAX_CONNECTIONS 100
 #define BUFFER_SIZE 1024
+#define SERVER_NAME "42_IRC"
 
 class Client;
 class Channel;
