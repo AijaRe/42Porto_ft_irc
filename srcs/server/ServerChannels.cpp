@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/18 20:37:44 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/20 19:54:43 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,8 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 	int channel_type = this->checkChannelType(channel_key);
 	if (channel_type == 0)
 	{
-		//this->_replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, );
-		//this->_replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHCHANNEL,);
-		std::cout << "this->_command_handler->_replies.sendIrcError(client.getFd(), *this, client.getNickname(), ERR_NOSUCHCHANNEL);" << std::endl;
+		std::string messge = ":" + this->getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + channel_key + " :No such channel\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
 		return;
 	}
 	else
