@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/15 18:25:19 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/20 21:07:38 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <map>
 #include "Server.hpp"
 #include "utils.hpp"
+#include <cstdarg>
 
 //numeric replies
 #define RPL_WELCOME                "001" // Authentication
@@ -52,6 +53,7 @@
 #define ERR_UNKNOWNMODE            "472" // When Mode has something other than itlok
 #define ERR_INVITEONLYCHAN         "473" // JOIN When channel has invite Mode on
 #define ERR_BADCHANNELKEY          "475" // Join when the channel has key and user gave the wrong key
+#define ERR_BADCHANMASK            "476" // JOIN When the channel has a mask
 #define ERR_NOCHANMODES            "477" // Mode for lobby
 #define ERR_KICKEDFROMCHAN         "470" // Join when the user is kicked & Kick when the user has been kicked
 #define ERR_CHANOPRIVSNEEDED       "482" // Returned by commands that need special ChanOp prevs :: KICK,INVITE,MODE,TOPIC

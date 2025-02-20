@@ -20,7 +20,7 @@ class CommandHandler
         Replies _replies;
     private:
         Server &_server;
-        Channel _channel;
+        //Channel _channel;
 
         void handlePass(Client &client, std::istringstream &iss);
         void handleNick(Client &client, std::istringstream &iss);
