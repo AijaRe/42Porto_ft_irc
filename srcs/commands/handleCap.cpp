@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:15:22 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/18 20:39:57 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/20 19:12:10 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void CommandHandler::handleCap(Client &client, std::istringstream &iss){
     std::string subcmd;    
     iss >> subcmd;    
     if (subcmd == "LS"){        
-        std::string capResponse = "CAP * LS :\r\n"; // Empty capability        
+        std::string capResponse = std::string(":") + SERVER_NAME + " CAP * LS :\r\n"; // Empty capability        
         send(client.getFd(), capResponse.c_str(), capResponse.size(), 0);    
     } else if (subcmd == "END") {        
         logMessage("CAP", "Client finished requesting capabilities");    
@@ -24,4 +24,3 @@ void CommandHandler::handleCap(Client &client, std::istringstream &iss){
         logMessage("CAP", "Unknown CAP subcommand: " + subcmd);    
     }
 }
-
