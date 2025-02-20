@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/18 22:06:06 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/20 21:54:43 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@ void Channel::addClient(const Client &client)
 {
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
 	ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
-	if (ret.second == false)
-		sendError(client.getFd(), "The user " + client.getNickname() + "is already part of " + this->getName() +".\n");
-		//this->_commandHandler->_replies.sendIrcError(client.getFd(), this->_commandHandler->getServer(), client.getNickname(), ERR_USERONCHANNEL);
+	if (ret.second == false) {
+        std::string message = std::string(":") + SERVER_NAME + " " + ERR_USERONCHANNEL + " " + 
+                            client.getNickname() + " " + this->getName() + " :is already on channel\r\n";
+        send(client.getFd(), message.c_str(), message.length(), 0);
+    }
+		
 	else
 	{
 		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);

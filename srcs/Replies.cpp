@@ -16,6 +16,7 @@ Replies::Replies() {
     ircReplies[ERR_BADCHANNELKEY] = "Cannot join channel (+k)";
     ircReplies[ERR_NOSUCHCHANNEL] = "No such channel";
     ircReplies[ERR_CHANNELISFULL] = "Cannot join channel (+l)";
+    ircReplies[ERR_BADCHANMASK] = "Invalid channel name";
     ircReplies[ERR_NOPRIVS] = "No privileges";
     ircReplies[ERR_PASSWDMISMATCH] = "Password incorrect";
     ircReplies[ERR_KEYSET] = "Channel key already set";

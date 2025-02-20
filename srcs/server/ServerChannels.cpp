@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/20 19:54:43 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/20 21:42:44 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,19 @@ bool Server::channelExists(const std::string &channel_key, Channel& channel_foun
 	return false;
 }
 
+bool isValidChannelName(std::string &channel_key)
+{
+	if (channel_key.length() < 2 || channel_key.length() > 50)
+		return false;
+	if (channel_key.find(' ') != std::string::npos || 
+		channel_key.find(',') != std::string::npos ||
+		channel_key.find(':') != std::string::npos)
+		return false;
+	//check for case insensitive names - TO DO
+	
+	return true;
+}
+
 void	Server::addChannel(const Client &client, std::string &channel_key) //Channel Key = [Key + Channel name], for example #chan1 or !eita or &alochannel
 {
 	/*Needs to add a verifications to the channel name, before even joining the channel, here are some errors:
@@ -63,8 +76,8 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
     473	        Cannot join channel (+i)	        The channel is invite-only, and the user has not been invited.
     475	        Cannot join channel (+k)	        The channel requires a password, and the user provided none or an incorrect one.
     471	        Cannot join channel (+l)	        The channel is full and cannot accept more users.
-    476	        Bad channel mask	                The channel name is invalid (e.g., contains illegal characters).
-    479	        Erroneous channel name	            The channel name is invalid (e.g., contains spaces or disallowed characters).
+    done476		Bad channel mask	                The channel name is invalid (e.g., contains illegal characters).
+    done476		Erroneous channel name	            The channel name is invalid (e.g., contains spaces or disallowed characters).
     437	        Channel temporarily unavailable 	The channel is temporarily unavailable (e.g., being registered or reserved).
     484	        Your connection is restricted	    The user's connection is restricted and cannot join the channel.
     480	        Joining channels too fast	        The user is joining channels too quickly and is being throttled by the server.
@@ -75,6 +88,13 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 	if (channel_type == 0)
 	{
 		std::string messge = ":" + this->getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + channel_key + " :No such channel\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		return;
+	}
+	
+	if (!isValidChannelName(channel_key)) {
+		logMessage("ERROR", "Invalid channel name: " + channel_key);
+		std::string messge = ":" + this->getName() + " " + ERR_BADCHANMASK + " " + client.getNickname() + " " + channel_key + " :Invalid channel name\r\n";
 		send(client.getFd(), messge.c_str(), messge.length(), 0);
 		return;
 	}
