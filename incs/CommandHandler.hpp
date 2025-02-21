@@ -31,6 +31,10 @@ class CommandHandler
         void handlePing(Client &client, std::istringstream &iss);
         void handleNotice(Client &client, std::istringstream &iss);
         void handleKick(Client &client, std::istringstream &iss);
+        bool kickRequestValidation(Client &client, const std::string &channel_key, 
+            const std::vector<std::string> &users_to_kick, std::vector<std::string> &params);
+        void executeKick(Client &client, Channel &channel, const std::string &reason,
+            std::vector<std::string> &users_to_kick, std::vector<std::string> &params);
         void handleCap(Client &client, std::istringstream &iss);
         void handleMode(Client &client, const std::vector<std::string> &params);
         void handleTopic(Client &client, std::istringstream &iss);

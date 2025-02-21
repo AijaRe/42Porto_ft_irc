@@ -19,7 +19,7 @@ Channel::Channel()
 }
 
 Channel::Channel(const Client &client, const std::string &name, const int &type)
-        : _name(name.substr(1)), _topic(""), _created_by(client.getNickname()), _type(type)
+        : _channel_key(name), _name(name.substr(1)), _topic(""), _created_by(client.getNickname()), _type(type)
 {
     addClient(client);
     addOp(client);
@@ -35,9 +35,17 @@ std::string Channel::getName()
     return this->_name;
 }
 
-void    Channel::setName(const std::string new_name)
+std::string Channel::getChannelKey()
+{
+    return this->_channel_key;
+}
+
+void    Channel::setName(const std::string &new_name)
 {
     this->_name = new_name;
+    if (!this->_channel_key.empty())
+        this->_channel_key = _channel_key[0] + new_name;
+
 }
 
 void Channel::setType(int new_type)
@@ -46,15 +54,19 @@ void Channel::setType(int new_type)
     {
         case 1:
             this->_type = CH_STANDARD;
+            this->_channel_key[0] = '#';
             break;
         case 2:
             this->_type = CH_LOCAL;
+            this->_channel_key[0] = '&';
             break;
         case 3:
             this->_type = CH_NO_EXT;
+            this->_channel_key[0] = '+';
             break;
         case 4:
             this->_type = CH_SAFE;
+            this->_channel_key[0] = '!';
             break;
     }
 }

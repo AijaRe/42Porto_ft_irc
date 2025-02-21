@@ -70,3 +70,9 @@ std::map<std::string, const Client*> &Channel::getOps()
     return this->_ops;
 }
 
+void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message)
+{
+    std::map<std::string, const Client*>::iterator it;
+    for (it = user_map.begin(); it != user_map.end(); it++)
+        send(it->second->getFd(), message.c_str(), message.length(), 0);
+}

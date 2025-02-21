@@ -43,13 +43,83 @@ void parseTargets(std::istringstream &iss, std::vector<std::string> &users_to_ki
             user_to_kick = user_to_kick.substr(0, user_to_kick.length() - 1); //Remove the comma at the end.
         std::istringstream users_stream(user_to_kick);
         std::string single_user;
-        while (std::getline(users_stream, single_user, ',')) //Verify if there are comma in the middle of the string.
+        while (std::getline(users_stream, single_user, ',')) //Verify if there are a comma in the middle of the string.
             if (!single_user.empty())
                 users_to_kick.push_back(single_user);
     }
 }
 
-void CommandHandler::handleKick(Client &client, std::istringstream &iss)
+bool    CommandHandler::kickRequestValidation(Client &issuer, const std::string &channel_key, const std::vector<std::string> &users_to_kick,
+            std::vector<std::string> &params)
+{
+    //Is the command correct? 
+
+    //ALERT! HEXCHAT doesn't deal in this way.
+    if (channel_key.empty() || users_to_kick.empty())
+    {
+        params.push_back("KICK");
+        this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_NEEDMOREPARAMS, params);
+        return false;
+    }
+    //Does this channel exists?
+    std::map<std::string, Channel>::iterator it = this->_server.getChannels().find(channel_key);
+    if (it == this->_server.getChannels().end())
+    {
+        params.push_back(channel_key);
+        this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_NOSUCHCHANNEL, params);
+        return false;
+    }
+
+    //The issuer is in the channel?
+    if (!it->second.findUserByName(it->second.getClients(), issuer.getNickname()))
+    {
+        params.push_back(channel_key);
+        this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_USERNOTINCHANNEL, params);
+        return false;
+    }
+
+    //Is the issuer an OP?
+    if (!it->second.findUserByName(it->second.getOps(), issuer.getNickname()))
+    {
+        params.push_back(channel_key);
+        this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_CHANOPRIVSNEEDED, params);
+        return false;
+    }
+    return true;
+}
+
+void CommandHandler::executeKick(Client &issuer, Channel &channel, const std::string &reason,
+            std::vector<std::string> &users_to_kick, std::vector<std::string> &params)
+{
+    for (std::vector<std::string>::iterator it2 = users_to_kick.begin(); it2 != users_to_kick.end(); it2++)
+    {
+        if (channel.findUserByName(channel.getClients(), *it2))
+        {
+            //KICK message: :<IssuerNick>!~<IssuerName>@<host> KICK <channel> <TargetNick> :[reason or IssuerNick (if reason blank)]
+
+            //Check if reason is empty.
+            std::string temp;
+            temp = reason;
+            if (temp.empty())
+                temp = issuer.getNickname();
+            
+            std::string kickMessage = ":" + issuer.getNickname() + "!~" + issuer.getUsername() + "@" + issuer.getHost() +
+                " KICK " + channel.getChannelKey() + " " + *it2 + " :" + temp + "\r\n";
+            
+            channel.broadcastMessage(channel.getClients(), kickMessage);
+            //Remove the client
+            channel.removeUser(channel.getClients(), *it2);
+        }
+        else
+        {
+            params.push_back(*it2);
+            params.push_back(channel.getChannelKey());
+            this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_USERNOTINCHANNEL, params);
+        }
+    }   
+}
+
+void CommandHandler::handleKick(Client &issuer, std::istringstream &iss)
 {
     std::string channel_key, reason;
     std::vector<std::string> users_to_kick, params;
@@ -58,60 +128,12 @@ void CommandHandler::handleKick(Client &client, std::istringstream &iss)
 
     iss >> channel_key;
     parseTargets(iss, users_to_kick, reason);
-    if (channel_key.empty() || users_to_kick.empty())
-    {
-        params.push_back("KICK");
-        _replies.sendIrcInfo(client.getFd(), this->_server, client.getNickname(), ERR_NEEDMOREPARAMS, params);
+    if (!kickRequestValidation(issuer, channel_key, users_to_kick, params))
         return;
-    }
-    //Esse canal existe?
+    
     std::map<std::string, Channel>::iterator it = this->_server.getChannels().find(channel_key);
     if (it == this->_server.getChannels().end())
-    {
-        params.push_back(channel_key);
-        _replies.sendIrcInfo(client.getFd(), this->_server, client.getNickname(), ERR_NOSUCHCHANNEL, params);
         return ;
-    }
 
-    //O request está no canal?
-    if (!it->second.findUserByName(it->second.getClients(), client.getNickname()))
-    {
-        params.push_back(channel_key);
-        _replies.sendIrcInfo(client.getFd(), this->_server, client.getNickname(), ERR_USERNOTINCHANNEL, params);
-        return;
-    }
-
-    //O request partiu de um OP?
-    if (!it->second.findUserByName(it->second.getOps(), client.getNickname()))
-    {
-        params.push_back(channel_key);
-        _replies.sendIrcInfo(client.getFd(), this->_server, client.getNickname(), ERR_CHANOPRIVSNEEDED, params);
-        return;
-    }
-    //Verificar se o usuário existe dentro do channel desejado.      
-    for (std::vector<std::string>::iterator it2 = users_to_kick.begin(); it2 != users_to_kick.end(); it2++)
-        if (it->second.findUserByName(it->second.getClients(), *it2))
-            if (it->second.removeUser(it->second.getClients(), *it2))
-                std::cout << "Success to delete" << std::endl; //If reason is empty add a specific comment.
-            else
-                std::cout << "Not sucess to delete" << std::endl;
-        else
-            std::cout << "[TO DO] User not found in this channel." << std::endl;
-        
-
-        
+    executeKick(issuer, it->second, reason, users_to_kick, params);  
 }
-   /*// Kick each user
-    for (std::vector<std::string>::iterator it2 = users_to_kick.begin(); it2 != users_to_kick.end(); it2++) {
-        if (it->second.findUserByName(it->second.getClients(), *it2)) {
-            it->second.removeUser(it->second.getClients(), *it2);
-            std::string kickMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostname() + " KICK " + channel_key + " " + *it2 + " :" + reason + "\r\n";
-            it->second.broadcastMessage(kickMessage);
-        } else {
-            std::vector<std::string> params;
-            params.push_back(*it2);
-            params.push_back(channel_key);
-            Replies::sendIrcInfo(client.getFd(), this->_server, client.getNickname(), "441", params, "They aren't on that channel");
-        }
-    }
-}*/
