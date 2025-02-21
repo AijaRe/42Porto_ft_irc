@@ -28,6 +28,7 @@ Replies::Replies() {
     ircReplies[ERR_BADCHANNELKEY] = "Cannot join channel (+k)";
     ircReplies[ERR_NOSUCHCHANNEL] = "No such channel";
     ircReplies[ERR_CHANNELISFULL] = "Cannot join channel (+l)";
+    ircReplies[ERR_BADCHANMASK] = "Invalid channel name";
     ircReplies[ERR_NOPRIVS] = "No privileges";
     ircReplies[ERR_PASSWDMISMATCH] = "Password incorrect";
     ircReplies[ERR_KEYSET] = "Channel key already set";
@@ -40,16 +41,17 @@ Replies::Replies() {
     ircReplies[ERR_NOSUCHNICK] = "No such nick/channel";
     ircReplies[ERR_CANNOTSENDTOCHAN] = "Cannot send to channel";
     ircReplies[ERR_NORECIPIENT] = "No recipient given";
+    ircReplies[ERR_NOTREGISTERED] = "You have not registered";
+    ircReplies[ERR_USERSDONTMATCH] = "Users don't match";
+    ircReplies[ERR_UMODEUNKNOWNFLAG] = "Unknown user mode flag";
+
     ircReplies[RPL_WELCOME] = "Welcome to the We Read The Manual Netwok!";
-    ircReplies[RPL_TOPIC] = "Channel topic is";
+    //ircReplies[RPL_TOPIC] = "Channel topic is";
     ircReplies[RPL_NOTOPIC] = "No topic is set";
     ircReplies[RPL_INVITING] = "Inviting user to channel";
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
-    ircReplies[ERR_NOTREGISTERED] = "You have not registered";
     ircReplies[RPL_UMODEIS] = "User mode is";
-    ircReplies[ERR_USERSDONTMATCH] = "Users don't match";
-    ircReplies[ERR_UMODEUNKNOWNFLAG] = "Unknown user mode flag";
     
 }
 
@@ -78,6 +80,10 @@ Replies::Replies() {
     sendMessage(fd, errorMessage);
 }*/
 
+/* 
+** Message format:
+** :<server_name> <code> <nickname> <params> :<default_reply_text> <additional_essage>
+*/
 void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params, const std::string &additionalMessage) {
     std::string targetNickname = nickname.empty() ? "*" : nickname;
 
@@ -107,4 +113,3 @@ void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickn
 void Replies::sendMessage(int fd, const std::string &message) {
     send(fd, message.c_str(), message.length(), 0);
 }
-
