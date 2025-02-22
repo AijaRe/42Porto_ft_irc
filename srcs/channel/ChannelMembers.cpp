@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 11:43:58 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 14:56:20 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void Channel::addClient(Client &client)
 	ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
 	if (ret.second == false) {
         std::string message = std::string(":") + SERVER_NAME + " " + ERR_USERONCHANNEL + " " + 
-                            client.getNickname() + " " + this->getName() + " :is already on channel\r\n";
+                            client.getNickname() + " " + this->getChannelKey() + " :is already on channel\r\n";
         send(client.getFd(), message.c_str(), message.length(), 0);
     }
 		
@@ -27,7 +27,7 @@ void Channel::addClient(Client &client)
 		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key); //it was _name: Uatilla
 		// JOIN message: :<nickname>!<username>@<host> JOIN <channel>
 		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
-						" JOIN " + this->getName() + "\r\n";
+						" JOIN " + this->getChannelKey() + "\r\n";
 		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
         
         // Add the channel to the client's joinedChannels set
@@ -36,13 +36,13 @@ void Channel::addClient(Client &client)
         if (this->_topic.empty()) {
             // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
             std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
-            " " + this->getName() + " :No topic is set\r\n";
+            " " + this->getChannelKey() + " :No topic is set\r\n";
             send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
         }
         else {
             // TOPIC message: :<server_name> 332 <nickname> <channel> :<topic>
             std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
-            " " + this->getName() + " :" + this->_topic + "\r\n";
+            " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
             send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
         }
 	}

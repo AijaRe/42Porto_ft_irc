@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 11:13:13 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 14:42:14 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	Server::addChannel(Client &client, std::string &channel_key)
     Error Code	HexChat Error Message	            Description
     DONE461	    Not enough parameters	            The JOIN command requires a channel name, but none was provided.
     DONE403	    No such channel	                    The channel name is invalid (e.g., missing # or contains illegal characters).
-    405	        You have joined too many channels	The user has exceeded the server's limit for the number of joined channels.
+    done405	    You have joined too many channels	The user has exceeded the server's limit for the number of joined channels.
     474     	Cannot join channel (+b)	        The user is banned from the channel.
     473	        Cannot join channel (+i)	        The channel is invite-only, and the user has not been invited.
     475	        Cannot join channel (+k)	        The channel requires a password, and the user provided none or an incorrect one.
@@ -99,10 +99,8 @@ void	Server::addChannel(Client &client, std::string &channel_key)
 		return;
 	}
 	
-	std::cout << "Joined channels size: " << client.joinedChannels.size() << std::endl;
 	if (client.joinedChannels.size() >= USR_MAX_CHANNELS)
 	{
-		logMessage("JOIN", "Client " + client.getNickname() + " tried to join too many channels.");
 		std::string messge = ":" + this->getName() + " " + ERR_TOOMANYCHANNELS + " " + client.getNickname() + " " + channel_key + " :You have joined too many channels\r\n";
 		send(client.getFd(), messge.c_str(), messge.length(), 0);
 		return;
@@ -110,7 +108,7 @@ void	Server::addChannel(Client &client, std::string &channel_key)
 	else
 	{
 		std::map<std::string, Channel>::iterator it = this->_channels.find(channel_key);
-		if (it != this->_channels.end())
+		if (it != this->_channels.end()) 
 			it->second.addClient(client);
 		else
 		{
