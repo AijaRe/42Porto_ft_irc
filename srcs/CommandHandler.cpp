@@ -66,6 +66,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handleKick(client, iss);
     else if (cmd == "TOPIC")
         handleTopic(client, iss);
+    else if (cmd == "INVITE")
+        handleInvite(client, iss);
     else if (cmd == "TEST3")
         handleTest3();
     else if (cmd == "TEST")
