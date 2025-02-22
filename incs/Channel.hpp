@@ -32,13 +32,20 @@ class Channel
         const Client* findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const;
         bool removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove);
 
+        void broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message);
 
         std::string getName();
-        void setName(const std::string new_name);
+        void setName(const std::string &new_name);
+
+        std::string getChannelKey();
+
         std::string getCreator();
         
         int  getType();
         void setType(int new_type);
+
+        std::string getTopic();
+        void        setTopic(std::string &new_topic);
 
         void setMode(char mode, bool enable);
         void setModePass(const std::string &modepass);
@@ -52,6 +59,7 @@ class Channel
     private:
         Replies _replies;
     
+        std::string _channel_key; //_type + _name
         std::string _name;
         std::string _topic;
         std::string _created_by;

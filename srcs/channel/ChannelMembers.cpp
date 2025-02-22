@@ -24,7 +24,7 @@ void Channel::addClient(Client &client)
 		
 	else
 	{
-		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + _name);
+		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key); //it was _name: Uatilla
 		// JOIN message: :<nickname>!<username>@<host> JOIN <channel>
 		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
 						" JOIN " + this->getName() + "\r\n";
@@ -55,7 +55,7 @@ void Channel::addOp(Client &op)
     if (ret.second == false)
         sendError(op.getFd(), "The user " + op.getNickname() + "is already OP .\n");
     else
-        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + _name);
+        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + this->_channel_key); //it was _name: Uatilla
 }
 
 const Client* Channel::findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const
@@ -95,3 +95,9 @@ std::map<std::string, const Client*> &Channel::getOps()
     return this->_ops;
 }
 
+void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message)
+{
+    std::map<std::string, const Client*>::iterator it;
+    for (it = user_map.begin(); it != user_map.end(); it++)
+        send(it->second->getFd(), message.c_str(), message.length(), 0);
+}

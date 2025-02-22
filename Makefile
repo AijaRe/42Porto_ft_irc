@@ -24,7 +24,8 @@ SRC_DIR		= srcs
 INC_DIR		= incs
 OBJ_DIR		= objs
 MAIN_FILES	= main utils Client CommandHandler Replies
-CMD_FILES	= handleCap handleJoin handleKick handleModes handleNick handleNotice handlePass handlePing handlePrivmsg handleUsers handleTests
+CMD_FILES	= handleCap handleJoin handleKick handleModes handleNick handleNotice \
+			  handlePass handlePing handlePrivmsg handleUsers handleTopic handleTests
 CH_FILES	= ChannelBasics ChannelMembers ChannelSettings
 SRV_FILES	= ServerBasics ServerClients ServerChannels ServerConnections
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(MAIN_FILES))) \
