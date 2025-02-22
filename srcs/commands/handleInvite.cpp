@@ -11,3 +11,18 @@
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
+
+void CommandHandler::handleInvite(Client &client, std::istringstream &iss)
+{
+    std::string channel;
+    (void) client;
+
+    iss >> channel;
+    if (channel.empty())
+    {
+        std::cout << "461: NEED MORE PARAMS" << std::endl;
+        return ;
+    }
+
+    
+}
