@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelSettings.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:39:08 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/16 19:39:10 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/22 15:43:39 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,11 @@ bool Channel::hasMode(char mode) const
 std::string Channel::getModes() const
 {
     return this->_modes.empty() ? "+" : "+" + this->_modes;
+}
+
+std::string Channel::getModePass() const
+{
+    return this->_modepass;
 }
 
 void Channel::sendToChannel(const std::string &message, const Server &server)
