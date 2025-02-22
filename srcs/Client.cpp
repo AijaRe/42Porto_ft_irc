@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/15 16:11:01 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/22 14:45:52 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "Channel.hpp"
 
 Client::Client() : _fd(-1) {} //fd -1 means not connected
 
@@ -102,3 +103,10 @@ void Client::setWelcomed(bool welcomed) {
     _welcomed = welcomed;
 }
 
+void Client::addChannel(Channel *channel) {
+    joinedChannels[channel->getChannelKey()] = channel;
+}
+
+void Client::removeChannel(Channel *channel) {
+    joinedChannels.erase(channel->getChannelKey());
+}

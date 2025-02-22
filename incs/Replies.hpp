@@ -6,18 +6,15 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/20 21:07:38 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 12:12:17 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REPLIES_HPP
 #define REPLIES_HPP
 
-#include <string>
-#include <map>
 #include "Server.hpp"
 #include "utils.hpp"
-#include <cstdarg>
 
 //numeric replies
 #define RPL_WELCOME                "001" // Authentication
