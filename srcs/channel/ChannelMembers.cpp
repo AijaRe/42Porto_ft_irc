@@ -6,13 +6,13 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/20 21:54:43 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 11:43:58 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-void Channel::addClient(const Client &client)
+void Channel::addClient(Client &client)
 {
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
 	ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
@@ -30,6 +30,9 @@ void Channel::addClient(const Client &client)
 						" JOIN " + this->getName() + "\r\n";
 		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
         
+        // Add the channel to the client's joinedChannels set
+        client.addChannel(this);
+        
         if (this->_topic.empty()) {
             // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
             std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
@@ -45,7 +48,7 @@ void Channel::addClient(const Client &client)
 	}
 }
 
-void Channel::addOp(const Client &op)
+void Channel::addOp(Client &op)
 {
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
     ret = this->_ops.insert(std::make_pair(op.getNickname(), &op));
@@ -70,9 +73,15 @@ const Client* Channel::findUserByName(const std::map<std::string, const Client*>
 
 bool    Channel::removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove)
 {
-    size_t removed = user_map.erase(user_to_remove);
-    if (removed == 1)
+    std::map<std::string, const Client*>::iterator it;
+    it = user_map.find(user_to_remove);
+    if (it != user_map.end())
+    {
+        const Client *client = it->second;
+        user_map.erase(it);
+        const_cast<Client*>(client)->removeChannel(this);
         return true;
+    }
     return false;
 }
 

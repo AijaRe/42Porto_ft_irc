@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/18 21:32:10 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 12:33:39 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 bool Server::_running = true;
 
-Server::Server (const int &port, const std::string &password) : _name(SERVER_NAME), _port(port), _password(password), _server_fd(-1) /*_command_handler(*this)*/ {
+Server::Server (const int &port, const std::string &password) : _name(SERVER_NAME), _port(port), _password(password), _server_fd(-1) {
 	if (_port < 1024 || _port > 65535) {
 		std::cerr << "Error: Invalid or restricted port number." << std::endl;
 		_running = false;
@@ -43,8 +43,6 @@ void	Server::signalHandler(int signal) {
 }
 
 void	Server::shutdownServer() {
-	/* if (!_running)
-		return; // server already shut down */
 	_running = false;
 	logMessage("INFO", "Shutting down server...");
 	// close server socket
