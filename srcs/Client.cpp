@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/22 12:37:35 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 14:45:52 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,11 +104,9 @@ void Client::setWelcomed(bool welcomed) {
 }
 
 void Client::addChannel(Channel *channel) {
-    // Add channel with its name as the key -> change to _channel_key after implementing
-    joinedChannels[channel->getName()] = channel;
+    joinedChannels[channel->getChannelKey()] = channel;
 }
 
 void Client::removeChannel(Channel *channel) {
-    // Remove channel with its name as the key -> change to _channel_key after implementing
-    joinedChannels.erase(channel->getName());
+    joinedChannels.erase(channel->getChannelKey());
 }
