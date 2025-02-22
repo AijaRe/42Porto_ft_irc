@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/18 21:31:56 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 12:42:06 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,14 @@
 #include <map> // std::map
 
 #define MAX_CONNECTIONS 100
+#define USR_MAX_CHANNELS 5
 #define BUFFER_SIZE 1024
 #define SERVER_NAME "42_IRC"
 
 class Client;
 class Channel;
 class CommandHandler;
-class Replies;
+class Replies; 
 
 class Server {
 	public:
@@ -49,7 +50,7 @@ class Server {
 		bool clientExists(const std::string &nick, Client& client_found);
 
 		
-		void addChannel(const Client &client, std::string &name);
+		void addChannel(Client &client, std::string &name);
 		int  checkChannelType(std::string &channel_name);
 		std::map<std::string, Channel> &getChannels();
 		bool channelExists(const std::string &channel_name, Channel& channel_found);

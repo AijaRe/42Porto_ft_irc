@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/18 20:32:20 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 12:00:54 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,18 @@
 #include "Client.hpp"
 #include "Replies.hpp"
 
+class Client;
+class Server;
+
 class Channel
 {
     public:
         Channel();
-        Channel(const Client &client, const std::string &name, const int &type);
+        Channel(Client &client, const std::string &name, const int &type);
         ~Channel();
 
-        void addClient(const Client &client);
-        void addOp(const Client &op); //Channel operators
+        void addClient(Client &client);
+        void addOp(Client &op); //Channel operators
         const Client* findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const;
         bool removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove);
 

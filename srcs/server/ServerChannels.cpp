@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/20 21:42:44 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 11:13:13 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,13 @@ bool isValidChannelName(std::string &channel_key)
 	return true;
 }
 
-void	Server::addChannel(const Client &client, std::string &channel_key) //Channel Key = [Key + Channel name], for example #chan1 or !eita or &alochannel
+//Channel Key = [Key + Channel name], for example #chan1 or !eita or &alochannel
+void	Server::addChannel(Client &client, std::string &channel_key)
 {
 	/*Needs to add a verifications to the channel name, before even joining the channel, here are some errors:
     Error Code	HexChat Error Message	            Description
-    DONE461	        Not enough parameters	            The JOIN command requires a channel name, but none was provided.
-    DONE403	        No such channel	                    The channel name is invalid (e.g., missing # or contains illegal characters).
+    DONE461	    Not enough parameters	            The JOIN command requires a channel name, but none was provided.
+    DONE403	    No such channel	                    The channel name is invalid (e.g., missing # or contains illegal characters).
     405	        You have joined too many channels	The user has exceeded the server's limit for the number of joined channels.
     474     	Cannot join channel (+b)	        The user is banned from the channel.
     473	        Cannot join channel (+i)	        The channel is invite-only, and the user has not been invited.
@@ -93,8 +94,16 @@ void	Server::addChannel(const Client &client, std::string &channel_key) //Channe
 	}
 	
 	if (!isValidChannelName(channel_key)) {
-		logMessage("ERROR", "Invalid channel name: " + channel_key);
 		std::string messge = ":" + this->getName() + " " + ERR_BADCHANMASK + " " + client.getNickname() + " " + channel_key + " :Invalid channel name\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		return;
+	}
+	
+	std::cout << "Joined channels size: " << client.joinedChannels.size() << std::endl;
+	if (client.joinedChannels.size() >= USR_MAX_CHANNELS)
+	{
+		logMessage("JOIN", "Client " + client.getNickname() + " tried to join too many channels.");
+		std::string messge = ":" + this->getName() + " " + ERR_TOOMANYCHANNELS + " " + client.getNickname() + " " + channel_key + " :You have joined too many channels\r\n";
 		send(client.getFd(), messge.c_str(), messge.length(), 0);
 		return;
 	}

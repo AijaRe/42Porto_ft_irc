@@ -6,20 +6,20 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:39 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/18 20:28:52 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 12:44:10 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
-#include "Server.hpp"
+//#include "Server.hpp"
 
 Channel::Channel()
 {
 
 }
 
-Channel::Channel(const Client &client, const std::string &name, const int &type)
-        : _channel_key(name), _name(name.substr(1)), _topic(""), _created_by(client.getNickname()), _type(type)
+Channel::Channel(Client &client, const std::string &name, const int &type)
+        : _name(name.substr(1)), _topic(""), _created_by(client.getNickname()), _type(type)
 {
     addClient(client);
     addOp(client);

@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/15 16:15:59 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/22 12:04:49 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-
 #include <iostream>
 #include <exception>
+#include <string> // std::string
 #include <string.h> // strlen
 #include <unistd.h> // read, write, close
 #include <vector> // std::vector
@@ -30,9 +30,6 @@
 #include <algorithm>
 #include <signal.h> // signal
 #include <sstream>//std::istringstream
-
-#include "Server.hpp"
-#include "Client.hpp"
 
 #define RESET   "\033[0m"
 #define RED     "\033[31m"
