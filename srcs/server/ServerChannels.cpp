@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 14:42:14 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 15:59:23 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ bool isValidChannelName(std::string &channel_key)
 }
 
 //Channel Key = [Key + Channel name], for example #chan1 or !eita or &alochannel
-void	Server::addChannel(Client &client, std::string &channel_key)
+void	Server::addChannel(Client &client, std::string &channel_key, std::string &channel_password)
 {
 	/*Needs to add a verifications to the channel name, before even joining the channel, here are some errors:
     Error Code	HexChat Error Message	            Description
@@ -108,8 +108,18 @@ void	Server::addChannel(Client &client, std::string &channel_key)
 	else
 	{
 		std::map<std::string, Channel>::iterator it = this->_channels.find(channel_key);
-		if (it != this->_channels.end()) 
-			it->second.addClient(client);
+		if (it != this->_channels.end())  {
+			Channel &channel = it->second;
+			
+			//check if channel requires a password
+			if (channel.hasMode('k') && channel.getModePass() != channel_password)
+			{
+				std::string messge = ":" + this->getName() + " " + ERR_BADCHANNELKEY + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+k)\r\n";
+				send(client.getFd(), messge.c_str(), messge.length(), 0);
+				return;
+			}
+			channel.addClient(client);
+		}
 		else
 		{
 			std::cout << "[TO DO] Check user permissions to create this type of channel." << std::endl;

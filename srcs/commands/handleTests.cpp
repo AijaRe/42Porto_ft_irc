@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleTests.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:05:46 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/16 19:05:49 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/22 16:02:57 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ void CommandHandler::handleTest()
     {
         std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() 
             << " Type: " << it->second.getType() 
-            << " Created by:  " << it->second.getCreator() << std::endl;
+            << " Created by:  " << it->second.getCreator() << std::endl
+            << " Topic: " << it->second.getTopic() << std::endl
+            << " Modes: " << it->second.getModes() << std::endl
+            << " Password: " << it->second.getModePass() << std::endl;
         
         std::map<std::string, const Client*> clients = it->second.getClients();
         std::map<std::string, const Client*>::const_iterator it2;

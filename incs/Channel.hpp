@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 12:00:54 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/22 15:58:58 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class Channel
         void setModeLimit(int limit);
         bool hasMode(char mode) const;
         std::string getModes() const;
+        std::string getModePass() const;
         void sendToChannel(const std::string &message, const Server &server);
 
         std::map<std::string, const Client*> &getClients();
@@ -67,10 +68,10 @@ class Channel
         std::map<std::string, const Client *> _clients;
         std::map<std::string, const Client *> _ops;
 
-        //para MODES
+        // MODES
         std::string _modes;
-        std::string _modepass;// para armazenar senha do canal(se modo +k for ativado)
-        int _userlimit;//para armazenar limite de usuarios(se modo +l for ativado)
+        std::string _modepass;// to store channel password if +k is set
+        int _userlimit;//to store the user limit if +l is set
 };
 
 #endif
