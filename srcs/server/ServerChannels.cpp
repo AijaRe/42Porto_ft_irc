@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 15:59:23 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/23 18:39:47 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ void	Server::addChannel(Client &client, std::string &channel_key, std::string &c
     done405	    You have joined too many channels	The user has exceeded the server's limit for the number of joined channels.
     474     	Cannot join channel (+b)	        The user is banned from the channel.
     473	        Cannot join channel (+i)	        The channel is invite-only, and the user has not been invited.
-    475	        Cannot join channel (+k)	        The channel requires a password, and the user provided none or an incorrect one.
-    471	        Cannot join channel (+l)	        The channel is full and cannot accept more users.
+    done475	    Cannot join channel (+k)	        The channel requires a password, and the user provided none or an incorrect one.
+    done471	    Cannot join channel (+l)	        The channel is full and cannot accept more users.
     done476		Bad channel mask	                The channel name is invalid (e.g., contains illegal characters).
     done476		Erroneous channel name	            The channel name is invalid (e.g., contains spaces or disallowed characters).
     437	        Channel temporarily unavailable 	The channel is temporarily unavailable (e.g., being registered or reserved).
@@ -118,6 +118,15 @@ void	Server::addChannel(Client &client, std::string &channel_key, std::string &c
 				send(client.getFd(), messge.c_str(), messge.length(), 0);
 				return;
 			}
+			//check if channel is full
+			if (channel.hasMode('l') && channel.getClients().size() >= channel._userlimit)
+			{
+				std::string messge = ":" + this->getName() + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+l)\r\n";
+				send(client.getFd(), messge.c_str(), messge.length(), 0);
+				return;
+			}
+			// check if user has invite - TO DO
+		
 			channel.addClient(client);
 		}
 		else
