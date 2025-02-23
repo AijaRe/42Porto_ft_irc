@@ -6,7 +6,7 @@
 #    By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 19:53:42 by arepsa            #+#    #+#              #
-#    Updated: 2025/02/10 20:31:19 by arepsa           ###   ########.fr        #
+#    Updated: 2025/02/23 20:54:08 by arepsa           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ OBJ_DIR		= objs
 MAIN_FILES	= main utils Client CommandHandler Replies
 CMD_FILES	= handleCap handleJoin handleKick handleModes handleNick handleNotice \
 			  handlePass handlePing handlePrivmsg handleUsers handleTopic handleInvite \
-			  handleTests
+			  handleWho handleTests
 CH_FILES	= ChannelBasics ChannelMembers ChannelSettings
 SRV_FILES	= ServerBasics ServerClients ServerChannels ServerConnections
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(MAIN_FILES))) \

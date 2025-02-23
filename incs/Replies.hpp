@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/22 12:12:17 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/23 20:09:18 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@
 #define RPL_WELCOME                "001" // Authentication
 
 #define RPL_UMODEIS                "221" // User mode is
+#define RPL_ENDOFWHO               "315" // End of WHO list
 #define RPL_CHANNELMODEIS          "324" // MODE <channel> <mode> <param>
 
 #define RPL_NOTOPIC                "331" // TOPIC no topic has been set
 #define RPL_TOPIC                  "332" // TOPIC sending the topic of the channel
 #define RPL_INVITING               "341" // INVITE sent to the one doing the inviting
+#define RPL_WHOREPLY               "352" // WHO reply
 #define RPL_YOUREOPER              "381" // OPER Success Reply
 
 #define ERR_UNKNOWNERROR           "400"
