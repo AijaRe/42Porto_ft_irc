@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/22 12:04:49 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/23 19:36:05 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,7 @@ void logMessage(const std::string &type, const std::string &message);
 void sendError(int fd, const std::string& message);
 void sendMessage(int fd, const std::string &message);
 void sendReturn(int fd, const std::string& message);
+std::vector<std::string> splitString(const std::string &str, char delim);
+
 
 #endif

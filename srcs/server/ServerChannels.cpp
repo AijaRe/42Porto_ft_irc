@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/23 19:14:16 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/23 19:21:59 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ void Server::joinExistingChannel(Client &client, Channel &channel, std::string &
 void Server::createNewChannel(Client &client, std::string &channel_key)
 {
 	std::cout << "[TO DO] Check user permissions to create this type of channel." << std::endl;
+	
 			
 	//Building a new channel here, same as addClient + addOp.
 	int channel_type = this->checkChannelType(channel_key);
