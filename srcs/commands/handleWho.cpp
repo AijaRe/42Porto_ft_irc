@@ -1,0 +1,59 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handleWho.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/23 19:52:58 by arepsa            #+#    #+#             */
+/*   Updated: 2025/02/23 20:25:53 by arepsa           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "CommandHandler.hpp"
+
+//WHO command to respond to query for channel (e.g. WHO #ch1)
+void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
+	std::string channel_name;
+	iss >> channel_name;
+	
+	//Only process WHO for channels (must start with #)
+	if (channel_name[0] != '#' || channel_name.empty()) {
+		std::vector<std::string> params;
+		params.push_back("WHO");
+		_replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHCHANNEL, params);
+		return;
+	}
+	//Check if channel exists
+	std::map<std::string, Channel> &channels = _server.getChannels();
+	std::map<std::string, Channel>::iterator it = channels.find(channel_name);
+
+	if (it == channels.end()) {
+		std::vector<std::string> params;
+		params.push_back("WHO");
+		_replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHCHANNEL, params);
+		return;
+	}
+
+	// Send reply to all channel clients
+	Channel &channel = it->second;
+	std::map<std::string, const Client*> &clients = channel.getClients();
+	
+	std::map<std::string, const Client*>::iterator it2;
+	for (it2 = clients.begin(); it2 != clients.end(); it2++) {
+		const Client *user = it2->second;
+		//Print realname:
+		logMessage("WHO", "User: " + user->getRealname());
+		//flag H inicates that user is Here, 0 is for hopcount
+		//"<client> <channel> <username> <host> <server> <nick> <flags> :<hopcount> <realname>"
+		std::string whoResponse = std::string(":") + SERVER_NAME + " " + RPL_WHOREPLY + " " + client.getNickname() + 
+								" " + channel_name + " " + user->getUsername() + " " + user->getHost() + 
+								" " + SERVER_NAME + " " + user->getNickname() + " H :0 " + user->getRealname() + "\r\n";
+		send(client.getFd(), whoResponse.c_str(), whoResponse.size(), 0);
+	}
+
+	//End of WHO list
+	std::string endOfWho = std::string(":") + SERVER_NAME + " " + RPL_ENDOFWHO + " " + client.getNickname() + 
+						" " + channel_name + " :End of WHO list\r\n";
+	send(client.getFd(), endOfWho.c_str(), endOfWho.size(), 0);
+}
