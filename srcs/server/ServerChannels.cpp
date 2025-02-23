@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/23 18:39:47 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/23 19:14:16 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,77 @@ bool isValidChannelName(std::string &channel_key)
 	return true;
 }
 
+bool Server::checkUserChannelLimit(Client &client, std::string &channel_key)
+{
+	if (client.joinedChannels.size() >= USR_MAX_CHANNELS)
+	{
+		std::string messge = ":" + this->getName() + " " + ERR_TOOMANYCHANNELS + " " + client.getNickname() + " " + channel_key + " :You have joined too many channels\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		return false;
+	}
+	return true;
+}
+
+bool Server::validateChannelName(Client &client, std::string &channel_key)
+{
+	if (channel_key.empty())
+	{
+		std::string messge = ":" + this->getName() + " " + ERR_NEEDMOREPARAMS + " " + client.getNickname() + " JOIN :Not enough parameters\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		return false;
+	}
+	int channel_type = this->checkChannelType(channel_key);
+	if (channel_type == 0)
+	{
+		std::string messge = ":" + this->getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + channel_key + " :No such channel\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		return false;
+	}
+	if (!isValidChannelName(channel_key))
+	{
+		std::string messge = ":" + this->getName() + " " + ERR_BADCHANMASK + " " + client.getNickname() + " " + channel_key + " :Invalid channel name\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		return false;
+	}
+	return true;
+}
+
+void Server::joinExistingChannel(Client &client, Channel &channel, std::string &channel_key, std::string &channel_password)
+{
+	//check if channel requires a password
+	if (channel.hasMode('k') && channel.getModePass() != channel_password)
+	{
+		std::string messge = ":" + this->getName() + " " + ERR_BADCHANNELKEY + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+k)\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		return;
+	}
+	//check if channel is full
+	if (channel.hasMode('l') && channel.getClients().size() >= channel.getUserLimit())
+	{
+		std::string messge = ":" + this->getName() + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+l)\r\n";
+		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		return;
+	}
+	// check if user has invite - TO DO
+
+	channel.addClient(client);
+}
+
+void Server::createNewChannel(Client &client, std::string &channel_key)
+{
+	std::cout << "[TO DO] Check user permissions to create this type of channel." << std::endl;
+			
+	//Building a new channel here, same as addClient + addOp.
+	int channel_type = this->checkChannelType(channel_key);
+	Channel new_channel(client, channel_key, channel_type);
+
+	//Inserting the channel in the server._channels map.
+	std::pair<std::map<std::string, Channel>::iterator, bool> ret;
+	ret = this->_channels.insert(std::make_pair(channel_key, new_channel));
+	if (ret.second == false)
+		sendError(client.getFd(), "There is already a channel called " + channel_key + ".\n");
+}
+
 //Channel Key = [Key + Channel name], for example #chan1 or !eita or &alochannel
 void	Server::addChannel(Client &client, std::string &channel_key, std::string &channel_password)
 {
@@ -79,69 +150,20 @@ void	Server::addChannel(Client &client, std::string &channel_key, std::string &c
     done471	    Cannot join channel (+l)	        The channel is full and cannot accept more users.
     done476		Bad channel mask	                The channel name is invalid (e.g., contains illegal characters).
     done476		Erroneous channel name	            The channel name is invalid (e.g., contains spaces or disallowed characters).
-    437	        Channel temporarily unavailable 	The channel is temporarily unavailable (e.g., being registered or reserved).
-    484	        Your connection is restricted	    The user's connection is restricted and cannot join the channel.
     480	        Joining channels too fast	        The user is joining channels too quickly and is being throttled by the server.
-    443	        is already on channel	            The user is already on the specified channel.
-    442	        You're not on that channel	        The user is not on the specified channel.
+    done443	    is already on channel	            The user is already on the specified channel.
     407     	Too many targets	                The user is trying to join too many channels at once.*/
-	int channel_type = this->checkChannelType(channel_key);
-	if (channel_type == 0)
-	{
-		std::string messge = ":" + this->getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + channel_key + " :No such channel\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
+	if (!validateChannelName(client, channel_key)) 
 		return;
-	}
-	
-	if (!isValidChannelName(channel_key)) {
-		std::string messge = ":" + this->getName() + " " + ERR_BADCHANMASK + " " + client.getNickname() + " " + channel_key + " :Invalid channel name\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
+    if (!checkUserChannelLimit(client, channel_key))
 		return;
-	}
-	
-	if (client.joinedChannels.size() >= USR_MAX_CHANNELS)
-	{
-		std::string messge = ":" + this->getName() + " " + ERR_TOOMANYCHANNELS + " " + client.getNickname() + " " + channel_key + " :You have joined too many channels\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
-		return;
-	}
-	else
-	{
-		std::map<std::string, Channel>::iterator it = this->_channels.find(channel_key);
-		if (it != this->_channels.end())  {
-			Channel &channel = it->second;
-			
-			//check if channel requires a password
-			if (channel.hasMode('k') && channel.getModePass() != channel_password)
-			{
-				std::string messge = ":" + this->getName() + " " + ERR_BADCHANNELKEY + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+k)\r\n";
-				send(client.getFd(), messge.c_str(), messge.length(), 0);
-				return;
-			}
-			//check if channel is full
-			if (channel.hasMode('l') && channel.getClients().size() >= channel._userlimit)
-			{
-				std::string messge = ":" + this->getName() + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+l)\r\n";
-				send(client.getFd(), messge.c_str(), messge.length(), 0);
-				return;
-			}
-			// check if user has invite - TO DO
-		
-			channel.addClient(client);
-		}
-		else
-		{
-			std::cout << "[TO DO] Check user permissions to create this type of channel." << std::endl;
-			
-			//Building a new channel here, same as addClient + addOp.
-			Channel new_channel(client, channel_key, channel_type);
-
-			//Inserting the channel in the server._channels map.
-			std::pair<std::map<std::string, Channel>::iterator, bool> ret;
-			ret = this->_channels.insert(std::make_pair(channel_key, new_channel));
-			if (ret.second == false)
-				sendError(client.getFd(), "There is already a channel called " + channel_key + ".\n");
-		}
-	}
+    
+    std::map<std::string, Channel>::iterator it = this->_channels.find(channel_key);
+    if (it != this->_channels.end()) {
+		Channel &channel = it->second;
+        joinExistingChannel(client, channel, channel_key, channel_password);
+    } else {
+        createNewChannel(client, channel_key);
+    }
 }
 

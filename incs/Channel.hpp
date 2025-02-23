@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 15:58:58 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/23 19:17:34 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class Channel
         std::string getChannelKey();
 
         std::string getCreator();
+
+        unsigned int  getUserLimit();
         
         int  getType();
         void setType(int new_type);
@@ -71,7 +73,7 @@ class Channel
         // MODES
         std::string _modes;
         std::string _modepass;// to store channel password if +k is set
-        int _userlimit;//to store the user limit if +l is set
+        unsigned int _userlimit;//to store the user limit if +l is set
 };
 
 #endif
