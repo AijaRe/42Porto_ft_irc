@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleUsers.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/23 21:00:07 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/24 20:58:52 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,9 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
 
     client.setPassAuthenticated(true);
     logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
+    if (client.isFullyAuthenticated() && !client.isWelcomed()) {
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
+        client.setWelcomed(true);
+    }
 }
 

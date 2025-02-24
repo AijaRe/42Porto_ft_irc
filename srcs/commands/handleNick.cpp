@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/24 20:46:18 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/24 20:59:11 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,6 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
         }
     }
     // Change nickname and send confirmation
-    updateNickname(client, nickname);
-
-    if (client.isFullyAuthenticated() && !client.isWelcomed()) {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
-        client.setWelcomed(true);
-    }
+    updateNickname(client, nickname);    
 }
 
