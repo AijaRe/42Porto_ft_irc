@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:39 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 14:59:27 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/23 19:17:45 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ std::string Channel::getName()
 std::string Channel::getChannelKey()
 {
     return this->_channel_key;
+}
+
+unsigned int Channel::getUserLimit()
+{
+    return this->_userlimit;
 }
 
 void    Channel::setName(const std::string &new_name)

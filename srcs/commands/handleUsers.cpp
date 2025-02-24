@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleUsers.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/16 19:12:57 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/23 21:00:07 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,15 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
 {
     std::string username, modeStr, unused, realname;
     iss >> username >> modeStr >> unused;
-    std::getline(iss >> std::ws, realname);//capture the rest of the line like realname
+    std::getline(iss, realname);//capture the rest of the line like realname
+
+    // Clean up the realname by trimming whitespace
+    realname = trimWhitespace(realname);
+    //Remove the leading colon from realname if it exists
+    if (!realname.empty() && realname[0] == ':') {
+        realname = realname.substr(1);
+    }
+    
     if (username.empty() || modeStr.empty() || unused.empty() || realname.empty()) {
         std::vector<std::string> params;
         params.push_back("USER");

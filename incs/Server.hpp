@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/22 12:42:06 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/23 19:10:03 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ class Server {
 		bool clientExists(const std::string &nick, Client& client_found);
 
 		
-		void addChannel(Client &client, std::string &name);
+		void addChannel(Client &client, std::string &name, std::string &channel_password);
 		int  checkChannelType(std::string &channel_name);
 		std::map<std::string, Channel> &getChannels();
 		bool channelExists(const std::string &channel_name, Channel& channel_found);
@@ -72,6 +72,12 @@ class Server {
 		void createSocket();
 		void acceptClient();
 		void handleClient(int client_fd);
+
+		bool validateChannelName(Client &client, std::string &channel_key);
+		bool checkUserChannelLimit(Client &client, std::string &channel_key);
+		void joinExistingChannel(Client &client, Channel &channel, std::string &channel_key, std::string &channel_password);
+		void createNewChannel(Client &client, std::string &channel_key);
+		
 };
 
 #endif
