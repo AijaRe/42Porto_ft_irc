@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleInvite.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:17:50 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/21 16:17:53 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/24 19:06:52 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,4 @@ void CommandHandler::handleInvite(Client &client, std::istringstream &iss)
         return ;
     }
 
-    
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerChannels.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/23 19:21:59 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/24 20:37:48 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ bool Server::checkUserChannelLimit(Client &client, std::string &channel_key)
 	return true;
 }
 
-bool Server::validateChannelName(Client &client, std::string &channel_key)
+bool Server::validChannelName(Client &client, std::string &channel_key)
 {
 	if (channel_key.empty())
 	{
@@ -85,13 +85,13 @@ bool Server::validateChannelName(Client &client, std::string &channel_key)
 		return false;
 	}
 	int channel_type = this->checkChannelType(channel_key);
-	if (channel_type == 0)
+	if (channel_type == USER)
 	{
 		std::string messge = ":" + this->getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + channel_key + " :No such channel\r\n";
 		send(client.getFd(), messge.c_str(), messge.length(), 0);
 		return false;
 	}
-	if (!isValidChannelName(channel_key))
+	if (!isValidChannelName(channel_key) || (channel_type != CH_STANDARD))
 	{
 		std::string messge = ":" + this->getName() + " " + ERR_BADCHANMASK + " " + client.getNickname() + " " + channel_key + " :Invalid channel name\r\n";
 		send(client.getFd(), messge.c_str(), messge.length(), 0);
@@ -123,7 +123,7 @@ void Server::joinExistingChannel(Client &client, Channel &channel, std::string &
 
 void Server::createNewChannel(Client &client, std::string &channel_key)
 {
-	std::cout << "[TO DO] Check user permissions to create this type of channel." << std::endl;
+	// Check for user permissions to create a channel or not necessary???
 	
 			
 	//Building a new channel here, same as addClient + addOp.
@@ -154,7 +154,7 @@ void	Server::addChannel(Client &client, std::string &channel_key, std::string &c
     480	        Joining channels too fast	        The user is joining channels too quickly and is being throttled by the server.
     done443	    is already on channel	            The user is already on the specified channel.
     407     	Too many targets	                The user is trying to join too many channels at once.*/
-	if (!validateChannelName(client, channel_key)) 
+	if (!validChannelName(client, channel_key)) 
 		return;
     if (!checkUserChannelLimit(client, channel_key))
 		return;
