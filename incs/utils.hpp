@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/23 20:57:35 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/24 19:54:00 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@
 #define BOLD    "\033[1m"
 #define UNDERLINE "\033[4m"
 
-#define USER            0; //No special symbol found before the target.
-#define CH_STANDARD     1; //#
-#define CH_LOCAL        2; //&
-#define CH_NO_EXT       3; //+
-#define CH_SAFE         4; //!
+#define USER            0 //No special symbol found before the target.
+#define CH_STANDARD     1 //#
+#define CH_LOCAL        2 //&
+#define CH_NO_EXT       3 //+
+#define CH_SAFE         4 //!
 
 void logMessage(const std::string &type, const std::string &message);
 void sendError(int fd, const std::string& message);

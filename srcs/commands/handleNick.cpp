@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleNick.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/16 19:03:48 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/24 20:59:11 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,11 @@ void    CommandHandler::updateNickname(Client &client, const std::string &newNic
     logMessage("NICK", "You are now known as " + newNickname);
 
     // send NICK confirmation to client
-    std::string message = ":" + oldNickname + "!" + user + "@" + host + " NICK " + newNickname + "\r\n";
+    std::string message;
+    if (oldNickname.empty())
+        message = ":" + newNickname + "!" + user + "@" + host + " NICK " + newNickname + "\r\n";
+    else
+        message = ":" + oldNickname + "!" + user + "@" + host + " NICK " + newNickname + "\r\n";
     send(client.getFd(), message.c_str(), message.length(), 0);
 }
 
@@ -72,11 +76,6 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
         }
     }
     // Change nickname and send confirmation
-    updateNickname(client, nickname);
-
-    if (client.isFullyAuthenticated() && !client.isWelcomed()) {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
-        client.setWelcomed(true);
-    }
+    updateNickname(client, nickname);    
 }
 
