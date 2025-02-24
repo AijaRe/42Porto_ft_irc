@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/23 19:10:03 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/24 20:35:28 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 #define MAX_CONNECTIONS 100
 #define USR_MAX_CHANNELS 5
 #define BUFFER_SIZE 1024
-#define SERVER_NAME "42_IRC"
+#define SERVER_NAME "42irc.wrtm.org"
 
 class Client;
 class Channel;
@@ -73,7 +73,7 @@ class Server {
 		void acceptClient();
 		void handleClient(int client_fd);
 
-		bool validateChannelName(Client &client, std::string &channel_key);
+		bool validChannelName(Client &client, std::string &channel_key);
 		bool checkUserChannelLimit(Client &client, std::string &channel_key);
 		void joinExistingChannel(Client &client, Channel &channel, std::string &channel_key, std::string &channel_password);
 		void createNewChannel(Client &client, std::string &channel_key);
