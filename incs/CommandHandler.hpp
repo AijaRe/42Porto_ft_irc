@@ -39,6 +39,8 @@ class CommandHandler
         void handleMode(Client &client, const std::vector<std::string> &params);
         void handleTopic(Client &client, std::istringstream &iss);
         void handleInvite(Client &client, std::istringstream &iss);
+        bool inviteValidation(Client &client, const std::string &nick_to_invite,
+             const std::string &channel_key, const std::string &test_param);
         void handleWho(Client &client, std::istringstream &iss);
         void handleTest();
         void handleTest2();

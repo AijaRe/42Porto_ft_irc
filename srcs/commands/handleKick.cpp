@@ -119,6 +119,7 @@ void CommandHandler::executeKick(Client &issuer, Channel &channel, const std::st
     }   
 }
 
+//KICK #channel user1, user2, user3 [:reason]
 void CommandHandler::handleKick(Client &issuer, std::istringstream &iss)
 {
     std::string channel_key, reason;
