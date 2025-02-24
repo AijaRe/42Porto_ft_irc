@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handlePass.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:01:45 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/20 20:30:59 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/24 21:03:17 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,4 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
 
     client.setPassAuthenticated(true);
     logMessage("INFO", "Client authenticated");
-
-    if (client.isFullyAuthenticated() && !client.isWelcomed()) {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
-        client.setWelcomed(true); // Marca o cliente como tendo recebido a mensagem de boas-vindas
-    }
 }
-
