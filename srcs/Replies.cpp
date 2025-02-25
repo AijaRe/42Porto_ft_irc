@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/18 20:31:36 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/25 22:53:05 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ Replies::Replies() {
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
     ircReplies[RPL_UMODEIS] = "User mode is";
+    ircReplies[RPL_ENDOFWHO] = "End of /WHO list";
+    ircReplies[RPL_ENDOFNAMES] = "End of /NAMES list";
     
 }
 

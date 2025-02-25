@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/23 19:17:34 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/25 23:02:56 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ class Channel
         std::string getModes() const;
         std::string getModePass() const;
         void sendToChannel(const std::string &message, const Server &server);
+
+        void sendChannelTopic(Client &client);
+        void sendUserList(Client &client);
 
         std::map<std::string, const Client*> &getClients();
         std::map<std::string, const Client*> &getOps();
