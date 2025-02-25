@@ -6,11 +6,51 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 14:56:20 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/25 23:31:06 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
+
+/* 
+** send list of users currently joined to the channel, 
+** including the client who requested the list
+*/
+void Channel::sendUserList(Client &client)
+{
+    // :<server_name> 353 <nickname> = <channel> :<user1> <user2> <user3> ...
+    std::string userListMsg = std::string(":") + SERVER_NAME + " " + RPL_NAMREPLY + " " + client.getNickname() + " = " + this->getChannelKey() + " :";
+    std::map<std::string, const Client*>::iterator it;
+    for (it = this->_clients.begin(); it != this->_clients.end(); it++) {
+        //add space before nickname except for the first nickname
+        if (it != this->_clients.begin())
+            userListMsg += " ";
+        // user format @nickname!username@host
+        userListMsg += "@" + it->first + "!" + it->second->getUsername() + "@" + it->second->getHost();
+        }
+    userListMsg += "\r\n";
+    send(client.getFd(), userListMsg.c_str(), userListMsg.length(), 0);
+
+    // :<server_name> 366 <nickname> <channel> :End of /NAMES list
+    std::string endOfList = std::string(":") + SERVER_NAME + " " + RPL_ENDOFNAMES + " " + client.getNickname() + " " + this->getChannelKey() + " :End of /NAMES list\r\n";
+    send(client.getFd(), endOfList.c_str(), endOfList.length(), 0);
+}
+
+void Channel::sendChannelTopic(Client &client)
+{
+    if (this->_topic.empty()) {
+        // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
+        std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
+        " " + this->getChannelKey() + " :No topic is set\r\n";
+        send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
+    }
+    else {
+        // TOPIC message: :<server_name> 332 <nickname> <channel> :<topic>
+        std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
+        " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
+        send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
+    }
+}
 
 void Channel::addClient(Client &client)
 {
@@ -32,19 +72,8 @@ void Channel::addClient(Client &client)
         
         // Add the channel to the client's joinedChannels set
         client.addChannel(this);
-        
-        if (this->_topic.empty()) {
-            // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
-            std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
-            " " + this->getChannelKey() + " :No topic is set\r\n";
-            send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
-        }
-        else {
-            // TOPIC message: :<server_name> 332 <nickname> <channel> :<topic>
-            std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
-            " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
-            send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
-        }
+        sendChannelTopic(client);
+        sendUserList(client);
 	}
 }
 
