@@ -23,11 +23,8 @@ bool CommandHandler::inviteValidation(Client &issuer, const std::string &nick_to
     }
     //Does this channel exists?
     std::map<std::string, Channel>::iterator it = this->_server.getChannels().find(channel_key);
-    if (it == this->_server.getChannels().end())
+    if (it == this->_server.getChannels().end() || this->_server.getChannels().size() == 0)
     {
-        //QUANDO O ULTIMO USUARIO SAIR DO CANAL ELE PRECISA SER REMOVIDO DO MAP DE CHANNELS DENTRO DO SERVER
-        //DO CONTRÁRIO ESSA LÓGICA RETORNA TRUE (DEVERIA SER FALSE) POIS É NECESSÁRIO HAVER AO MENOS UM CLIENT
-        //DENTRO DO CHANNEL DESEJADO.
         params.push_back(channel_key);
         this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_NOSUCHCHANNEL, params);
         return false;
@@ -37,6 +34,23 @@ bool CommandHandler::inviteValidation(Client &issuer, const std::string &nick_to
     {
         params.push_back(channel_key);
         this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_USERNOTINCHANNEL, params);
+        return false;
+    }
+    /*ONLY VALID AFTER THE MODE VERIFIED*/
+    //Is the issuer an OP?
+    /*
+    if (!it->second.findUserByName(it->second.getOps(), issuer.getNickname()))
+    {
+        params.push_back(channel_key);
+        this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_CHANOPRIVSNEEDED, params);
+        return false;
+    }*/
+
+    //The target is in the channel?
+    if (it->second.findUserByName(it->second.getClients(), nick_to_invite))
+    {
+        params.push_back(channel_key);
+        this->_replies.sendIrcInfo(issuer.getFd(), this->_server, nick_to_invite, ERR_USERONCHANNEL, params);
         return false;
     }
 
@@ -52,6 +66,7 @@ void CommandHandler::handleInvite(Client &client, std::istringstream &iss)
     iss >> channel_key;
     iss >> test_param;
 
+    //WAITING MODE IN PLACE.
     if (!inviteValidation(client, nick_to_invite, channel_key, test_param))
         return ;
     else
