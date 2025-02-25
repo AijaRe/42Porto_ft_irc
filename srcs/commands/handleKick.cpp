@@ -52,9 +52,6 @@ void parseTargets(std::istringstream &iss, std::vector<std::string> &users_to_ki
 bool    CommandHandler::kickRequestValidation(Client &issuer, const std::string &channel_key, const std::vector<std::string> &users_to_kick,
             std::vector<std::string> &params)
 {
-    //Is the command correct? 
-
-    //ALERT! HEXCHAT doesn't deal in this way.
     if (channel_key.empty() || users_to_kick.empty())
     {
         params.push_back("KICK");
@@ -95,9 +92,6 @@ void CommandHandler::executeKick(Client &issuer, Channel &channel, const std::st
     {
         if (channel.findUserByName(channel.getClients(), *it2))
         {
-            //KICK message: :<IssuerNick>!~<IssuerName>@<host> KICK <channel> <TargetNick> :[reason or IssuerNick (if reason blank)]
-
-            //Check if reason is empty.
             std::string temp;
             temp = reason;
             if (temp.empty())
@@ -107,8 +101,19 @@ void CommandHandler::executeKick(Client &issuer, Channel &channel, const std::st
                 " KICK " + channel.getChannelKey() + " " + *it2 + " :" + temp + "\r\n";
             
             channel.broadcastMessage(channel.getClients(), kickMessage);
-            //Remove the client
             channel.removeUser(channel.getClients(), *it2);
+
+            //If the user to kick is op, remove from op list too.
+            if (channel.findUserByName(channel.getOps(), *it2))
+                channel.removeUser(channel.getOps(), *it2);
+
+            //Delete channel if no users inside it.
+            if (channel.getClients().size() == 0)
+            {
+                Channel channel_to_delete;
+                if (this->_server.channelExists(channel.getChannelKey(), channel_to_delete))
+                    this->_server.getChannels().erase(channel_to_delete.getChannelKey());
+            }
         }
         else
         {
