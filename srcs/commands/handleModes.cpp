@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 18:45:49 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 20:23:56 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,14 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                             return;
                         }
                         channel->setModePass(param);
+                        channel->setMode('k', true);
                         responseModes += "+k";
                         responseParams += " " + param;
                     }
                     else
                     {
                         channel->setModePass("");
+                        channel->setMode('k', false);
                         responseModes += "-k";
                     }
                     break;
