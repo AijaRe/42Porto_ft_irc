@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleWho.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:52:58 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/26 19:07:56 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 21:18:10 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,7 @@ void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
 	std::map<std::string, const Client*>::iterator it2;
 	for (it2 = clients.begin(); it2 != clients.end(); it2++) {
 		const Client *user = it2->second;
-		//Print realname:
-		logMessage("WHO", "User: " + user->getRealname());
-		//flag H inicates that user is Here, 0 is for hopcount
-		//"<client> <channel> <username> <host> <server> <nick> <flags> :<hopcount> <realname>"
-		//std::string whoResponse = std::string(":") + SERVER_NAME + " " + RPL_WHOREPLY + " " + client.getNickname() + 
-								" " + channel_name + " " + user->getUsername() + " " + user->getHost() + 
-								" " + SERVER_NAME + " " + user->getNickname() + " H :0 " + user->getRealname() + "\r\n";
+		
 		//flag H inicates that user is Here, 0 is for hopcount
 		//@ indicates that user is an operator
 		std::string flags = "H";
