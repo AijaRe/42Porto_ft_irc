@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/12 20:43:30 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/25 19:42:23 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,19 @@
 #include <vector> // std::vector
 #include <map> // std::map
 
-#define MAX_CONNECTIONS 5
+#define MAX_CONNECTIONS 100
+#define USR_MAX_CHANNELS 5
 #define BUFFER_SIZE 1024
+#define SERVER_NAME "42irc.wrtm.org"
 
 class Client;
 class Channel;
 class CommandHandler;
+class Replies; 
 
 class Server {
 	public:
-		Server(const std::string &port, const std::string &password);
+		Server(const int &port, const std::string &password);
 		~Server();
 
 		int getPort() const;
@@ -44,15 +47,17 @@ class Server {
 		static void signalHandler(int signal);
 		void shutdownServer();
 		std::map<int, Client>&getClients();
+		bool clientExists(const std::string &nick, Client& client_found);
 
-		void addChannel(const Client &client, std::string &name);
+		
+		void addChannel(Client &client, std::string &name, std::string &channel_password);
 		int  checkChannelType(std::string &channel_name);
-		bool getChannel(const std::string &channel_name, Channel& channel_found);
+		std::map<std::string, Channel> &getChannels();
+		bool channelExists(const std::string &channel_name, Channel& channel_found);
+		Channel *getChannelByName(const std::string &channel_key);
 
+		Replies *_replies;
 
-
-		//TEMP PUBLIC TO DO TESTS
-		std::map<std::string, Channel> _channels;
 	private:
 		std::string _name;
 		int _port;
@@ -61,12 +66,20 @@ class Server {
 		static bool _running;
 		std::map<int, pollfd> _fd_map;
 		std::map<int, Client> _clients;
+		std::map<std::string, Channel> _channels;
 		
     	CommandHandler* _command_handler;
 
 		void createSocket();
 		void acceptClient();
 		void handleClient(int client_fd);
+
+		bool validChannelName(Client &client, std::string &channel_key);
+		bool checkUserChannelLimit(Client &client, std::string &channel_key);
+		void joinExistingChannel(Client &client, Channel &channel, std::string &channel_key, std::string &channel_password);
+		void createNewChannel(Client &client, std::string &channel_key);
+		
 };
 
 #endif
+

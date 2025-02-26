@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/14 19:41:46 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/22 14:45:52 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
+#include "Channel.hpp"
 
 Client::Client() : _fd(-1) {} //fd -1 means not connected
 
@@ -42,8 +43,8 @@ const std::string &Client::getRealname() const {
     return _realname;
 }
 
-const std::string &Client::getModes() const {
-    return _modes;
+std::string Client::getModes() const {
+    return _modes.empty() ? "+" : "+" + _modes; // Retorna os modos do usuário
 }
 
 void Client::setNickname(const std::string &nickname)
@@ -55,7 +56,6 @@ void Client::setUsername(const std::string &username)
 {
     _username = username;
 }
-
 
 void Client::setRealname(const std::string &realname) {
     _realname = realname;
@@ -101,4 +101,12 @@ bool Client::isWelcomed() const{
 
 void Client::setWelcomed(bool welcomed) {
     _welcomed = welcomed;
+}
+
+void Client::addChannel(Channel *channel) {
+    joinedChannels[channel->getChannelKey()] = channel;
+}
+
+void Client::removeChannel(Channel *channel) {
+    joinedChannels.erase(channel->getChannelKey());
 }

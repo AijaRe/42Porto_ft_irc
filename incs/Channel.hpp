@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/14 20:33:49 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 11:05:49 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,34 +17,75 @@
 #include "Client.hpp"
 #include "Replies.hpp"
 
-//class Client;
+#include <set>
+
+class Client;
+class Server;
 
 class Channel
 {
     public:
         Channel();
-        Channel(const Client &client, const std::string &name, const int &type);
+        Channel(Client &client, const std::string &name, const int &type);
         ~Channel();
 
-        void addClient(const Client &client);
-        void addOp(const Client &op); //Channel operators
+        void addClient(Client &client, const std::string &password = "");
+        void addOp(Client &op); //Channel operators
+        const Client* findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const;
+        bool removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove);
+
+        void broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message);
 
         std::string getName();
-        //Uma função setName precisa ser feita, mas apenas usuários do tipo OP podem ter acesso.
+        void setName(const std::string &new_name);
+
+        std::string getChannelKey();
+
+        std::string getCreator();
+
+        unsigned int  getUserLimit();
         
-        void setType(int new_type);
         int  getType();
-        //PUBLIC FOR TEST PURPOSES
-        std::map<std::string, const Client *> _clients;
-        std::map<std::string, const Client *> _ops;
+        void setType(int new_type);
+
+        std::string getTopic();
+        //void        setTopic(std::string &new_topic);//alterei o setTopic[YASMINE]
+        bool setTopic(const std::string &new_topic, const std::string &nickname);
+        
+        // MODES
+        void setMode(char mode, bool enable);
+        void setModePass(const std::string &modepass);
+        void setModeLimit(int limit);
+        bool hasMode(char mode) const;
+        std::string getModes() const;
+        std::string getModePass() const;
+        void addInvitedUser(const std::string &nickname);
+        void removeInvitedUser(const std::string &nickname);
+        bool isInvited(const std::string &nickname) const;
+        void addOperator(const std::string &nickname);
+        void removeOperator(const std::string &nickname);
+        bool isOperator(const std::string &nickname) const;
+        
+        void sendToChannel(const std::string &message, const Server &server);
+
+        std::map<std::string, const Client*> &getClients();
+        std::map<std::string, const Client*> &getOps();
     private:
         Replies _replies;
     
+        std::string _channel_key; //_type + _name
         std::string _name;
         std::string _topic;
         std::string _created_by;
         int         _type; //Check utils.hpp
-        const Client* findClient(std::map<std::string, const Client*> &user_map, const Client &user) const;
+        std::map<std::string, const Client *> _clients;
+        std::map<std::string, const Client *> _ops;
+
+        // MODES
+        std::string _modes;
+        std::string _modepass;// to store channel password if +k is set
+        unsigned int _userlimit;//to store the user limit if +l is set
+        std::set<std::string> _invitedUsers; //to store the invited users if +i is set
 };
 
 #endif

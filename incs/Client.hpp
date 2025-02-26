@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:02:57 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/14 19:41:34 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/22 12:37:16 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define CLIENT_HPP
 
 #include "utils.hpp"
+
+class Channel;
 
 class Client
 {
@@ -23,13 +25,14 @@ class Client
         ~Client();
         
         std::string buffer;
+        std::map<std::string, Channel*> joinedChannels;
         
         int getFd() const;
         std::string getHost() const;
         std::string getNickname() const;
         std::string getUsername() const;
         const std::string &getRealname() const;
-        const std::string &getModes() const;
+        std::string getModes() const;
         
         void setNickname(const std::string &nickname);
         void setUsername(const std::string &username);
@@ -45,7 +48,10 @@ class Client
         bool isWelcomed() const;
         bool hasMode(char mode) const;
 
-        bool operator==(const Client &compare) const; //Used inside Channel::findClient()
+        void addChannel(Channel *channel);
+        void removeChannel(Channel *channel);
+
+        bool operator==(const Client &compare) const; //Used inside Channel::findUser()
     private:
         int _fd;
         std::string _host;

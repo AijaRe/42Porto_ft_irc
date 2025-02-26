@@ -1,0 +1,125 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ChannelMembers.cpp                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
+/*   Updated: 2025/02/26 11:08:05 by yfontene         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "Channel.hpp"
+
+void Channel::addClient(Client &client, const std::string &password)
+{
+    //Adicionando veficação de modos
+    if (hasMode('i') && !isInvited(client.getNickname()))
+    {
+        std::string message = std::string(":") + SERVER_NAME + " " + ERR_INVITEONLYCHAN + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+i)\r\n";
+        send(client.getFd(), message.c_str(), message.length(), 0);
+        return;
+    }
+
+    if (hasMode('k') && password != getModePass())
+    {
+        std::string message = std::string(":") + SERVER_NAME + " " + ERR_BADCHANNELKEY + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+k)\r\n";
+        send(client.getFd(), message.c_str(), message.length(), 0);
+        return;
+    }
+
+    if (hasMode('l') && _clients.size() >= _userlimit)
+    {
+        std::string message = std::string(":") + SERVER_NAME + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+l)\r\n";
+        send(client.getFd(), message.c_str(), message.length(), 0);
+        return;
+    }
+    
+    std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
+	ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
+	if (ret.second == false) {
+        std::string message = std::string(":") + SERVER_NAME + " " + ERR_USERONCHANNEL + " " + 
+                            client.getNickname() + " " + this->getChannelKey() + " :is already on channel\r\n";
+        send(client.getFd(), message.c_str(), message.length(), 0);
+    }
+		
+	else
+	{
+		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key); //it was _name: Uatilla
+		// JOIN message: :<nickname>!<username>@<host> JOIN <channel>
+		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
+						" JOIN " + this->getChannelKey() + "\r\n";
+		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
+        
+        // Add the channel to the client's joinedChannels set
+        client.addChannel(this);
+        
+        if (this->_topic.empty()) {
+            // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
+            std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
+            " " + this->getChannelKey() + " :No topic is set\r\n";
+            send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
+        }
+        else {
+            // TOPIC message: :<server_name> 332 <nickname> <channel> :<topic>
+            std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
+            " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
+            send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
+        }
+	}
+}
+
+void Channel::addOp(Client &op)
+{
+    std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
+    ret = this->_ops.insert(std::make_pair(op.getNickname(), &op));
+    if (ret.second == false)
+        sendError(op.getFd(), "The user " + op.getNickname() + "is already OP .\n");
+    else
+        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + this->_channel_key); //it was _name: Uatilla
+}
+
+const Client* Channel::findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const
+{
+    if (user_map.empty())
+        return NULL;
+    std::map<std::string, const Client*>::const_iterator it;
+    for (it = user_map.begin(); it != user_map.end(); it++)
+    {
+        if ((it->second->getNickname()) == name)
+            return it->second;
+    }
+    return NULL; //user not found in the data structure provided.
+}
+
+bool    Channel::removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove)
+{
+    std::map<std::string, const Client*>::iterator it;
+    it = user_map.find(user_to_remove);
+    if (it != user_map.end())
+    {
+        const Client *client = it->second;
+        user_map.erase(it);
+        const_cast<Client*>(client)->removeChannel(this);
+        return true;
+    }
+    return false;
+}
+
+std::map<std::string, const Client*> &Channel::getClients()
+{
+    return this->_clients;
+}
+
+std::map<std::string, const Client*> &Channel::getOps()
+{
+    return this->_ops;
+}
+
+void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message)
+{
+    std::map<std::string, const Client*>::iterator it;
+    for (it = user_map.begin(); it != user_map.end(); it++)
+        send(it->second->getFd(), message.c_str(), message.length(), 0);
+}
