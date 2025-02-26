@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:39:08 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 11:02:42 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:39:43 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,11 @@ bool Channel::isInvited(const std::string &nickname) const
 
 void Channel::addOperator(const std::string &nickname)
 {
+    if(findUserByName(_clients, nickname) == NULL)
+        return;
     const Client* client = findUserByName(_clients, nickname);
-    if (client) {
+    if (client)
         _ops[nickname] = client;
-    }
 }
 
 void Channel::removeOperator(const std::string &nickname)
@@ -85,7 +86,6 @@ bool Channel::isOperator(const std::string &nickname) const
     return _ops.find(nickname) != _ops.end();
 }
 
-
 void Channel::sendToChannel(const std::string &message, const Server &server)
 {
     for(std::map<std::string, const Client*>::const_iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
@@ -94,4 +94,3 @@ void Channel::sendToChannel(const std::string &message, const Server &server)
         _replies.sendIrcInfo(client_fd, server, it->second->getNickname(), "NOTICE", std::vector<std::string>(), message);
     }
 }
-

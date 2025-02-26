@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:45:12 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 11:26:29 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:22:20 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
     {
         std::vector<std::string> params;
         std::string param;
-        while (iss >> param) 
+        while (iss >> param)
             params.push_back(param);
         handleMode(client, params);
     }

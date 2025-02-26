@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 11:29:13 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:47:26 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 void CommandHandler::handleMode(Client &client, const std::vector<std::string> &params)
 {
     std::string target = params[0]; // Nome do canal
-    std::string modes = (params.size() > 2) ? params[2] : ""; // Modificadores de modo (se houver)
+    std::string modes = (params.size() > 1) ? params[1] : ""; // Modificadores de modo (se houver)
 
     Channel *channel = this->_server.getChannelByName(target);
     if (!channel)
@@ -40,9 +40,15 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
         send(client.getFd(), modeMessage.c_str(), modeMessage.length(), 0);
         return;
     }
-
-    processChannelModes(client, channel, modes, params);
+    std::vector<std::string> modeParams(params.begin() + 2, params.end());  // Pegamos apenas os argumentos relevantes
     
+    //DEBUG!!
+    std::cout << "Lista de parâmetros para modos: ";
+    for (size_t i = 0; i < modeParams.size(); ++i)
+        std::cout << "[" << modeParams[i] << "] ";
+    std::cout << std::endl;
+    
+    processChannelModes(client, channel, modes, modeParams);
 }
 
 void CommandHandler::processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params) {
@@ -50,17 +56,30 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
     std::string responseModes;
     std::string responseParams;
 
+    size_t paramIndex = 0;
+    std::cout << "MODES: " << modes << std::endl;//DEBUG
     for (size_t i = 0; i < modes.size(); ++i)
     {
         char mode = modes[i];
+        std::cout << "MODE: " << mode << std::endl;//DEBUG
         if (mode == '+')
             adding = true;
         else if (mode == '-')
             adding = false;
         else
         {
-            std::string param = (params.size() > 2) ? params[2] : "";
+            std::string param;
 
+            if ((mode == 'k' || mode == 'l' || mode == 'o') && adding)
+            {
+                if(paramIndex >= params.size())
+                {
+                    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+                    return;
+                }
+                param = params[paramIndex];
+                paramIndex++;
+            }
             switch (mode)
             {
                 case 'i': // Modo invite-only
@@ -76,6 +95,7 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 case 'k': // Modo de senha
                     if (adding)
                     {
+                        std::cout << "PARAM RECEBIDO PARA +k: [" << param << "]" << std::endl;//DEBUG
                         if (param.empty())
                         {
                             _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
@@ -139,9 +159,9 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
         }
     }
 
-    if (!responseModes.empty())
+    if (!responseModes.empty())//Se houver modos a serem enviados
     {
         std::string response = ":" + client.getNickname() + " MODE " + channel->getName() + " " + responseModes + responseParams + "\r\n";
-        channel->sendToChannel(response, _server);
+        send(client.getFd(), response.c_str(), response.length(), 0);
     }
 }
