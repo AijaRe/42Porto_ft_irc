@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 18:48:03 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 18:52:03 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ class Channel
         void removeOperator(const std::string &nickname);
         bool isOperator(const std::string &nickname) const;
         
-        void sendToChannel(const std::string &message, const Server &server);
-
         void sendToChannel(const std::string &message, const Server &server);
 
         void sendChannelTopic(Client &client);

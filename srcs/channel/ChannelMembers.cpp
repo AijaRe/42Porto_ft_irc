@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 18:46:54 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 19:09:15 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void Channel::sendChannelTopic(Client &client)
     }
 }
 
-void Channel::addClient(Client &client)
+void Channel::addClient(Client &client, const std::string &password)
 {
     //Adicionando veficação de modos
     if (hasMode('i') && !isInvited(client.getNickname()))
@@ -94,7 +94,6 @@ void Channel::addClient(Client &client)
         
         // Add the channel to the client's joinedChannels set
         client.addChannel(this);
-<<<<<<< HEAD
         
         if (this->_topic.empty()) {
             // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
@@ -108,10 +107,8 @@ void Channel::addClient(Client &client)
             " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
             send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
         }
-=======
         sendChannelTopic(client);
         sendUserList(client);
->>>>>>> main
 	}
 }
 
