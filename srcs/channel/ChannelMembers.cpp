@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelMembers.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 19:09:15 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 21:09:34 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,16 @@ void Channel::sendChannelTopic(Client &client)
         send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
     }
     else {
-        // TOPIC message: :<server_name> 332 <nickname> <channel> :<topic>
+        // RPL_TOPIC :<server_name> 332 <nickname> <channel> :<topic>
         std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
         " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
         send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
+        // RPL_TOPICWHOTIME :<server_name> 333 <nickname> <channel> <author_nick>!<author_usr>@<host> <time>            
+        std::string who_time_msg = std::string(":") + SERVER_NAME + " " + RPL_TOPICWHOTIME + " " + 
+                            client.getNickname() + " " + this->getChannelKey() + " " + _topic_author->getNickname() + "!" +
+                            _topic_author->getUsername() + "@" + _topic_author->getHost() + " " + this->getTopicTime() + "\r\n";
+        send(client.getFd(), who_time_msg.c_str(), who_time_msg.length(), 0);
+        return ;
     }
 }
 
@@ -95,18 +101,6 @@ void Channel::addClient(Client &client, const std::string &password)
         // Add the channel to the client's joinedChannels set
         client.addChannel(this);
         
-        if (this->_topic.empty()) {
-            // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
-            std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
-            " " + this->getChannelKey() + " :No topic is set\r\n";
-            send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
-        }
-        else {
-            // TOPIC message: :<server_name> 332 <nickname> <channel> :<topic>
-            std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
-            " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
-            send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
-        }
         sendChannelTopic(client);
         sendUserList(client);
 	}
@@ -147,16 +141,6 @@ bool    Channel::removeUser(std::map<std::string, const Client*> &user_map, std:
         return true;
     }
     return false;
-}
-
-std::map<std::string, const Client*> &Channel::getClients()
-{
-    return this->_clients;
-}
-
-std::map<std::string, const Client*> &Channel::getOps()
-{
-    return this->_ops;
 }
 
 void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message)

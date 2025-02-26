@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 18:52:03 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 20:44:40 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,7 @@ class Channel
         int  getType();
         void setType(int new_type);
 
-        std::string getTopic();
-        //void        setTopic(std::string &new_topic);//alterei o setTopic[YASMINE]
-        bool setTopic(const std::string &new_topic, const std::string &nickname);
+        bool setTopic(const std::string &new_topic, const Client *author);
         
         // MODES
         void setMode(char mode, bool enable);
@@ -59,6 +57,11 @@ class Channel
         bool hasMode(char mode) const;
         std::string getModes() const;
         std::string getModePass() const;
+
+        std::string getTopic() const;
+        const Client* getTopicAuthor() const;
+        std::string getTopicTime() const;
+        
         void addInvitedUser(const std::string &nickname);
         void removeInvitedUser(const std::string &nickname);
         bool isInvited(const std::string &nickname) const;
@@ -78,7 +81,6 @@ class Channel
     
         std::string _channel_key; //_type + _name
         std::string _name;
-        std::string _topic;
         std::string _created_by;
         int         _type; //Check utils.hpp
         std::map<std::string, const Client *> _clients;
@@ -89,6 +91,10 @@ class Channel
         std::string _modepass;// to store channel password if +k is set
         unsigned int _userlimit;//to store the user limit if +l is set
         std::set<std::string> _invitedUsers; //to store the invited users if +i is set
+
+        std::string _topic;
+        const Client* _topic_author;
+        std::time_t _topic_time;
 };
 
 #endif
