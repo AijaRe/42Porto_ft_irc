@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 15:47:26 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:49:35 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
         send(client.getFd(), modeMessage.c_str(), modeMessage.length(), 0);
         return;
     }
-    std::vector<std::string> modeParams(params.begin() + 2, params.end());  // Pegamos apenas os argumentos relevantes
+    std::vector<std::string> modeParams(params.begin() + 2, params.end());//Parâmetros dos modos
     
     //DEBUG!!
     std::cout << "Lista de parâmetros para modos: ";
