@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelBasics.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:39 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 18:46:07 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 21:01:32 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Channel::Channel()
 }
 
 Channel::Channel(Client &client, const std::string &name, const int &type)
-        : _channel_key(name), _name(name.substr(1)), _topic(""), _created_by(client.getNickname()), _type(type)
+        : _channel_key(name), _name(name.substr(1)), _created_by(client.getNickname()), _type(type),  _topic("")
 {
     addClient(client);
     addOp(client);
@@ -86,16 +86,44 @@ std::string Channel::getCreator()
     return this->_created_by;
 }
 
-std::string Channel::getTopic()
+std::string Channel::getTopic() const
 {
     return this->_topic;
 }
 
-bool Channel::setTopic(const std::string &new_topic, const std::string &nickname)
+const Client* Channel::getTopicAuthor() const
 {
-    if (hasMode('t') && !isOperator(nickname))
+    return this->_topic_author;
+}
+
+std::string Channel::getTopicTime() const
+{
+    // Convert _topic_time to string using std::ostringstream
+    std::ostringstream oss;
+    oss << _topic_time;
+    std::string topic_time_str = oss.str();
+    return topic_time_str;
+}
+
+std::map<std::string, const Client*> &Channel::getClients()
+{
+    return this->_clients;
+}
+
+std::map<std::string, const Client*> &Channel::getOps()
+{
+    return this->_ops;
+}
+
+bool Channel::setTopic(const std::string &new_topic, const Client *author)
+{
+    //print mode
+    logMessage("INFO", "Channel mode is: " + getModes());
+    if (hasMode('t') && !isOperator(author->getNickname()))
         return false;
     this->_topic = new_topic;
+    this->_topic_author = author;
+    this->_topic_time = std::time(NULL);
     return true;
 }
 

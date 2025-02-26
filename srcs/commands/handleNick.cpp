@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleNick.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/24 20:59:11 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/26 21:03:53 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* 
 ** Helper function to validate nickname 
 ** A nickname cannot contain leading digits
-** A nickname can contain only alphanumerical characters, ([]{}), (\), (|) characters
+** A nickname can contain only alphanumerical characters, ([]{}), (\), (|), (_) characters
 */
 bool isValidNickname(const std::string &nickname)
 {
@@ -25,7 +25,7 @@ bool isValidNickname(const std::string &nickname)
     {
         if (!std::isalnum(nickname[i]) && nickname[i] != '[' && nickname[i] != ']' && 
             nickname[i] != '{' && nickname[i] != '}' && nickname[i] != '\\' && 
-            nickname[i] != '|')
+            nickname[i] != '|' && nickname[i] != '_')
             return false;
     }
     return true;

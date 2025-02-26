@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/26 18:48:21 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 19:46:08 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 
 #define RPL_NOTOPIC                "331" // TOPIC no topic has been set
 #define RPL_TOPIC                  "332" // TOPIC sending the topic of the channel
+#define RPL_TOPICWHOTIME           "333" // TOPIC when the topic was set and by whom
 #define RPL_INVITING               "341" // INVITE sent to the one doing the inviting
 #define RPL_WHOREPLY               "352" // WHO reply
 #define RPL_NAMREPLY               "353" // NAMES reply
