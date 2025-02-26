@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 11:16:54 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 18:44:08 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ Replies::Replies() {
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
     ircReplies[RPL_UMODEIS] = "User mode is";
+    ircReplies[RPL_ENDOFWHO] = "End of /WHO list";
+    ircReplies[RPL_ENDOFNAMES] = "End of /NAMES list";
     
 }
 

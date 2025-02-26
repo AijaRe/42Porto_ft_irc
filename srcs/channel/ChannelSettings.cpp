@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:39:08 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 15:39:43 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 18:47:20 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,3 +94,4 @@ void Channel::sendToChannel(const std::string &message, const Server &server)
         _replies.sendIrcInfo(client_fd, server, it->second->getNickname(), "NOTICE", std::vector<std::string>(), message);
     }
 }
+

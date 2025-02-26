@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/23 20:09:18 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/26 18:48:21 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 #define RPL_TOPIC                  "332" // TOPIC sending the topic of the channel
 #define RPL_INVITING               "341" // INVITE sent to the one doing the inviting
 #define RPL_WHOREPLY               "352" // WHO reply
+#define RPL_NAMREPLY               "353" // NAMES reply
+#define RPL_ENDOFNAMES             "366" // End of NAMES list
 #define RPL_YOUREOPER              "381" // OPER Success Reply
 
 #define ERR_UNKNOWNERROR           "400"

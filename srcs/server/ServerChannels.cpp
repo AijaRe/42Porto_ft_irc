@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 10:48:29 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/26 18:45:11 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ void Server::createNewChannel(Client &client, std::string &channel_key)
 	std::pair<std::map<std::string, Channel>::iterator, bool> ret;
 	ret = this->_channels.insert(std::make_pair(channel_key, new_channel));
 	if (ret.second == false)
-		sendError(client.getFd(), "There is already a channel called " + channel_key + ".\n");
+		sendError(client.getFd(), "There is already a channel called " + channel_key + ".\n"); //Is this even possible to trigger????
 }
 
 //Channel Key = [Key + Channel name], for example #chan1 or !eita or &alochannel
@@ -174,7 +174,6 @@ void	Server::addChannel(Client &client, std::string &channel_key, std::string &c
     }
 }
 
-
 Channel *Server::getChannelByName(const std::string &channel_key)
 {
     std::map<std::string, Channel>::iterator it = this->_channels.find(channel_key);
@@ -182,7 +181,4 @@ Channel *Server::getChannelByName(const std::string &channel_key)
         return &(it->second);
     return NULL;
 }
-
-
-
 
