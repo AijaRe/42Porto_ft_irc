@@ -25,8 +25,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT, params);
         return;
     }
-        
-    //Estou considerando que caso seja um user, o nick dele já foi feito o parsing.
+
     int target_type = this->_server.checkChannelType(target); 
     
     if (target_type == 0) //0 for users or errors.
@@ -39,12 +38,15 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             return;
        }
        else //client não encontrado.
-            std::cout << "_replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);" << std::endl;
+       {
+           std::string response = ":" + _server.getName() + " " + ERR_NOSUCHNICK + " " + client.getNickname() + " " + target + " :No such nick" + "\r\n";
+           send(client.getFd(), response.c_str(), response.length(), 0);
+       }
     }
     else
     {
         Channel channel_found;
-        if (this->_server.channelExists(target, channel_found)) //ATENÇÃO A ESSA FUNÇÃO
+        if (this->_server.channelExists(target, channel_found))
         {
             //Falta confirmar as permissões do usuário dentro do channel.
             std::map<std::string, const Client*> clients = channel_found.getClients();
@@ -56,7 +58,10 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             }
         }
         else
-            std::cout << "_replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);" << std::endl;
+        {
+            std::string response = ":" + _server.getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + target + " :No such channel" + "\r\n";
+            send(client.getFd(), response.c_str(), response.length(), 0);
+        }
     }    
 }
 
