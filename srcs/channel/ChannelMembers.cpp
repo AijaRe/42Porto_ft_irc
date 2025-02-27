@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelMembers.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 21:09:34 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 11:22:23 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void Channel::sendChannelTopic(Client &client)
     }
 }
 
-void Channel::addClient(Client &client, const std::string &password)
+void Channel::addClient(Client &client)
 {
     //Adicionando veficação de modos
     if (hasMode('i') && !isInvited(client.getNickname()))
@@ -67,14 +67,6 @@ void Channel::addClient(Client &client, const std::string &password)
         send(client.getFd(), message.c_str(), message.length(), 0);
         return;
     }
-
-    if (hasMode('k') && password != getModePass())
-    {
-        std::string message = std::string(":") + SERVER_NAME + " " + ERR_BADCHANNELKEY + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+k)\r\n";
-        send(client.getFd(), message.c_str(), message.length(), 0);
-        return;
-    }
-
     if (hasMode('l') && _clients.size() >= _userlimit)
     {
         std::string message = std::string(":") + SERVER_NAME + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+l)\r\n";
@@ -84,7 +76,8 @@ void Channel::addClient(Client &client, const std::string &password)
 
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
 	ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
-	if (ret.second == false) {
+	if (ret.second == false)
+    {
         std::string message = std::string(":") + SERVER_NAME + " " + ERR_USERONCHANNEL + " " + 
                             client.getNickname() + " " + this->getChannelKey() + " :is already on channel\r\n";
         send(client.getFd(), message.c_str(), message.length(), 0);
@@ -100,7 +93,6 @@ void Channel::addClient(Client &client, const std::string &password)
         
         // Add the channel to the client's joinedChannels set
         client.addChannel(this);
-        
         sendChannelTopic(client);
         sendUserList(client);
 	}

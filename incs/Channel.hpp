@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 20:44:40 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 11:21:55 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Channel
         Channel(Client &client, const std::string &name, const int &type);
         ~Channel();
 
-        void addClient(Client &client, const std::string &password = "");
+        void addClient(Client &client);
         void addOp(Client &op); //Channel operators
         const Client* findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const;
         bool removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove);

@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 20:23:56 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/27 11:23:12 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
     std::vector<std::string> modeParams(params.begin() + 2, params.end());//Parâmetros dos modos
     
     //DEBUG!!
-    std::cout << "Lista de parâmetros para modos: ";
+    /*std::cout << "Lista de parâmetros para modos: ";
     for (size_t i = 0; i < modeParams.size(); ++i)
         std::cout << "[" << modeParams[i] << "] ";
-    std::cout << std::endl;
+    std::cout << std::endl;*/
     
     processChannelModes(client, channel, modes, modeParams);
 }
@@ -57,11 +57,11 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
     std::string responseParams;
 
     size_t paramIndex = 0;
-    std::cout << "MODES: " << modes << std::endl;//DEBUG
+    //std::cout << "MODES: " << modes << std::endl;//DEBUG
     for (size_t i = 0; i < modes.size(); ++i)
     {
         char mode = modes[i];
-        std::cout << "MODE: " << mode << std::endl;//DEBUG
+        //std::cout << "MODE: " << mode << std::endl;//DEBUG
         if (mode == '+')
             adding = true;
         else if (mode == '-')
@@ -95,7 +95,7 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 case 'k': // Modo de senha
                     if (adding)
                     {
-                        std::cout << "PARAM RECEBIDO PARA +k: [" << param << "]" << std::endl;//DEBUG
+                        //std::cout << "PARAM RECEBIDO PARA +k: [" << param << "]" << std::endl;//DEBUG
                         if (param.empty())
                         {
                             _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);

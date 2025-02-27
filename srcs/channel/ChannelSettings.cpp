@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:39:08 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 21:00:54 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/27 11:25:16 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ void Channel::setMode(char mode, bool enable)
     if (enable && pos == std::string::npos)
     {//se o modo não estiver presente e for para ativar
         this->_modes += mode;//adiciona o modo
-        //std::cout << "Modo +" << mode << " ativado. Modos atuais: " << this->_modes << std::endl; // Log
+        //std::cout << "Modo +" << mode << " ativado. Modos atuais: " << this->_modes << std::endl;//DEBUG
     }
     else if (!enable && pos != std::string::npos)//se o modo estiver presente e for para desativar
     {
         this->_modes.erase(std::remove(_modes.begin(), _modes.end(), mode), _modes.end());//remove o modo
-        //std::cout << "Modo -" << mode << " desativado. Modos atuais: " << this->_modes << std::endl; // Log
+        //std::cout << "Modo -" << mode << " desativado. Modos atuais: " << this->_modes << std::endl;//DEBUG
     }
     
 }
@@ -35,7 +35,7 @@ void Channel::setModePass(const std::string &modepass)
     else
     {
         this->_modepass = modepass;
-        //std::cout << "Senha do canal definida como: " << this->_modepass << std::endl;
+        //std::cout << "Senha do canal definida como: " << this->_modepass << std::endl;//DEBUG
     }
 }
 
@@ -51,7 +51,7 @@ bool Channel::hasMode(char mode) const
 {
     //return this->_modes.find(mode) != std::string::npos;
     bool hasMode = this->_modes.find(mode) != std::string::npos;
-    //std::cout << "Verificando modo " << mode << ": " << (hasMode ? "Sim" : "Não") << std::endl; // Log
+    //std::cout << "Verificando modo " << mode << ": " << (hasMode ? "Sim" : "Não") << std::endl;//DEBUG
     return hasMode;
 }
 
