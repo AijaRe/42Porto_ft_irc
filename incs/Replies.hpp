@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/26 19:46:08 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 12:02:06 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 #define ERR_NORECIPIENT            "411" // No recipient given
 #define ERR_ERRONEUSNICKNAME       "432" // NICK : Invalid NickName
 #define ERR_NICKNAMEINUSE          "433" // NICK when a nickname is already in use
-#define ERR_NORULES                "434"
+#define ERR_NORULES                "434" // RULES
 #define ERR_NICKCOLLISION          "436" // NICK nickname Collision
 #define ERR_NONICKNAMEGIVEN        "431" // NICK when Nickname isn't provided
 #define ERR_USERNOTINCHANNEL       "441" // KICK when trying to kick a user who isn't in channel 
@@ -65,6 +65,7 @@
 #define ERR_UMODEUNKNOWNFLAG       "501" // When the user sends a mode that doesn't exist
 #define ERR_CANNOTCHANGEUMODE      "973" // When at authentication Mode +i is sent by irssi
 #define ERR_CANNOTCHANGECHANMODE   "974" // When Mode fails
+
 
 class Server;
 

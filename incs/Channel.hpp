@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 11:21:55 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:36:21 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ class Channel
 
         std::map<std::string, const Client*> &getClients();
         std::map<std::string, const Client*> &getOps();
+
     private:
         Replies _replies;
     

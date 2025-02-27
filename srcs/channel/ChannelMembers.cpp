@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 11:22:23 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:18:08 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,6 @@ void Channel::sendChannelTopic(Client &client)
 void Channel::addClient(Client &client)
 {
     //Adicionando veficação de modos
-    if (hasMode('i') && !isInvited(client.getNickname()))
-    {
-        std::string message = std::string(":") + SERVER_NAME + " " + ERR_INVITEONLYCHAN + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+i)\r\n";
-        send(client.getFd(), message.c_str(), message.length(), 0);
-        return;
-    }
     if (hasMode('l') && _clients.size() >= _userlimit)
     {
         std::string message = std::string(":") + SERVER_NAME + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+l)\r\n";

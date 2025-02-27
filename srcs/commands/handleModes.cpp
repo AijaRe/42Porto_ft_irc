@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 11:23:12 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:29:31 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 case 'i': // Modo invite-only
                     channel->setMode('i', adding);
                     responseModes += (adding ? "+i" : "-i");
+                    channel->setMode('i', true);
                     break;
 
                 case 't': // Modo de proteção de tópico

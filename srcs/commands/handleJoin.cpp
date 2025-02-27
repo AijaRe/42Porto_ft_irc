@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:45:35 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 11:22:42 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:36:57 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 //JOIN #channel1,#channel2,#channel3 pass1,pass2
 void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
 {
-    std::string channel_names, passwords;
-    iss >> channel_names;
+    std::string channelName, passwords;
+    iss >> channelName;
     iss >> passwords;
     
-    if (channel_names.empty())
+    if (channelName.empty())
     {
         std::vector<std::string> params;
         params.push_back("JOIN");
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, params);
         return;
     }
-    //split the channel_names and passwords
-    std::vector<std::string> channel_vec = splitString(channel_names, ',');
+    //split the channelName and passwords
+    std::vector<std::string> channel_vec = splitString(channelName, ',');
     std::vector<std::string> password_vec = splitString(passwords, ',');
 
     //Join each channel
@@ -43,7 +43,6 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
             _server.addChannel(client, channel_name, password);
             continue;
         }
-        std::cout << "Tentando entrar no canal: " << channel_name << std::endl;
         //verifica se o modo +k esta ativado e se a senha esta correta
         if(channel->hasMode('k'))
         {
@@ -59,8 +58,22 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
                 continue;
             }
         }
+        
+        if (channel->hasMode('i'))
+        {
+            if (!channel->isInvited(client.getNickname())) 
+            {
+                std::cout << "Usuário não está na lista de convidados." << std::endl;
+                std::vector<std::string> params;
+                params.push_back(channel_name);
+                _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_INVITEONLYCHAN, params);
+                continue;
+            }
+            
+            // Se o usuário foi convidado, podemos removê-lo da lista de convidados, já que ele está entrando.
+            channel->removeInvitedUser(client.getNickname());
+        }
         channel->addClient(client);
-        std::cout << "Cliente " << client.getNickname() << " entrou no canal " << channel_name << std::endl;
         std::vector<std::string> params;
         params.push_back(channel_name);
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_TOPIC, params);
