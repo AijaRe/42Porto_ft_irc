@@ -76,8 +76,7 @@ class Channel
 
         std::map<std::string, const Client*> &getClients();
         std::map<std::string, const Client*> &getOps();
-
-        std::map<std::string, const Client*> &getInviteList();
+        std::set<std::string> &getInviteList();
     private:
         Replies _replies;
     
@@ -87,7 +86,6 @@ class Channel
         int         _type; //Check utils.hpp
         std::map<std::string, const Client *> _clients;
         std::map<std::string, const Client *> _ops;
-        std::map<std::string, const Client *> _invite_list;
 
         // MODES
         std::string _modes;

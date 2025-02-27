@@ -40,9 +40,9 @@ class CommandHandler
         void processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params);
         void handleTopic(Client &client, std::istringstream &iss);
         void handleInvite(Client &client, std::istringstream &iss);
-        bool inviteValidation(Client &client, const std::string &nick_to_invite,
+        /*bool inviteValidation(Client &client, const std::string &nick_to_invite,
             const std::string &channel_key, const std::string &test_param, Channel &channel_found);
-        void inviteUser(const std::string &nick_to_invite, Client &client, Channel &channel);
+        void inviteUser(const std::string &nick_to_invite, Client &client, Channel &channel);*/
         void handleWho(Client &client, std::istringstream &iss);
         void handleTest();
         void handleTest2();

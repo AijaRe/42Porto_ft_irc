@@ -123,13 +123,11 @@ bool    Channel::removeUser(std::map<std::string, const Client*> &user_map, std:
     return false;
 }
 
-std::map<std::string, const Client*> &Channel::getInviteList()
+std::set<std::string> &Channel::getInviteList()
 {
-    return this->_invite_list;
+    return this->_invitedUsers;
 }
 
-=======
->>>>>>> main
 void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message)
 {
     std::map<std::string, const Client*>::iterator it;

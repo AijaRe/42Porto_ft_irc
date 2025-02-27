@@ -76,9 +76,10 @@ void CommandHandler::handleTest4()
             << " Modes: " << it->second.getModes() << std::endl
             << " Password: " << it->second.getModePass() << std::endl;
         
-        std::map<std::string, const Client*> clients = it->second.getInviteList();
-        std::map<std::string, const Client*>::const_iterator it2;
-        for (it2 = clients.begin(); it2 != clients.end(); it2++) //it.second is the _channel object.
-           std::cout << "\tUSER [" << it2->first << "] " << it2->second->getNickname() << std::endl;
+        std::set<std::string> inviteList = it->second.getInviteList();
+        std::set<std::string>::const_iterator it2;
+        for (it2 = inviteList.begin(); it2 != inviteList.end(); ++it2) {
+            std::cout << "\tUSER [" << *it2 << "]" << std::endl;
+            }
     }
 }
