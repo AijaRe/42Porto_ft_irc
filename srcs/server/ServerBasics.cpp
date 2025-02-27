@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/22 12:33:39 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 21:34:19 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,20 @@ Server::Server (const int &port, const std::string &password) : _name(SERVER_NAM
 	}
 	_command_handler = new CommandHandler(*this);
 	if (_password.empty()) {
-		std::cerr << "Error: Password cannot be empty." << std::endl;
+		logMessage("ERROR", "Password cannot be empty.");
+		delete _command_handler;
 		_running = false;
 		return;
 	}
-	createSocket();
+	
+	try {
+		createSocket();
+	} catch (const std::exception &e) {
+		std::cerr << RED << e.what() << RESET << std::endl;
+		_running = false;
+		delete _command_handler;
+		exit(EXIT_FAILURE);
+	}
 }
 
 Server::~Server() {
@@ -87,12 +96,16 @@ void	Server::createSocket() {
 	// bind the socket to the IP address and port
 	if (bind(_server_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
 		close(_server_fd);
-		throw std::runtime_error("Error: Bind failed.");
+		delete _command_handler;
+		logMessage("ERROR", "Bind failed.");
+		exit(EXIT_FAILURE);
+		//throw std::runtime_error("Error: Bind failed.");
 	}
 	
 	// listen for incoming connections
 	if (listen(_server_fd, MAX_CONNECTIONS) < 0) {
 		close(_server_fd);
+		delete _command_handler;
 		throw std::runtime_error("Error: Listen failed.");
 	}
 	std::stringstream ss;
