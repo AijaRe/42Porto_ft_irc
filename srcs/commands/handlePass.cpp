@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handlePass.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:01:45 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/24 21:03:17 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 20:08:20 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ bool CommandHandler::isClientAllowedToProceed(Client &client, const std::string 
 
 void CommandHandler::handlePass(Client &client, std::istringstream &iss)
 {
-    // Verifica se o cliente já está autenticado
+    // Checks if the client is already authenticated
     if (client.passAuthenticated()) {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
         return;

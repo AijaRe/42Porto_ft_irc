@@ -6,12 +6,11 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:39 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 21:01:32 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 20:59:56 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
-//#include "Server.hpp"
 
 Channel::Channel()
 {
@@ -21,6 +20,14 @@ Channel::Channel()
 Channel::Channel(Client &client, const std::string &name, const int &type)
         : _channel_key(name), _name(name.substr(1)), _created_by(client.getNickname()), _type(type),  _topic("")
 {
+    //set default modes
+    setMode('i', false); // Mode +i (channel is invite only)
+	setMode('k', false); // Mode +k (channel key/password)
+	setMode('l', false); // Mode +l (user limit)
+	setMode('o', false); // Mode +o (channel operator)
+	setMode('n', true); // Mode +n (no external messages)
+    setMode('t', true); // Mode +t (topic set by channel operator only)
+    
     addClient(client);
     addOp(client);
 }
