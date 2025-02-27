@@ -70,12 +70,14 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handleInvite(client, iss);
     else if (cmd == "WHO")
         handleWho(client, iss);
-    else if (cmd == "TEST3")
-        handleTest3();
     else if (cmd == "TEST")
         handleTest();
     else if (cmd == "TEST2")
         handleTest2();
+    else if (cmd == "TEST3")
+        handleTest3();
+    else if (cmd == "TEST4")
+        handleTest4();
     else
         sendError(client.getFd(), "Unknown command: " + cmd);
 }

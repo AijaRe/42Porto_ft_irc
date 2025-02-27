@@ -47,10 +47,10 @@ class Server {
 		static void signalHandler(int signal);
 		void shutdownServer();
 		std::map<int, Client>&getClients();
-		bool clientExists(const std::string &nick, Client& client_found);
+        bool clientExists(const std::string &nick, Client &client_found);
 
-		
-		void addChannel(Client &client, std::string &name, std::string &channel_password);
+
+        void addChannel(Client &client, std::string &name, std::string &channel_password);
 		int  checkChannelType(std::string &channel_name);
 		std::map<std::string, Channel> &getChannels();
 		bool channelExists(const std::string &channel_name, Channel& channel_found);

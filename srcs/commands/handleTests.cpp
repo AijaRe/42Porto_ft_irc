@@ -60,3 +60,25 @@ void CommandHandler::handleTest3()
         std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() << std::endl;
 }
 
+void CommandHandler::handleTest4()
+{
+
+    std::cout << "======== PRINTING INVITE LIST of all channels" << std::endl;
+    std::map<std::string, Channel> channels = this->_server.getChannels();
+    std::map<std::string, Channel>::iterator it;
+    
+    for (it = channels.begin(); it != channels.end(); it++)
+    {
+        std::cout << "CHANNEL[" << it->first << "] " << it->second.getName() 
+            << " Type: " << it->second.getType() 
+            << " Created by:  " << it->second.getCreator() << std::endl
+            << " Topic: " << it->second.getTopic() << std::endl
+            << " Modes: " << it->second.getModes() << std::endl
+            << " Password: " << it->second.getModePass() << std::endl;
+        
+        std::map<std::string, const Client*> clients = it->second.getInviteList();
+        std::map<std::string, const Client*>::const_iterator it2;
+        for (it2 = clients.begin(); it2 != clients.end(); it2++) //it.second is the _channel object.
+           std::cout << "\tUSER [" << it2->first << "] " << it2->second->getNickname() << std::endl;
+    }
+}

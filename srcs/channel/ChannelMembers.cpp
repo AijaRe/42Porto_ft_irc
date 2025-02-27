@@ -86,6 +86,11 @@ std::map<std::string, const Client*> &Channel::getOps()
     return this->_ops;
 }
 
+std::map<std::string, const Client*> &Channel::getInviteList()
+{
+    return this->_invite_list;
+}
+
 void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message)
 {
     std::map<std::string, const Client*>::iterator it;
