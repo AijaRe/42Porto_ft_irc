@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleNick.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/24 20:59:11 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 20:07:50 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* 
 ** Helper function to validate nickname 
 ** A nickname cannot contain leading digits
-** A nickname can contain only alphanumerical characters, ([]{}), (\), (|) characters
+** A nickname can contain only alphanumerical characters, ([]{}), (\), (|), (_) characters
 */
 bool isValidNickname(const std::string &nickname)
 {
@@ -25,7 +25,7 @@ bool isValidNickname(const std::string &nickname)
     {
         if (!std::isalnum(nickname[i]) && nickname[i] != '[' && nickname[i] != ']' && 
             nickname[i] != '{' && nickname[i] != '}' && nickname[i] != '\\' && 
-            nickname[i] != '|')
+            nickname[i] != '|' && nickname[i] != '_')
             return false;
     }
     return true;
@@ -66,8 +66,6 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ERRONEUSNICKNAME);
         return;
     }
-
-    //std::map<int, Client> &clients = _server.getClients();
     // ERR_NICKNAMEINUSE (433) - Nickname already in use
     for (std::map<int, Client>::iterator it = _server.getClients().begin(); it != _server.getClients().end(); ++it) {
         if (it->second.getNickname() == nickname) {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:45:12 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/23 20:14:23 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/26 18:44:27 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
     std::string cmd;
     iss >> cmd;
 
-    if (cmd == "CAP") {
+    if (cmd == "CAP")
+    {
         handleCap(client, iss);
         return ;
     }
@@ -54,12 +55,12 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handlePing(client, iss);
     else if (cmd == "NOTICE")
         handleNotice(client, iss);
-    else if (cmd == "MODE") {
+    else if (cmd == "MODE")
+    {
         std::vector<std::string> params;
         std::string param;
-        while (iss >> param) {
+        while (iss >> param)
             params.push_back(param);
-        }
         handleMode(client, params);
     }
     else if (cmd == "KICK")

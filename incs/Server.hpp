@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/24 20:35:28 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/26 18:48:33 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ class Server {
 		int  checkChannelType(std::string &channel_name);
 		std::map<std::string, Channel> &getChannels();
 		bool channelExists(const std::string &channel_name, Channel& channel_found);
+		Channel *getChannelByName(const std::string &channel_key);
 
 		Replies *_replies;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/18 20:31:36 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/02/26 19:38:45 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ Replies::Replies() {
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
     ircReplies[RPL_CHANNELMODEIS] = "Channel mode is";
     ircReplies[RPL_UMODEIS] = "User mode is";
+    ircReplies[RPL_ENDOFWHO] = "End of /WHO list";
+    ircReplies[RPL_ENDOFNAMES] = "End of /NAMES list";
     
 }
 
@@ -82,7 +84,7 @@ Replies::Replies() {
 
 /* 
 ** Message format:
-** :<server_name> <code> <nickname> <params> :<default_reply_text> <additional_essage>
+** :<server_name> <code> <nickname> <param1> <param2..> :<default_reply_text> <additional_essage>
 */
 void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params, const std::string &additionalMessage) {
     std::string targetNickname = nickname.empty() ? "*" : nickname;

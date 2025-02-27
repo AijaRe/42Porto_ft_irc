@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleModes.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/20 20:37:34 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 13:29:31 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,83 +20,151 @@
 // RPL_CHANNELMODEIS (324) If <modestring> is not given
 //If <modestring> is given, the user sending the command MUST have appropriate channel privileges on the target channel to change the modes given. If a user does not have appropriate privileges to change modes on the target channel, the server MUST NOT process the message, and ERR_CHANOPRIVSNEEDED (482)
 //Parameters: <target> [<modestring> [<mode arguments>...]]
-void CommandHandler::handleMode(Client &client, const std::vector<std::string> &params) {
-    if (params.size() < 2) {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
-        return;
-    }
 
-    std::string channelName = params[0];
-    std::string modeString = params[1];
-    std::string param = (params.size() > 2) ? params[2] : "";
+void CommandHandler::handleMode(Client &client, const std::vector<std::string> &params)
+{
+    std::string target = params[0]; // Nome do canal
+    std::string modes = (params.size() > 1) ? params[1] : ""; // Modificadores de modo (se houver)
 
-    std::map<std::string, Channel>::iterator it = _server.getChannels().find(channelName);
-    if (it == _server.getChannels().end()) {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHCHANNEL);
-        return;
-    }
-    Channel* channel = &(it->second);//ponteiro para o canal encontrado.
-
-    if (!channel->findUserByName(channel->getOps(), client.getNickname()))//verifica se o usuario é um OP
+    Channel *channel = this->_server.getChannelByName(target);
+    if (!channel)
     {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_CHANOPRIVSNEEDED);
+        std::vector<std::string> targetVec(1, target);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHCHANNEL, targetVec);
         return;
     }
+    
+    if (params.size() == 1)
+    {
+        std::string modeMessage = ":" + _server.getName() + " 324 " + client.getNickname() + " " + target + " :" + channel->getModes() + "\r\n";
+        send(client.getFd(), modeMessage.c_str(), modeMessage.length(), 0);
+        return;
+    }
+    std::vector<std::string> modeParams(params.begin() + 2, params.end());//Parâmetros dos modos
+    
+    //DEBUG!!
+    /*std::cout << "Lista de parâmetros para modos: ";
+    for (size_t i = 0; i < modeParams.size(); ++i)
+        std::cout << "[" << modeParams[i] << "] ";
+    std::cout << std::endl;*/
+    
+    processChannelModes(client, channel, modes, modeParams);
+}
 
+void CommandHandler::processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params) {
     bool adding = true;
     std::string responseModes;
     std::string responseParams;
 
-    for (size_t i = 0; i < modeString.size(); ++i) {
-        char mode = modeString[i];
-
-        if (mode == '+') {
+    size_t paramIndex = 0;
+    //std::cout << "MODES: " << modes << std::endl;//DEBUG
+    for (size_t i = 0; i < modes.size(); ++i)
+    {
+        char mode = modes[i];
+        //std::cout << "MODE: " << mode << std::endl;//DEBUG
+        if (mode == '+')
             adding = true;
-        } else if (mode == '-') {
+        else if (mode == '-')
             adding = false;
-        } else if (mode == 'k') {  // Modo senha
-            if (adding) {
-                if (param.empty()) {
+        else
+        {
+            std::string param;
+
+            if ((mode == 'k' || mode == 'l' || mode == 'o') && adding)
+            {
+                if(paramIndex >= params.size())
+                {
                     _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
                     return;
                 }
-                channel->setModePass(param);
-                responseModes += "+k";
-                responseParams += " " + param;
-            } else {
-                channel->setModePass("");
-                responseModes += "-k";
+                param = params[paramIndex];
+                paramIndex++;
             }
-        } else if (mode == 'l') {  // Modo limite de usuários
-            if (adding) {
-                if (param.empty()) {
-                    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
-                    return;
-                }
+            switch (mode)
+            {
+                case 'i': // Modo invite-only
+                    channel->setMode('i', adding);
+                    responseModes += (adding ? "+i" : "-i");
+                    channel->setMode('i', true);
+                    break;
 
-                std::stringstream ss(param);
-                int limit;
-                ss >> limit;
-                if (ss.fail() || limit <= 0) {
-                    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNMODE);
-                    return;
-                }
+                case 't': // Modo de proteção de tópico
+                    channel->setMode('t', adding);
+                    responseModes += (adding ? "+t" : "-t");
+                    break;
 
-                channel->setModeLimit(limit);
-                responseModes += "+l";
-                responseParams += " " + param;
-            } else {
-                channel->setModeLimit(0);
-                responseModes += "-l";
+                case 'k': // Modo de senha
+                    if (adding)
+                    {
+                        //std::cout << "PARAM RECEBIDO PARA +k: [" << param << "]" << std::endl;//DEBUG
+                        if (param.empty())
+                        {
+                            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+                            return;
+                        }
+                        channel->setModePass(param);
+                        channel->setMode('k', true);
+                        responseModes += "+k";
+                        responseParams += " " + param;
+                    }
+                    else
+                    {
+                        channel->setModePass("");
+                        channel->setMode('k', false);
+                        responseModes += "-k";
+                    }
+                    break;
+
+                case 'o': // Modo de operador
+                    if (param.empty())
+                    {
+                        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+                        return;
+                    }
+                    if (adding)
+                        channel->addOperator(param);
+                    else
+                        channel->removeOperator(param);
+                    responseModes += (adding ? "+o" : "-o");
+                    responseParams += " " + param;
+                    break;
+
+                case 'l': // Modo de limite de usuários
+                    if (adding)
+                    {
+                        if (param.empty())
+                        {
+                            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+                            return;
+                        }
+                        int limit = std::atoi(param.c_str());
+                        if (limit <= 0)
+                        {
+                            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNMODE);
+                            return;
+                        }
+                        channel->setModeLimit(limit);
+                        responseModes += "+l";
+                        responseParams += " " + param;
+                    }
+                    else
+                    {
+                        channel->setModeLimit(0);
+                        responseModes += "-l";
+                    }
+                    break;
+
+                default:
+                    std::vector<std::string> modeVec(1, std::string(1, mode));
+                    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNMODE, modeVec);
+                    break;
             }
-        } else {
-            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNMODE, std::vector<std::string>(1, std::string(1, mode)));
         }
     }
 
-    if (!responseModes.empty()) {
-        std::string response = ":" + client.getNickname() + " MODE " + channelName + " " + responseModes + responseParams + "\r\n";
-        channel->sendToChannel(response, _server);
+    if (!responseModes.empty())//Se houver modos a serem enviados
+    {
+        std::string response = ":" + client.getNickname() + " MODE " + channel->getName() + " " + responseModes + responseParams + "\r\n";
+        send(client.getFd(), response.c_str(), response.length(), 0);
     }
 }
-

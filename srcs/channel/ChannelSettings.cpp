@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelSettings.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:39:08 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/22 15:43:39 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 16:36:05 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void Channel::setMode(char mode, bool enable)
         this->_modes += mode;//adiciona o modo
     else if (!enable && pos != std::string::npos)//se o modo estiver presente e for para desativar
         this->_modes.erase(std::remove(_modes.begin(), _modes.end(), mode), _modes.end());//remove o modo
+    
 }
 
 void Channel::setModePass(const std::string &modepass)
@@ -26,7 +27,7 @@ void Channel::setModePass(const std::string &modepass)
     if (modepass.empty())
         _modepass.clear();//remove a senha quando -k é passado
     else
-        _modepass = modepass;//adiciona a senha quando +k é passado
+        this->_modepass = modepass;
 }
 
 void Channel::setModeLimit(int limit)
@@ -39,7 +40,8 @@ void Channel::setModeLimit(int limit)
 
 bool Channel::hasMode(char mode) const
 {
-    return this->_modes.find(mode) != std::string::npos;
+    bool hasMode = this->_modes.find(mode) != std::string::npos;
+    return hasMode;
 }
 
 std::string Channel::getModes() const
@@ -50,6 +52,40 @@ std::string Channel::getModes() const
 std::string Channel::getModePass() const
 {
     return this->_modepass;
+}
+
+void Channel::addInvitedUser(const std::string &nickname)
+{
+    _invitedUsers.insert(nickname);
+}
+
+void Channel::removeInvitedUser(const std::string &nickname)
+{
+    _invitedUsers.erase(nickname);
+}
+
+bool Channel::isInvited(const std::string &nickname) const
+{
+    return _invitedUsers.find(nickname) != _invitedUsers.end();
+}
+
+void Channel::addOperator(const std::string &nickname)
+{
+    if(findUserByName(_clients, nickname) == NULL)
+        return;
+    const Client* client = findUserByName(_clients, nickname);
+    if (client)
+        _ops[nickname] = client;
+}
+
+void Channel::removeOperator(const std::string &nickname)
+{
+    _ops.erase(nickname);
+}
+
+bool Channel::isOperator(const std::string &nickname) const
+{
+    return _ops.find(nickname) != _ops.end();
 }
 
 void Channel::sendToChannel(const std::string &message, const Server &server)

@@ -37,6 +37,7 @@ class CommandHandler
             std::vector<std::string> &users_to_kick, std::vector<std::string> &params);
         void handleCap(Client &client, std::istringstream &iss);
         void handleMode(Client &client, const std::vector<std::string> &params);
+        void processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params);
         void handleTopic(Client &client, std::istringstream &iss);
         void handleInvite(Client &client, std::istringstream &iss);
         bool inviteValidation(Client &client, const std::string &nick_to_invite,

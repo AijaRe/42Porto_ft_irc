@@ -3,27 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   handleKick.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:17:02 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/24 19:06:26 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 20:09:20 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
-
-/*Numeric Replies:
-
-    ERR_NEEDMOREPARAMS (461)
-    ERR_NOSUCHCHANNEL (403)
-    ERR_CHANOPRIVSNEEDED (482)
-    ERR_USERNOTINCHANNEL (441)
-    ERR_NOTONCHANNEL (442)
-
-Deprecated Numeric Reply:
-
-    ERR_BADCHANMASK (476)*/
-
 
 void parseTargets(std::istringstream &iss, std::vector<std::string> &users_to_kick, std::string &reason)
 {

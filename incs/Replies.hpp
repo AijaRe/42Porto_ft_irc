@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/23 20:09:18 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/02/27 12:02:06 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,11 @@
 
 #define RPL_NOTOPIC                "331" // TOPIC no topic has been set
 #define RPL_TOPIC                  "332" // TOPIC sending the topic of the channel
+#define RPL_TOPICWHOTIME           "333" // TOPIC when the topic was set and by whom
 #define RPL_INVITING               "341" // INVITE sent to the one doing the inviting
 #define RPL_WHOREPLY               "352" // WHO reply
+#define RPL_NAMREPLY               "353" // NAMES reply
+#define RPL_ENDOFNAMES             "366" // End of NAMES list
 #define RPL_YOUREOPER              "381" // OPER Success Reply
 
 #define ERR_UNKNOWNERROR           "400"
@@ -38,7 +41,7 @@
 #define ERR_NORECIPIENT            "411" // No recipient given
 #define ERR_ERRONEUSNICKNAME       "432" // NICK : Invalid NickName
 #define ERR_NICKNAMEINUSE          "433" // NICK when a nickname is already in use
-#define ERR_NORULES                "434"
+#define ERR_NORULES                "434" // RULES
 #define ERR_NICKCOLLISION          "436" // NICK nickname Collision
 #define ERR_NONICKNAMEGIVEN        "431" // NICK when Nickname isn't provided
 #define ERR_USERNOTINCHANNEL       "441" // KICK when trying to kick a user who isn't in channel 
@@ -62,6 +65,7 @@
 #define ERR_UMODEUNKNOWNFLAG       "501" // When the user sends a mode that doesn't exist
 #define ERR_CANNOTCHANGEUMODE      "973" // When at authentication Mode +i is sent by irssi
 #define ERR_CANNOTCHANGECHANMODE   "974" // When Mode fails
+
 
 class Server;
 
