@@ -82,7 +82,7 @@ void Channel::addClient(Client &client)
 		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key); //it was _name: Uatilla
 		// JOIN message: :<nickname>!<username>@<host> JOIN <channel>
 		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
-						" JOIN " + this->getName() + "\r\n";
+						" JOIN " + this->getChannelKey() + "\r\n"; //HERE
 		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
         
         // Add the channel to the client's joinedChannels set

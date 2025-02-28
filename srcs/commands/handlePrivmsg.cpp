@@ -16,7 +16,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
 {
     std::string target, message;
     iss >> target;
-    std::getline(iss >> std::ws, message);
+    std::getline(iss >> std::ws, message);//message already have the collon in the first position [0].
     
     if (target.empty() || message.empty())
     {
@@ -25,7 +25,6 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NORECIPIENT, params);
         return;
     }
-
     int target_type = this->_server.checkChannelType(target); 
     
     if (target_type == 0) //0 for users or errors.
@@ -33,7 +32,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
        Client client_found;
        if (this->_server.clientExists(target, client_found))
        {
-            std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+            std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message + "\r\n";
             send(client_found.getFd(), response.c_str(), response.length(), 0);
             return;
        }
@@ -53,7 +52,9 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             std::map<std::string, const Client*>::const_iterator it2;
             for (it2 = clients.begin(); it2 != clients.end(); it2++)
             {
-                std::string response = ":" + client.getNickname() + " PRIVMSG " + target + " :" + message + "\r\n";
+                if (it2->first == client.getNickname())
+                    continue;
+                std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message + "\r\n";
                 send(it2->second->getFd(), response.c_str(), response.length(), 0);
             }
         }
