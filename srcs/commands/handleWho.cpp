@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleWho.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:52:58 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/27 19:56:25 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/01 12:44:26 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,11 @@ void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
 	//Check if channel exists
 	std::map<std::string, Channel> &channels = _server.getChannels();
 	std::map<std::string, Channel>::iterator it = channels.find(channel_name);
+
 	if (it == channels.end()) {
-		std::string endOfWho = std::string(":") + SERVER_NAME + " " + RPL_ENDOFWHO + " " + client.getNickname() + 
-						" " + channel_name + " :End of WHO list\r\n";
-		send(client.getFd(), endOfWho.c_str(), endOfWho.size(), 0);
+		std::vector<std::string> params;
+		params.push_back("WHO");
+		_replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHCHANNEL, params);
 		return;
 	}
 
@@ -41,25 +42,20 @@ void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
 	std::map<std::string, const Client*>::iterator it2;
 	for (it2 = clients.begin(); it2 != clients.end(); it2++) {
 		const Client *user = it2->second;
-		// appen ~ for unregistered users (all users in our case)
-		std::string username = user->getUsername();
-		if (username[0] != '~')
-			username = "~" + username;
-		
 		//flag H inicates that user is Here, 0 is for hopcount
 		//@ indicates that user is an operator
 		std::string flags = "H";
 		if (channel.getOps().find(user->getNickname()) != channel.getOps().end())
-			flags += "@";
+			flags += " @";
 		// :<server> 352 <client> <channel> <username> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 		std::string whoResponse = std::string(":") + SERVER_NAME + " " + RPL_WHOREPLY + " " + client.getNickname() + 
-								" " + channel_name + " " + username + " " + user->getHost() + 
+								" " + channel_name + " " + user->getUsername() + " " + user->getHost() + 
 								" " + SERVER_NAME + " " + user->getNickname() + " " + flags + " :0 " + user->getRealname() + "\r\n";
 		send(client.getFd(), whoResponse.c_str(), whoResponse.size(), 0);
 	}
 
 	//End of WHO list
 	std::string endOfWho = std::string(":") + SERVER_NAME + " " + RPL_ENDOFWHO + " " + client.getNickname() + 
-						" " + channel_name + " :End of /WHO list.\r\n";
+						" " + channel_name + " :End of /WHO list\r\n";
 	send(client.getFd(), endOfWho.c_str(), endOfWho.size(), 0);
 }

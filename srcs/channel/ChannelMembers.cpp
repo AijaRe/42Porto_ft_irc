@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelMembers.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 13:18:08 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/01 13:12:42 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ void Channel::addClient(Client &client)
 	{
 		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key); //it was _name: Uatilla
 		// JOIN message: :<nickname>!<username>@<host> JOIN <channel>
-		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
-						" JOIN " + this->getChannelKey() + "\r\n"; //HERE
+		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + " " + client.getHost() +
+						" JOIN " + this->getChannelKey() + "\r\n";
 		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
         
         // Add the channel to the client's joinedChannels set
