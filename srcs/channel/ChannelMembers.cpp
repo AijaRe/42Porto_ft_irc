@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/01 13:12:42 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/01 16:57:36 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,10 @@ void Channel::addClient(Client &client)
 		
 	else
 	{
-		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key); //it was _name: Uatilla
-		// JOIN message: :<nickname>!<username>@<host> JOIN <channel>
-		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + " " + client.getHost() +
-						" JOIN " + this->getChannelKey() + "\r\n";
+		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key);
+		// JOIN message: :<nickname>!<username>@<host> JOIN <channel> * :<realname>
+		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
+						" JOIN " + this->getChannelKey() + " * :" + client.getRealname() + "\r\n";
 		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
         
         // Add the channel to the client's joinedChannels set
@@ -97,9 +97,15 @@ void Channel::addOp(Client &op)
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
     ret = this->_ops.insert(std::make_pair(op.getNickname(), &op));
     if (ret.second == false)
-        sendError(op.getFd(), "The user " + op.getNickname() + "is already OP .\n");
-    else
-        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + this->_channel_key); //it was _name: Uatilla
+        sendError(op.getFd(), "The user " + op.getNickname() + "is already OP.\r\n");
+    else {
+        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + this->_channel_key);
+        // Set user to OP: :nickname!username@host MODE <channel> +o <nickname>
+        std::string userListMsg = ":" + op.getNickname() + "!" + op.getUsername() + "@" + op.getHost();
+        std::string opMessage = userListMsg + " MODE " + this->getChannelKey() + " +o " + op.getNickname() + "\r\n";
+        send(op.getFd(), opMessage.c_str(), opMessage.length(), 0);
+        //broadcastMessage(this->_clients, opMessage); ????will this be necessary
+    }
 }
 
 const Client* Channel::findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const

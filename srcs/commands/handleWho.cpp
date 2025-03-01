@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:52:58 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/01 12:44:26 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/01 17:13:01 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
 		//@ indicates that user is an operator
 		std::string flags = "H";
 		if (channel.getOps().find(user->getNickname()) != channel.getOps().end())
-			flags += " @";
+			flags += "@";
 		// :<server> 352 <client> <channel> <username> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 		std::string whoResponse = std::string(":") + SERVER_NAME + " " + RPL_WHOREPLY + " " + client.getNickname() + 
 								" " + channel_name + " " + user->getUsername() + " " + user->getHost() + 
@@ -56,6 +56,6 @@ void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
 
 	//End of WHO list
 	std::string endOfWho = std::string(":") + SERVER_NAME + " " + RPL_ENDOFWHO + " " + client.getNickname() + 
-						" " + channel_name + " :End of /WHO list\r\n";
+						" " + channel_name + " :End of /WHO list.\r\n";
 	send(client.getFd(), endOfWho.c_str(), endOfWho.size(), 0);
 }
