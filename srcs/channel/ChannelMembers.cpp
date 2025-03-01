@@ -92,7 +92,10 @@ void Channel::addClient(Client &client)
 	}
 }
 
-void Channel::addOp(Client &op)
+/// @brief Add the client into the channel Op map and send the right messages.
+/// @param op Client reference
+/// @param is_first_op True to first OP, False the OP privileges was given by another Op.
+void Channel::addOp(Client &op, bool is_first_op)
 {
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
     ret = this->_ops.insert(std::make_pair(op.getNickname(), &op));
@@ -100,6 +103,12 @@ void Channel::addOp(Client &op)
         sendError(op.getFd(), "The user " + op.getNickname() + "is already OP .\n");
     else
         logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + this->_channel_key); //it was _name: Uatilla
+    if (!is_first_op)
+    {
+        //:uviana1!~uviana-a1@SpotChat-rns.9p5.48.62.IP MODE #alala +o :uviana11
+        //:
+        std::cout << "to be done" << std::endl;
+    }
 }
 
 const Client* Channel::findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const

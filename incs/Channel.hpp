@@ -30,7 +30,7 @@ class Channel
         ~Channel();
 
         void addClient(Client &client);
-        void addOp(Client &op); //Channel operators
+        void addOp(Client &op, bool is_first_op); //Channel operators
         const Client* findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const;
         bool removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove);
 
