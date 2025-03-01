@@ -128,6 +128,11 @@ std::set<std::string> &Channel::getInviteList()
     return this->_invitedUsers;
 }
 
+/// @brief Broadcast a message to all users (optional) inside a map.
+/// @param user_map Map to receive the message.
+/// @param message Message to be sent.
+/// @param issuer Sender of the message.
+/// @param broadcast_to_all True to send to all users inside the map, False to ignore the issuer.
 void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message, Client &issuer, bool broadcast_to_all)
 {
     std::map<std::string, const Client*>::iterator it;
