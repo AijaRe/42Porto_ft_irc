@@ -34,7 +34,7 @@ class Channel
         const Client* findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const;
         bool removeUser(std::map<std::string, const Client*> &user_map, std::string &user_to_remove);
 
-        void broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message);
+        void broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message, Client &issuer, bool broadcast_to_all);
 
         std::string getName();
         void setName(const std::string &new_name);
