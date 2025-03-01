@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/01 16:57:36 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/01 18:05:55 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,20 @@ void Channel::sendUserList(Client &client)
     send(client.getFd(), userListMsg.c_str(), userListMsg.length(), 0);
 
     // :<server_name> 366 <nickname> <channel> :End of /NAMES list
-    std::string endOfList = std::string(":") + SERVER_NAME + " " + RPL_ENDOFNAMES + " " + client.getNickname() + " " + this->getChannelKey() + " :End of /NAMES list\r\n";
+    std::string endOfList = std::string(":") + SERVER_NAME + " " + RPL_ENDOFNAMES + " " + client.getNickname() + " " + this->getChannelKey() + " :End of /NAMES list.\r\n";
     send(client.getFd(), endOfList.c_str(), endOfList.length(), 0);
 }
 
-void Channel::sendChannelTopic(Client &client)
+void Channel::sendChannelTopic(Client &client, bool from_topic_cmd)
 {
-    if (this->_topic.empty()) {
+    if (this->_topic.empty() && !from_topic_cmd)
+        return ;
+    else if (this->_topic.empty() && from_topic_cmd) {
         // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
         std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
         " " + this->getChannelKey() + " :No topic is set\r\n";
         send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
-    }
-    else {
+    } else {
         // RPL_TOPIC :<server_name> 332 <nickname> <channel> :<topic>
         std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
         " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
@@ -87,7 +88,7 @@ void Channel::addClient(Client &client)
         
         // Add the channel to the client's joinedChannels set
         client.addChannel(this);
-        sendChannelTopic(client);
+        sendChannelTopic(client, false);
         sendUserList(client);
 	}
 }
