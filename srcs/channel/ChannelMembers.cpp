@@ -95,26 +95,22 @@ void Channel::addClient(Client &client)
 /// @brief Add the client into the channel Op map and send the right messages.
 /// @param op Client reference
 /// @param is_first_op True to first OP, False the OP privileges was given by another Op.
-void Channel::addOp(Client &op, bool is_first_op)
+/// @param nick_to_be_op User that will receive op privilege (only if is_first_op = false)
+void Channel::addOp(Client &op, bool is_first_op, const std::string nick_to_be_op)
 {
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
     ret = this->_ops.insert(std::make_pair(op.getNickname(), &op));
-    if (ret.second == false)
-        sendError(op.getFd(), "The user " + op.getNickname() + "is already OP.\r\n");
-    else {
-        logMessage("NEW ADMIN", "Congratulations " + op.getNickname() + ", you are admin of the channel " + this->_channel_key);
-        // Set user to OP: :nickname!username@host MODE <channel> +o <nickname>
-        std::string userListMsg = ":" + op.getNickname() + "!" + op.getUsername() + "@" + op.getHost();
-        std::string opMessage = userListMsg + " MODE " + this->getChannelKey() + " +o " + op.getNickname() + "\r\n";
-        send(op.getFd(), opMessage.c_str(), opMessage.length(), 0);
-        //broadcastMessage(this->_clients, opMessage); ????will this be necessary
-    }
-    if (!is_first_op)
+    if (ret.second!= false) //if success to add into Operator map.
     {
-        //:uviana1!~uviana-a1@SpotChat-rns.9p5.48.62.IP MODE #alala +o :uviana11
-        //:
-        std::cout << "to be done" << std::endl;
-    }
+        if (!is_first_op) //if assigning an user to operator in a already existing channel.
+        {
+            std::string userListMsg = ":" + op.getNickname() + "!~" + op.getUsername() + "@" + op.getHost();
+            std::string opMessage = userListMsg + " MODE " + this->getChannelKey() + " +o :" + nick_to_be_op + "\r\n";
+            this->broadcastMessage(this->getClients(), opMessage, op, true);
+        }
+    }    
+    //:uviana1a!~uviana-a1@SpotChat-rns.9p5.48.62.IP MODE #chana +o :uviana1
+    //:issuer!~user_name@hostname MODE #channel +o :nick_to_get_privilege
 }
 
 const Client* Channel::findUserByName(const std::map<std::string, const Client*> &user_map, const std::string &name) const
