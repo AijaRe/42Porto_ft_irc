@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 19:38:45 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/01 16:09:54 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ Replies::Replies() {
     ircReplies[ERR_NOTREGISTERED] = "You have not registered";
     ircReplies[ERR_USERSDONTMATCH] = "Users don't match";
     ircReplies[ERR_UMODEUNKNOWNFLAG] = "Unknown user mode flag";
+    ircReplies[ERR_UNKNOWNCOMMAND] = "Unknown command/Out of scope";
 
     ircReplies[RPL_WELCOME] = "Welcome to the We Read The Manual Netwok!";
     //ircReplies[RPL_TOPIC] = "Channel topic is";

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:45:12 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 18:44:27 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/01 16:39:32 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,11 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
     else if (cmd == "TEST4")
         handleTest4();
     else
-        sendError(client.getFd(), "Unknown command: " + cmd);
+    {
+        logMessage("INFO", "Unsupported command: " + cmd);
+        std::vector<std::string> params;
+        params.push_back(cmd);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNCOMMAND, params);
+    }
 }
 
