@@ -87,7 +87,7 @@ void CommandHandler::executeKick(Client &issuer, Channel &channel, const std::st
             std::string kickMessage = ":" + issuer.getNickname() + "!~" + issuer.getUsername() + "@" + issuer.getHost() +
                 " KICK " + channel.getChannelKey() + " " + *it2 + " :" + temp + "\r\n";
             
-            channel.broadcastMessage(channel.getClients(), kickMessage);
+            channel.broadcastMessage(channel.getClients(), kickMessage, issuer, true);
             channel.removeUser(channel.getClients(), *it2);
 
             //If the user to kick is op, remove from op list too.

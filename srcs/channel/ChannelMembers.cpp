@@ -128,9 +128,13 @@ std::set<std::string> &Channel::getInviteList()
     return this->_invitedUsers;
 }
 
-void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message)
+void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map, const std::string &message, Client &issuer, bool broadcast_to_all)
 {
     std::map<std::string, const Client*>::iterator it;
     for (it = user_map.begin(); it != user_map.end(); it++)
+    {
+        if (!broadcast_to_all && it->first == issuer.getNickname())
+            continue;
         send(it->second->getFd(), message.c_str(), message.length(), 0);
+    }
 }

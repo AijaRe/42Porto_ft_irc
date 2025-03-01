@@ -50,7 +50,7 @@ void CommandHandler::handleTopic(Client &client, std::istringstream &iss)
     if (chan->setTopic(new_topic, &client))
     {
         // send the topic to all users in the channel
-        chan->broadcastMessage(chan->getClients(), ":" + client.getNickname() + " TOPIC " + chan->getChannelKey() + " :" + new_topic + "\r\n");
+        chan->broadcastMessage(chan->getClients(), ":" + client.getNickname() + " TOPIC " + chan->getChannelKey() + " :" + new_topic + "\r\n", client, true);
     } 
     else 
     {
