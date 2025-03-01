@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/27 12:02:06 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/01 13:22:26 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 #define ERR_NOSUCHCHANNEL          "403" // When the channel doesn't exist // MODE / JOIN / INVITE / TOPIC 
 #define ERR_NOORIGIN               "409" // PING with no token
 #define ERR_NORECIPIENT            "411" // No recipient given
+#define ERR_UNKNOWNCOMMAND         "421" // Unknown command
 #define ERR_ERRONEUSNICKNAME       "432" // NICK : Invalid NickName
 #define ERR_NICKNAMEINUSE          "433" // NICK when a nickname is already in use
 #define ERR_NORULES                "434" // RULES
