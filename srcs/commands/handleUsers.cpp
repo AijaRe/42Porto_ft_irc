@@ -6,43 +6,39 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/03 20:48:48 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/03 21:21:37 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
 void    CommandHandler::welcomeUser(Client &client) {
-    std::string serverVersion = "1.0";
-    // get current timestamp and convert to string
-    std::time_t time_now = std::time(0);
-    std::ostringstream oss;
-    oss << time_now;
-    std::string time_now_str = oss.str();
-
+    
+    std::vector<std::string> emptyParams;
     // 001 <nickname> :Welcome to the WRTM <nickname>!
-    std::vector<std::string> params1;
-    params1.push_back(client.getNickname() + "!");
-    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME, params1);
-
+    std::string nickname_msg = client.getNickname() + "!";
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME, emptyParams, nickname_msg);
+    
     // 002 <nickname> :Your host is <server_name>, running version <version>
-    std::vector<std::string> params2;
-    params2.push_back(_server.getName() + ", running version " + serverVersion);
-    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_YOURHOST, params2);
-
+    std::string server_msg = _server.getName() + ", running version 1.0";
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_YOURHOST, emptyParams, server_msg);
+    
     // 003 <nickname> :This server was created <date>
-    std::vector<std::string> params3;
-    params3.push_back(time_now_str);
-    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_CREATED, params3);
+    // get current timestamp and convert to string in  dd-mm-yyyy format
+    std::time_t time_now = std::time(0);
+    std::tm *now = std::localtime(&time_now);
+    char time_now_str[11];
+    std::strftime(time_now_str, 11, "%d-%m-%Y", now);
+    
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_CREATED, emptyParams, time_now_str);
     
     // 004 <nickname> <server_name> <version> <user_modes> <channel_modes>
-    std::string myInfo = ":" + _server.getName() + RPL_MYINFO + " " + _server.getName() + " " + serverVersion + " o iklot";
+    std::string myInfo = ":" + _server.getName() + " " + RPL_MYINFO + " " + client.getNickname() + " " + _server.getName() + " 1.0 o iklot\r\n";
     _replies.sendMessage(client.getFd(), myInfo);
 
     // Send MOTD
-    std::vector<std::string> motd_start;
-    motd_start.push_back(_server.getName() + " Message of the day -");
-    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_MOTDSTART, motd_start);
+    std::string motd_start = _server.getName() + " Message of the day -";
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_MOTDSTART, emptyParams, motd_start);
     _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_MOTD);
     _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_ENDOFMOTD);
 }

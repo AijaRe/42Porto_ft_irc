@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/03 20:50:46 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/03 21:20:14 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ Replies::Replies() {
     ircReplies[RPL_UMODEIS] = "User mode is";
     ircReplies[RPL_ENDOFWHO] = "End of /WHO list";
     ircReplies[RPL_ENDOFNAMES] = "End of /NAMES list";
-    ircReplies[RPL_MOTDSTART] = "- Message of the day -";
+    ircReplies[RPL_MOTDSTART] = "-";
     ircReplies[RPL_MOTD] = "Dance like no one is watching!";
     ircReplies[RPL_ENDOFMOTD] = "End of /MOTD command.";
 }
@@ -89,7 +89,7 @@ Replies::Replies() {
 
 /* 
 ** Message format:
-** :<server_name> <code> <nickname> <param1> <param2..> :<default_reply_text> <additional_essage>
+** :<server_name> <code> <nickname> <param1> <param2..> :<default_reply_text> <additional_message>
 */
 void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params, const std::string &additionalMessage) {
     std::string targetNickname = nickname.empty() ? "*" : nickname;
@@ -114,6 +114,7 @@ void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickn
     }
     ircMessage += "\r\n";
 
+    logMessage("SEND", ircMessage);
     sendMessage(fd, ircMessage);
 }
 
