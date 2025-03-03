@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelMembers.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/01 18:05:55 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/03 21:46:07 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,14 @@ void Channel::addClient(Client &client)
 	{
 		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key);
 		// JOIN message: :<nickname>!<username>@<host> JOIN <channel> * :<realname>
-		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
-						" JOIN " + this->getChannelKey() + " * :" + client.getRealname() + "\r\n";
-		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
-        
+        // send this message to all users in the channel
+        std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
+                        " JOIN " + this->getChannelKey() + " * :" + client.getRealname() + "\r\n";
+        std::map<std::string, const Client*>::iterator it;
+        for (it = this->_clients.begin(); it != this->_clients.end(); it++)
+        {
+		    send(it->second->getFd(), joinMessage.c_str(), joinMessage.length(), 0);
+        }
         // Add the channel to the client's joinedChannels set
         client.addChannel(this);
         sendChannelTopic(client, false);
