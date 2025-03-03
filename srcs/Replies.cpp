@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/01 16:09:54 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/03 20:50:46 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ Replies::Replies() {
     ircReplies[ERR_UMODEUNKNOWNFLAG] = "Unknown user mode flag";
     ircReplies[ERR_UNKNOWNCOMMAND] = "Unknown command/Out of scope";
 
-    ircReplies[RPL_WELCOME] = "Welcome to the We Read The Manual Netwok!";
+    ircReplies[RPL_WELCOME] = "Welcome to the We Read The Manual Netwok,";
+    ircReplies[RPL_YOURHOST] = "Your host is";
+    ircReplies[RPL_CREATED] = "This server was created";
     //ircReplies[RPL_TOPIC] = "Channel topic is";
     ircReplies[RPL_NOTOPIC] = "No topic is set";
     ircReplies[RPL_INVITING] = "Inviting user to channel";
@@ -55,7 +57,9 @@ Replies::Replies() {
     ircReplies[RPL_UMODEIS] = "User mode is";
     ircReplies[RPL_ENDOFWHO] = "End of /WHO list";
     ircReplies[RPL_ENDOFNAMES] = "End of /NAMES list";
-    
+    ircReplies[RPL_MOTDSTART] = "- Message of the day -";
+    ircReplies[RPL_MOTD] = "Dance like no one is watching!";
+    ircReplies[RPL_ENDOFMOTD] = "End of /MOTD command.";
 }
 
 

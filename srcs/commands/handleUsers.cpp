@@ -3,14 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   handleUsers.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/24 20:58:52 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/03 20:48:48 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
+
+void    CommandHandler::welcomeUser(Client &client) {
+    std::string serverVersion = "1.0";
+    // get current timestamp and convert to string
+    std::time_t time_now = std::time(0);
+    std::ostringstream oss;
+    oss << time_now;
+    std::string time_now_str = oss.str();
+
+    // 001 <nickname> :Welcome to the WRTM <nickname>!
+    std::vector<std::string> params1;
+    params1.push_back(client.getNickname() + "!");
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME, params1);
+
+    // 002 <nickname> :Your host is <server_name>, running version <version>
+    std::vector<std::string> params2;
+    params2.push_back(_server.getName() + ", running version " + serverVersion);
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_YOURHOST, params2);
+
+    // 003 <nickname> :This server was created <date>
+    std::vector<std::string> params3;
+    params3.push_back(time_now_str);
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_CREATED, params3);
+    
+    // 004 <nickname> <server_name> <version> <user_modes> <channel_modes>
+    std::string myInfo = ":" + _server.getName() + RPL_MYINFO + " " + _server.getName() + " " + serverVersion + " o iklot";
+    _replies.sendMessage(client.getFd(), myInfo);
+
+    // Send MOTD
+    std::vector<std::string> motd_start;
+    motd_start.push_back(_server.getName() + " Message of the day -");
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_MOTDSTART, motd_start);
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_MOTD);
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_ENDOFMOTD);
+}
 
 //Parameters: <user> <mode> <unused> <realname>
 /*
@@ -69,7 +104,7 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     client.setPassAuthenticated(true);
     logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
     if (client.isFullyAuthenticated() && !client.isWelcomed()) {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME);
+        welcomeUser(client);
         client.setWelcomed(true);
     }
 }
