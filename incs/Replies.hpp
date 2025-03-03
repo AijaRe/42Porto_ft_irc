@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/03/01 13:22:26 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/03 20:27:04 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 
 //numeric replies
 #define RPL_WELCOME                "001" // Authentication
+#define RPL_YOURHOST               "002" // Hostname
+#define RPL_CREATED                "003" // Server creation date
+#define RPL_MYINFO                 "004" // Server info
 
 #define RPL_UMODEIS                "221" // User mode is
 #define RPL_ENDOFWHO               "315" // End of WHO list
@@ -30,6 +33,9 @@
 #define RPL_WHOREPLY               "352" // WHO reply
 #define RPL_NAMREPLY               "353" // NAMES reply
 #define RPL_ENDOFNAMES             "366" // End of NAMES list
+#define RPL_MOTDSTART              "375" // Start of MOTD
+#define RPL_MOTD                   "372" // MOTD
+#define RPL_ENDOFMOTD              "376" // End of MOTD
 #define RPL_YOUREOPER              "381" // OPER Success Reply
 
 #define ERR_UNKNOWNERROR           "400"

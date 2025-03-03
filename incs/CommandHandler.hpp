@@ -44,6 +44,9 @@ class CommandHandler
             const std::string &channel_key, const std::string &test_param, Channel &channel_found);
         void inviteUser(const std::string &nick_to_invite, Client &client, Channel &channel);*/
         void handleWho(Client &client, std::istringstream &iss);
+
+        void welcomeUser(Client &client);
+        
         void handleTest();
         void handleTest2();
         void handleTest3();
