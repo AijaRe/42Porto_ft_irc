@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:45:12 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/01 16:39:32 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 12:24:19 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         std::string param;
         while (iss >> param)
             params.push_back(param);
+        if(params.empty())
+            return;//para resolver o segfault
         handleMode(client, params);
     }
     else if (cmd == "KICK")
