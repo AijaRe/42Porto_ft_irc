@@ -152,11 +152,14 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                         responseModes += "+l";
                         responseParams += " " + param;
                     }
-                    else
+                    else if (channel->isOperator(client.getNickname()))
                     {
-                        channel->setModeLimit(0);
+                        
+                        channel->setModeLimit(-1);
                         responseModes += "-l";
                     }
+                    else
+                        std::cout << "DEFINIR COMO E A MSG PARA UM CLIENT QUE TENTA DAR -l" << std::endl;
                     break;
 
                 default:
