@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleModes.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 13:29:31 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/04 11:17:32 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
     
     if (params.size() == 1)
     {
-        std::string modeMessage = ":" + _server.getName() + " 324 " + client.getNickname() + " " + target + " :" + channel->getModes() + "\r\n";
-        send(client.getFd(), modeMessage.c_str(), modeMessage.length(), 0);
+        std::string modeMessage = ":" + _server.getName() + " 324 " + client.getNickname() + " " + target + " :" + channel->getModes();
+        sendDirectMessage(client.getFd(), modeMessage);
         return;
     }
     std::vector<std::string> modeParams(params.begin() + 2, params.end());//Parâmetros dos modos

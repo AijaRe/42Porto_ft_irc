@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:32:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/23 20:56:40 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 11:13:23 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,15 @@ std::string trimWhitespace(const std::string &str)
     }
     return str.substr(start, end - start + 1);
 }
+
+void sendDirectMessage(int fd, const std::string &message) {
+    std::stringstream ss;
+    ss << "SEND TO FD: " << fd;  // Convert fd to string
+    logMessage(ss.str(), message);
+    
+    //add /r/n to the message and send it to the client
+    std::string messageToClient = message + "\r\n";
+    send(fd, messageToClient.c_str(), messageToClient.length(), 0);
+}
+
 

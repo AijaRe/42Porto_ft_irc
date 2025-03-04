@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:52:58 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/01 17:15:19 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 12:04:10 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
 			flags += "@";
 		// :<server> 352 <client> <channel> <username> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 		std::string whoResponse = std::string(":") + SERVER_NAME + " " + RPL_WHOREPLY + " " + client.getNickname() + 
-								" " + channel_name + " " + user->getUsername() + " " + user->getHost() + 
-								" " + SERVER_NAME + " " + user->getNickname() + " " + flags + " :0 " + user->getRealname() + "\r\n";
-		send(client.getFd(), whoResponse.c_str(), whoResponse.size(), 0);
+								" " + channel_name + " ~" + user->getUsername() + " " + user->getHost() + 
+								" " + SERVER_NAME + " " + user->getNickname() + " " + flags + " :0 " + user->getRealname();
+		sendDirectMessage(client.getFd(), whoResponse);
 	}
 
 	//End of WHO list
 	std::string endOfWho = std::string(":") + SERVER_NAME + " " + RPL_ENDOFWHO + " " + client.getNickname() + 
-						" " + channel_name + " :End of /WHO list.\r\n";
-	send(client.getFd(), endOfWho.c_str(), endOfWho.size(), 0);
+						" " + channel_name + " :End of /WHO list.";
+	sendDirectMessage(client.getFd(), endOfWho);
 }

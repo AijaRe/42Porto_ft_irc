@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/01 16:57:36 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 12:51:28 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,46 +25,49 @@ void Channel::sendUserList(Client &client)
         //add space before nickname except for the first nickname
         if (it != this->_clients.begin())
             userListMsg += " ";
-        // user format @nickname!username@host
-        userListMsg += "@" + it->first + "!" + it->second->getUsername() + "@" + it->second->getHost();
+        // user format @nickname!username@host - @for operators
+        if (this->_ops.find(it->first) != this->_ops.end())
+            userListMsg += "@" + it->first;
+        else
+            userListMsg += it->first;
         }
-    userListMsg += "\r\n";
-    send(client.getFd(), userListMsg.c_str(), userListMsg.length(), 0);
+    sendDirectMessage(client.getFd(), userListMsg);
 
     // :<server_name> 366 <nickname> <channel> :End of /NAMES list
-    std::string endOfList = std::string(":") + SERVER_NAME + " " + RPL_ENDOFNAMES + " " + client.getNickname() + " " + this->getChannelKey() + " :End of /NAMES list\r\n";
-    send(client.getFd(), endOfList.c_str(), endOfList.length(), 0);
+    std::string endOfList = std::string(":") + SERVER_NAME + " " + RPL_ENDOFNAMES + " " + client.getNickname() + " " + this->getChannelKey() + " :End of /NAMES list.";
+    sendDirectMessage(client.getFd(), endOfList);
 }
 
-void Channel::sendChannelTopic(Client &client)
+void Channel::sendChannelTopic(Client &client, bool from_topic_cmd)
 {
-    if (this->_topic.empty()) {
+    if (this->_topic.empty() && !from_topic_cmd)
+        return ;
+    else if (this->_topic.empty() && from_topic_cmd) {
         // NO TOPIC message: :<server_name> 331 <nickname> <channel> :No topic is set
         std::string noTpicMsg = std::string(":") + SERVER_NAME + " " + RPL_NOTOPIC + " " + client.getNickname() + 
-        " " + this->getChannelKey() + " :No topic is set\r\n";
-        send(client.getFd(), noTpicMsg.c_str(), noTpicMsg.length(), 0);
-    }
-    else {
+        " " + this->getChannelKey() + " :No topic is set";
+        sendDirectMessage(client.getFd(), noTpicMsg);
+    } else {
         // RPL_TOPIC :<server_name> 332 <nickname> <channel> :<topic>
         std::string topicMsg = std::string(":") + SERVER_NAME + " " + RPL_TOPIC + " " + client.getNickname() +
-        " " + this->getChannelKey() + " :" + this->_topic + "\r\n";
-        send(client.getFd(), topicMsg.c_str(), topicMsg.length(), 0);
+                            " " + this->getChannelKey() + " :" + this->_topic;
+        sendDirectMessage(client.getFd(), topicMsg);
         // RPL_TOPICWHOTIME :<server_name> 333 <nickname> <channel> <author_nick>!<author_usr>@<host> <time>            
         std::string who_time_msg = std::string(":") + SERVER_NAME + " " + RPL_TOPICWHOTIME + " " + 
                             client.getNickname() + " " + this->getChannelKey() + " " + _topic_author->getNickname() + "!" +
-                            _topic_author->getUsername() + "@" + _topic_author->getHost() + " " + this->getTopicTime() + "\r\n";
-        send(client.getFd(), who_time_msg.c_str(), who_time_msg.length(), 0);
+                            _topic_author->getUsername() + "@" + _topic_author->getHost() + " " + this->getTopicTime();
+        sendDirectMessage(client.getFd(), who_time_msg);
         return ;
     }
 }
 
 void Channel::addClient(Client &client)
 {
-    //Adicionando veficação de modos
+    //Limit mode verification
     if (hasMode('l') && _clients.size() >= _userlimit)
     {
         std::string message = std::string(":") + SERVER_NAME + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+l)\r\n";
-        send(client.getFd(), message.c_str(), message.length(), 0);
+        sendDirectMessage(client.getFd(), message);
         return;
     }
 
@@ -73,21 +76,24 @@ void Channel::addClient(Client &client)
 	if (ret.second == false)
     {
         std::string message = std::string(":") + SERVER_NAME + " " + ERR_USERONCHANNEL + " " + 
-                            client.getNickname() + " " + this->getName() + " :is already on channel\r\n";
-        send(client.getFd(), message.c_str(), message.length(), 0);
+                            client.getNickname() + " " + this->getName() + " :is already on channel";
+        sendDirectMessage(client.getFd(), message);
     }
 		
 	else
 	{
-		logMessage("JOIN", "Client " + client.getNickname() + " joined channel " + this->_channel_key);
 		// JOIN message: :<nickname>!<username>@<host> JOIN <channel> * :<realname>
-		std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
-						" JOIN " + this->getChannelKey() + " * :" + client.getRealname() + "\r\n";
-		send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
-        
+        // send this message to all users in the channel
+        std::string joinMessage = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + client.getHost() +
+                        " JOIN " + this->getChannelKey() /* + " * :" + client.getRealname() */;
+        std::map<std::string, const Client*>::iterator it;
+        for (it = this->_clients.begin(); it != this->_clients.end(); it++)
+        {
+            sendDirectMessage(it->second->getFd(), joinMessage);
+        }
         // Add the channel to the client's joinedChannels set
         client.addChannel(this);
-        sendChannelTopic(client);
+        sendChannelTopic(client, false);
         sendUserList(client);
 	}
 }
@@ -162,6 +168,6 @@ void    Channel::broadcastMessage(std::map<std::string, const Client*> &user_map
     {
         if (!broadcast_to_all && it->first == issuer.getNickname())
             continue;
-        send(it->second->getFd(), message.c_str(), message.length(), 0);
+        sendDirectMessage(it->second->getFd(), message);
     }
 }

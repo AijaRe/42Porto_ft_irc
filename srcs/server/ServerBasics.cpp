@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerBasics.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/27 21:34:19 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 10:27:48 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	Server::createSocket() {
 	if (bind(_server_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
 		close(_server_fd);
 		delete _command_handler;
-		logMessage("ERROR", "Bind failed.");
+		logMessage("ERROR", "Socket bind failed.");
 		exit(EXIT_FAILURE);
 		//throw std::runtime_error("Error: Bind failed.");
 	}

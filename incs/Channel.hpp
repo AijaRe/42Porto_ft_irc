@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 16:36:21 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:01:33 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ class Channel
         
         void sendToChannel(const std::string &message, const Server &server);
 
-        void sendChannelTopic(Client &client);
+        void sendChannelTopic(Client &client, bool from_topic_cmd);
         void sendUserList(Client &client);
 
         std::map<std::string, const Client*> &getClients();

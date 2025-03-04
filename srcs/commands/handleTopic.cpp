@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleTopic.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:30:33 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/26 21:01:08 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 11:19:15 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ void CommandHandler::handleTopic(Client &client, std::istringstream &iss)
     // send the topic to the client
     if (new_topic.empty())
     {
-        chan->sendChannelTopic(client);
+        chan->sendChannelTopic(client, true);
         return ;
     }
     // setTopic already checks if the client is allowed to set the topic
     if (chan->setTopic(new_topic, &client))
     {
         // send the topic to all users in the channel
-        chan->broadcastMessage(chan->getClients(), ":" + client.getNickname() + " TOPIC " + chan->getChannelKey() + " :" + new_topic + "\r\n", client, true);
+        chan->broadcastMessage(chan->getClients(), ":" + client.getNickname() + " TOPIC " + chan->getChannelKey() + " :" + new_topic, client, true);
     } 
     else 
     {
