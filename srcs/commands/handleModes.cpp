@@ -85,7 +85,6 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 case 'i': // Modo invite-only
                     channel->setMode('i', adding);
                     responseModes += (adding ? "+i" : "-i");
-                    channel->setMode('i', true);
                     break;
 
                 case 't': // Modo de proteção de tópico
@@ -118,7 +117,6 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 case 'o': // Modo de operador
                     if (param.empty())
                     {
-                        std::cout << "REMOVE OP" << std::endl;
                         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
                         return;
                     }
@@ -169,6 +167,11 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
         }
     }
 
-    std::string response = ":" + client.getNickname() + " MODE " + channel->getName() + " " + responseModes + responseParams + "\r\n";
+    //std::string response = ":" + client.getNickname() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
+    std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->getServer().getName() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
+    //>> @time=2025-03-04T16:45:52.382Z :uviana!~uviana1@SpotChat-rns.9p5.48.62.IP MODE #i :+i
+    std::cout << "Response: " << response << std::endl;
+    //>>:uviana!~uviana@SpotChat-rns.9p5.48.62.IP MODE #ci +o :uviana1
+    //nick!~username@host MODE #channel +o :nick_to_get_op
     channel->broadcastMessage(channel->getClients(), response, client, true);
 }
