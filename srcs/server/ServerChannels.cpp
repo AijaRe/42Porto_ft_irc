@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:20:53 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 11:55:13 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,6 @@ void Server::joinExistingChannel(Client &client, Channel &channel, std::string &
 		sendDirectMessage(client.getFd(), messge);
 		return ;
 	}
-
 	channel.addClient(client);
 }
 
@@ -141,8 +140,10 @@ void Server::createNewChannel(Client &client, std::string &channel_key)
 	//Inserting the channel in the server._channels map.
 	std::pair<std::map<std::string, Channel>::iterator, bool> ret;
 	ret = this->_channels.insert(std::make_pair(channel_key, new_channel));
-	if (ret.second == false)
+	if (ret.second == false) {
 		sendError(client.getFd(), "There is already a channel called " + channel_key + ".\n"); //Is this even possible to trigger????
+		return;
+	}
 }
 
 //Channel Key = [Type + Channel name], for example #chan1

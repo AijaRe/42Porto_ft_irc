@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:17:47 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 12:23:37 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,13 @@ void    CommandHandler::updateNickname(Client &client, const std::string &newNic
     std::string host = client.getHost();
 
     client.setNickname(newNickname);
-    logMessage("NICK", "You are now known as " + newNickname);
 
-    // send NICK confirmation to client
+    // send NICK confirmation to client only if the nickname is being changed
     std::string message;
-    if (oldNickname.empty())
-        message = ":" + newNickname + "!" + user + "@" + host + " NICK " + newNickname;
+    if (oldNickname.empty()) {
+        return ;
+        //message = ":" + newNickname + "!" + user + "@" + host + " NICK " + newNickname;
+    }
     else
         message = ":" + oldNickname + "!" + user + "@" + host + " NICK " + newNickname;
     sendDirectMessage(client.getFd(), message);
