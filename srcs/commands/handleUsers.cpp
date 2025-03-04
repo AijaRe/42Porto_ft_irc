@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 10:08:28 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 11:19:40 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void    CommandHandler::welcomeUser(Client &client) {
     _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_CREATED, emptyParams, time_now_str);
     
     // 004 <nickname> <server_name> <version> <user_modes> <channel_modes>
-    std::string myInfo = ":" + _server.getName() + " " + RPL_MYINFO + " " + client.getNickname() + " " + _server.getName() + " 1.0 o iklt\r\n";
+    std::string myInfo = ":" + _server.getName() + " " + RPL_MYINFO + " " + client.getNickname() + " " + _server.getName() + " 1.0 o iklt";
     _replies.sendMessage(client.getFd(), myInfo);
 
     // Send MOTD

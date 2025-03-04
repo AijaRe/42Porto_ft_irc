@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:52:58 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/04 10:37:04 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 11:26:06 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,12 @@ void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
 		// :<server> 352 <client> <channel> <username> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 		std::string whoResponse = std::string(":") + SERVER_NAME + " " + RPL_WHOREPLY + " " + client.getNickname() + 
 								" " + channel_name + " " + user->getUsername() + " " + user->getHost() + 
-								" " + SERVER_NAME + " " + user->getNickname() + " " + flags + " :0 " + user->getRealname() + "\r\n";
+								" " + SERVER_NAME + " " + user->getNickname() + " " + flags + " :0 " + user->getRealname();
 		sendDirectMessage(client.getFd(), whoResponse);
 	}
 
 	//End of WHO list
 	std::string endOfWho = std::string(":") + SERVER_NAME + " " + RPL_ENDOFWHO + " " + client.getNickname() + 
-						" " + channel_name + " :End of /WHO list.\r\n";
+						" " + channel_name + " :End of /WHO list.";
 	sendDirectMessage(client.getFd(), endOfWho);
 }

@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 10:39:05 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 11:17:32 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
     
     if (params.size() == 1)
     {
-        std::string modeMessage = ":" + _server.getName() + " 324 " + client.getNickname() + " " + target + " :" + channel->getModes() + "\r\n";
+        std::string modeMessage = ":" + _server.getName() + " 324 " + client.getNickname() + " " + target + " :" + channel->getModes();
         sendDirectMessage(client.getFd(), modeMessage);
         return;
     }
@@ -164,7 +164,7 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
 
     if (!responseModes.empty())//Se houver modos a serem enviados
     {
-        std::string response = ":" + client.getNickname() + " MODE " + channel->getName() + " " + responseModes + responseParams + "\r\n";
+        std::string response = ":" + client.getNickname() + " MODE " + channel->getName() + " " + responseModes + responseParams;
         sendDirectMessage(client.getFd(), response);
     }
 }
