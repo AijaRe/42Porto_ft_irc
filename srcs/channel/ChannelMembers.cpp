@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelMembers.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 14:26:42 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 16:37:58 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,6 @@ void Channel::sendChannelTopic(Client &client, bool from_topic_cmd)
 
 void Channel::addClient(Client &client)
 {
-    //Limit mode verification
-    if (hasMode('l') && _clients.size() >= _userlimit)
-    {
-        std::string message = std::string(":") + SERVER_NAME + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + this->getChannelKey() + " :Cannot join channel (+l)\r\n";
-        sendDirectMessage(client.getFd(), message);
-        return;
-    }
-
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
 	ret = this->_clients.insert(std::make_pair(client.getNickname(), &client));
 	if (ret.second == false)
