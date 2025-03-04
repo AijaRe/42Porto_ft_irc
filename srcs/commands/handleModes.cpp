@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleModes.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:17:32 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 17:25:00 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 case 'i': // Modo invite-only
                     channel->setMode('i', adding);
                     responseModes += (adding ? "+i" : "-i");
-                    channel->setMode('i', true);
                     break;
 
                 case 't': // Modo de proteção de tópico
@@ -96,7 +95,6 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 case 'k': // Modo de senha
                     if (adding)
                     {
-                        //std::cout << "PARAM RECEBIDO PARA +k: [" << param << "]" << std::endl;//DEBUG
                         if (param.empty())
                         {
                             _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
@@ -151,6 +149,7 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                             return;
                         }
                         channel->setModeLimit(limit);
+                        channel->setMode('l', true);
                         responseModes += "+l";
                         responseParams += " " + param;
                     }
