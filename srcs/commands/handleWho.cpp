@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:52:58 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/04 12:04:10 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 14:27:11 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
 			flags += "@";
 		// :<server> 352 <client> <channel> <username> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
 		std::string whoResponse = std::string(":") + SERVER_NAME + " " + RPL_WHOREPLY + " " + client.getNickname() + 
-								" " + channel_name + " ~" + user->getUsername() + " " + user->getHost() + 
+								" " + channel_name + " " + user->getUsername() + " " + user->getHost() + 
 								" " + SERVER_NAME + " " + user->getNickname() + " " + flags + " :0 " + user->getRealname();
 		sendDirectMessage(client.getFd(), whoResponse);
 	}

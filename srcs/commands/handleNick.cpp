@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 12:23:37 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 14:22:00 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@
 ** A nickname cannot contain leading digits
 ** A nickname can contain only alphanumerical characters, ([]{}), (\), (|), (_) characters
 */
-bool isValidNickname(const std::string &nickname)
+bool CommandHandler::isValidName(const std::string &name)
 {
-    if (std::isdigit(nickname[0]))
+    if (std::isdigit(name[0]))
         return false;
-    for (size_t i = 0; i < nickname.length(); i++)
+    for (size_t i = 0; i < name.length(); i++)
     {
-        if (!std::isalnum(nickname[i]) && nickname[i] != '[' && nickname[i] != ']' && 
-            nickname[i] != '{' && nickname[i] != '}' && nickname[i] != '\\' && 
-            nickname[i] != '|' && nickname[i] != '_')
+        if (!std::isalnum(name[i]) && name[i] != '[' && name[i] != ']' && 
+            name[i] != '{' && name[i] != '}' && name[i] != '\\' && 
+            name[i] != '|' && name[i] != '_')
             return false;
     }
     return true;
@@ -62,7 +62,7 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
         return;
     }
     // ERR_ERRONEUSNICKNAME (432) - Invalid characters or format
-    if (nickname.length() > 9 || !isValidNickname(nickname))
+    if (nickname.length() > 9 || !isValidName(nickname))
     {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ERRONEUSNICKNAME);
         return;

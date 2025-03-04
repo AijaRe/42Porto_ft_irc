@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 12:51:28 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 14:26:42 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void Channel::addClient(Client &client)
 	{
 		// JOIN message: :<nickname>!<username>@<host> JOIN <channel> * :<realname>
         // send this message to all users in the channel
-        std::string joinMessage = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + client.getHost() +
+        std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
                         " JOIN " + this->getChannelKey() /* + " * :" + client.getRealname() */;
         std::map<std::string, const Client*>::iterator it;
         for (it = this->_clients.begin(); it != this->_clients.end(); it++)
