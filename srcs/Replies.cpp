@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 10:47:08 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 11:14:05 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,30 +63,6 @@ Replies::Replies() {
 }
 
 
-//:<servidor> <código numérico> <nickname> :<mensagem textual>
-
-/*void Replies::sendIrcError(int fd, const Server &server, const std::string &nickname, const std::string &errorCode, const std::string &additionalMessage)
-{
-    std::string targetNickname = nickname.empty() ? "[user_not_registered]" : nickname;
-
-    std::map<std::string, std::string>::const_iterator it = ircReplies.find(errorCode);
-    if (it == ircReplies.end())
-    {
-        it = ircReplies.find("400");
-        if (it == ircReplies.end()) {
-            return;
-        }
-    }
-
-    std::string errorMessage = ":" + server.getName() + " " + errorCode + " " + targetNickname + " :" + it->second;
-    if (!additionalMessage.empty()) {
-        errorMessage += " " + additionalMessage;
-    }
-    errorMessage += "\r\n";
-
-    sendMessage(fd, errorMessage);
-}*/
-
 /* 
 ** Message format:
 ** :<server_name> <code> <nickname> <param1> <param2..> :<default_reply_text> <additional_message>
@@ -112,14 +88,16 @@ void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickn
     if (!additionalMessage.empty()) {
         ircMessage += " " + additionalMessage;
     }
-    ircMessage += "\r\n";
 
     sendMessage(fd, ircMessage);
 }
 
 void Replies::sendMessage(int fd, const std::string &message) {
-    send(fd, message.c_str(), message.length(), 0);
     std::stringstream ss;
     ss << "SEND TO FD: " << fd;  // Convert fd to string
     logMessage(ss.str(), message);
+    
+    //add /r/n to the message and send it to the client
+    std::string messageToClient = message + "\r\n";
+    send(fd, messageToClient.c_str(), messageToClient.length(), 0);
 }

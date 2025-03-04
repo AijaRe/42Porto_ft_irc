@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 10:41:51 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 11:20:53 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ bool Server::checkUserChannelLimit(Client &client, std::string &channel_key)
 {
 	if (client.joinedChannels.size() >= USR_MAX_CHANNELS)
 	{
-		std::string messge = ":" + this->getName() + " " + ERR_TOOMANYCHANNELS + " " + client.getNickname() + " " + channel_key + " :You have joined too many channels\r\n";
+		std::string messge = ":" + this->getName() + " " + ERR_TOOMANYCHANNELS + " " + client.getNickname() + " " + channel_key + " :You have joined too many channels";
 		sendDirectMessage(client.getFd(), messge);
 		return false;
 	}
@@ -80,20 +80,20 @@ bool Server::validChannelName(Client &client, std::string &channel_key)
 {
 	if (channel_key.empty())
 	{
-		std::string messge = ":" + this->getName() + " " + ERR_NEEDMOREPARAMS + " " + client.getNickname() + " JOIN :Not enough parameters\r\n";
+		std::string messge = ":" + this->getName() + " " + ERR_NEEDMOREPARAMS + " " + client.getNickname() + " JOIN :Not enough parameters";
 		sendDirectMessage(client.getFd(), messge);
 		return false;
 	}
 	int channel_type = this->checkChannelType(channel_key);
 	if (channel_type == USER)
 	{
-		std::string messge = ":" + this->getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + channel_key + " :No such channel\r\n";
+		std::string messge = ":" + this->getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + channel_key + " :No such channel";
 		sendDirectMessage(client.getFd(), messge);
 		return false;
 	}
 	if (!isValidChannelName(channel_key) || (channel_type != CH_STANDARD))
 	{
-		std::string messge = ":" + this->getName() + " " + ERR_BADCHANMASK + " " + client.getNickname() + " " + channel_key + " :Invalid channel name\r\n";
+		std::string messge = ":" + this->getName() + " " + ERR_BADCHANMASK + " " + client.getNickname() + " " + channel_key + " :Invalid channel name";
 		sendDirectMessage(client.getFd(), messge);
 		return false;
 	}
@@ -105,7 +105,7 @@ void Server::joinExistingChannel(Client &client, Channel &channel, std::string &
 	//check if channel requires a password
 	if (channel.hasMode('k') && (channel.getModePass() != channel_password || channel_password.empty()))	
 	{
-		std::string messge = ":" + this->getName() + " " + ERR_BADCHANNELKEY + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+k)\r\n";
+		std::string messge = ":" + this->getName() + " " + ERR_BADCHANNELKEY + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+k)";
 		sendDirectMessage(client.getFd(), messge);
 		return ;
 	}
@@ -114,7 +114,7 @@ void Server::joinExistingChannel(Client &client, Channel &channel, std::string &
     {
 		if (!channel.isInvited(client.getNickname())) 
 		{
-			std::string messge = ":" + this->getName() + " " + ERR_INVITEONLYCHAN + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+i)\r\n";
+			std::string messge = ":" + this->getName() + " " + ERR_INVITEONLYCHAN + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+i)";
 			sendDirectMessage(client.getFd(), messge);
 			return ;
 		}
@@ -124,7 +124,7 @@ void Server::joinExistingChannel(Client &client, Channel &channel, std::string &
 	//check if channel is full
 	if (channel.hasMode('l') && channel.getClients().size() >= channel.getUserLimit())
 	{
-		std::string messge = ":" + this->getName() + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+l)\r\n";
+		std::string messge = ":" + this->getName() + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+l)";
 		sendDirectMessage(client.getFd(), messge);
 		return ;
 	}
