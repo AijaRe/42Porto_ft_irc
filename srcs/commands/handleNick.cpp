@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleNick.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 20:07:50 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 10:39:21 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void    CommandHandler::updateNickname(Client &client, const std::string &newNic
         message = ":" + newNickname + "!" + user + "@" + host + " NICK " + newNickname + "\r\n";
     else
         message = ":" + oldNickname + "!" + user + "@" + host + " NICK " + newNickname + "\r\n";
-    send(client.getFd(), message.c_str(), message.length(), 0);
+    sendDirectMessage(client.getFd(), message);
 }
 
 //unique nickname having a maximum length of nine (9) characters.

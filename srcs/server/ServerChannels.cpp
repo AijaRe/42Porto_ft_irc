@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerChannels.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 21:04:30 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 10:41:51 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ bool Server::checkUserChannelLimit(Client &client, std::string &channel_key)
 	if (client.joinedChannels.size() >= USR_MAX_CHANNELS)
 	{
 		std::string messge = ":" + this->getName() + " " + ERR_TOOMANYCHANNELS + " " + client.getNickname() + " " + channel_key + " :You have joined too many channels\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		sendDirectMessage(client.getFd(), messge);
 		return false;
 	}
 	return true;
@@ -81,20 +81,20 @@ bool Server::validChannelName(Client &client, std::string &channel_key)
 	if (channel_key.empty())
 	{
 		std::string messge = ":" + this->getName() + " " + ERR_NEEDMOREPARAMS + " " + client.getNickname() + " JOIN :Not enough parameters\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		sendDirectMessage(client.getFd(), messge);
 		return false;
 	}
 	int channel_type = this->checkChannelType(channel_key);
 	if (channel_type == USER)
 	{
 		std::string messge = ":" + this->getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + channel_key + " :No such channel\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		sendDirectMessage(client.getFd(), messge);
 		return false;
 	}
 	if (!isValidChannelName(channel_key) || (channel_type != CH_STANDARD))
 	{
 		std::string messge = ":" + this->getName() + " " + ERR_BADCHANMASK + " " + client.getNickname() + " " + channel_key + " :Invalid channel name\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		sendDirectMessage(client.getFd(), messge);
 		return false;
 	}
 	return true;
@@ -102,18 +102,11 @@ bool Server::validChannelName(Client &client, std::string &channel_key)
 
 void Server::joinExistingChannel(Client &client, Channel &channel, std::string &channel_key, std::string &channel_password)
 {
-	//DEBUG MESSAGES
-	if (channel.hasMode('k')) {
-		std::cout << "Mode +k activated? " << (channel.hasMode('k') ? "true" : "false") << std::endl;
-   		std::cout << "Password provided: " << channel_password << std::endl;
-    	std::cout << "Channel password: " << channel.getModePass() << std::endl;
-	}
 	//check if channel requires a password
 	if (channel.hasMode('k') && (channel.getModePass() != channel_password || channel_password.empty()))	
 	{
-		logMessage("JOIN", "Mode k. Incorrect password");
 		std::string messge = ":" + this->getName() + " " + ERR_BADCHANNELKEY + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+k)\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		sendDirectMessage(client.getFd(), messge);
 		return ;
 	}
 	//check if channel is invite only
@@ -121,9 +114,8 @@ void Server::joinExistingChannel(Client &client, Channel &channel, std::string &
     {
 		if (!channel.isInvited(client.getNickname())) 
 		{
-			std::cout << "User is not in the invited list." << std::endl;
 			std::string messge = ":" + this->getName() + " " + ERR_INVITEONLYCHAN + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+i)\r\n";
-			send(client.getFd(), messge.c_str(), messge.length(), 0);
+			sendDirectMessage(client.getFd(), messge);
 			return ;
 		}
 		// If the user was invited, we can remove him from the invited list, since he is entering.
@@ -133,7 +125,7 @@ void Server::joinExistingChannel(Client &client, Channel &channel, std::string &
 	if (channel.hasMode('l') && channel.getClients().size() >= channel.getUserLimit())
 	{
 		std::string messge = ":" + this->getName() + " " + ERR_CHANNELISFULL + " " + client.getNickname() + " " + channel_key + " :Cannot join channel (+l)\r\n";
-		send(client.getFd(), messge.c_str(), messge.length(), 0);
+		sendDirectMessage(client.getFd(), messge);
 		return ;
 	}
 

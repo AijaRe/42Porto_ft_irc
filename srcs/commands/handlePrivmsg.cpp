@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handlePrivmsg.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: uviana-a <uviana-a@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:58:52 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/16 18:58:54 by uviana-a         ###   ########.fr       */
+/*   Updated: 2025/03/04 10:43:42 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
        if (this->_server.clientExists(target, client_found))
        {
             std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message + "\r\n";
-            send(client_found.getFd(), response.c_str(), response.length(), 0);
+            sendDirectMessage(client_found.getFd(), response);
             return;
        }
        else //client não encontrado.
        {
            std::string response = ":" + _server.getName() + " " + ERR_NOSUCHNICK + " " + client.getNickname() + " " + target + " :No such nick" + "\r\n";
-           send(client.getFd(), response.c_str(), response.length(), 0);
+           sendDirectMessage(client.getFd(), response);
        }
     }
     else
@@ -55,13 +55,13 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
                 if (it2->first == client.getNickname())
                     continue;
                 std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message + "\r\n";
-                send(it2->second->getFd(), response.c_str(), response.length(), 0);
+                sendDirectMessage(it2->second->getFd(), response);
             }
         }
         else
         {
             std::string response = ":" + _server.getName() + " " + ERR_NOSUCHCHANNEL + " " + client.getNickname() + " " + target + " :No such channel" + "\r\n";
-            send(client.getFd(), response.c_str(), response.length(), 0);
+            sendDirectMessage(client.getFd(), response);
         }
     }    
 }
