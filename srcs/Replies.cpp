@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/03 21:20:14 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 10:47:08 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,12 @@ void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickn
     }
     ircMessage += "\r\n";
 
-    logMessage("SEND", ircMessage);
     sendMessage(fd, ircMessage);
 }
 
 void Replies::sendMessage(int fd, const std::string &message) {
     send(fd, message.c_str(), message.length(), 0);
+    std::stringstream ss;
+    ss << "SEND TO FD: " << fd;  // Convert fd to string
+    logMessage(ss.str(), message);
 }

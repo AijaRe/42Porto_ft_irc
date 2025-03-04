@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/02/26 19:27:41 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 10:29:42 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,11 @@
 
 void logMessage(const std::string &type, const std::string &message);
 void sendError(int fd, const std::string& message);
-void sendMessage(int fd, const std::string &message);
 void sendReturn(int fd, const std::string& message);
+void sendDirectMessage(int fd, const std::string &message);
 std::vector<std::string> splitString(const std::string &str, char delim);
 std::string trimWhitespace(const std::string &str);
+
 
 
 #endif
