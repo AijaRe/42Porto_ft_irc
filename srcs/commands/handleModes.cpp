@@ -70,7 +70,7 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
         {
             std::string param;
 
-            if ((mode == 'k' || mode == 'l' || mode == 'o') && adding)
+            if ((mode == 'k' || mode == 'l' || mode == 'o'))// removi o: && adding
             {
                 if(paramIndex >= params.size())
                 {
@@ -118,11 +118,18 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 case 'o': // Modo de operador
                     if (param.empty())
                     {
+                        std::cout << "REMOVE OP" << std::endl;
                         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
                         return;
                     }
                     if (adding)
-                        channel->addOperator(param);
+                    {
+                        if (!channel->assignOperator(param))
+                        {
+                            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
+                            return;
+                        }
+                    }
                     else
                         channel->removeOperator(param);
                     responseModes += (adding ? "+o" : "-o");
@@ -157,14 +164,11 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 default:
                     std::vector<std::string> modeVec(1, std::string(1, mode));
                     _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNMODE, modeVec);
-                    break;
+                    return;
             }
         }
     }
 
-    if (!responseModes.empty())//Se houver modos a serem enviados
-    {
-        std::string response = ":" + client.getNickname() + " MODE " + channel->getName() + " " + responseModes + responseParams + "\r\n";
-        send(client.getFd(), response.c_str(), response.length(), 0);
-    }
+    std::string response = ":" + client.getNickname() + " MODE " + channel->getName() + " " + responseModes + responseParams + "\r\n";
+    channel->broadcastMessage(channel->getClients(), response, client, true);
 }

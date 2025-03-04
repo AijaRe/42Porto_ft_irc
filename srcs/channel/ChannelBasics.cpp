@@ -29,7 +29,7 @@ Channel::Channel(Client &client, const std::string &name, const int &type)
     setMode('t', true); // Mode +t (topic set by channel operator only)
     
     addClient(client);
-    addOp(client, true, NULL);
+    addOp(client);
 }
 
 Channel::~Channel()
