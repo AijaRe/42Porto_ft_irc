@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:02:57 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/22 12:37:16 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 15:12:21 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Client
         std::string getUsername() const;
         const std::string &getRealname() const;
         std::string getModes() const;
+        std::string getTmpPass() const;
         
         void setNickname(const std::string &nickname);
         void setUsername(const std::string &username);
@@ -40,6 +41,7 @@ class Client
         void setMode(char mode, bool enable);
         void setPassAuthenticated(bool status);
         void setWelcomed(bool welcomed);
+        void setTmpPass(const std::string &new_pass);
 
         //bool isAuthenticated() const;
         bool passAuthenticated() const;
@@ -55,7 +57,8 @@ class Client
     private:
         int _fd;
         std::string _host;
-        bool _passAuthenticated;
+        bool _pass_authenticated;
+        std::string _tmp_pass;
         std::string _nickname;
         std::string _username;
         std::string _realname;

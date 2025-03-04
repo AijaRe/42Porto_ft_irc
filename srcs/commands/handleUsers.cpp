@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:19:40 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 15:40:42 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
         return;
     }
 
-    if (!client.passAuthenticated()) {
+    if (client.passAuthenticated() && !client.getNickname().empty() && !client.getUsername().empty()) {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
         return;
     }
@@ -84,7 +84,11 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
         return;
     }
-
+    
+    if (!isValidName(username)) {
+        _replies.sendMessage(client.getFd(), "Invalid username");
+        return;
+    }
     client.setUsername(username);
     client.setRealname(realname);
 
@@ -98,7 +102,8 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     }
 
     client.setPassAuthenticated(true);
-    logMessage("USER", "Client set username to: " + username + ", realname to: " + realname);
+
+    logMessage("USER", "Client set username to: " + client.getUsername() + ", realname to: " + client.getRealname());
     if (client.isFullyAuthenticated() && !client.isWelcomed()) {
         welcomeUser(client);
         client.setWelcomed(true);

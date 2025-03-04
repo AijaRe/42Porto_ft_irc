@@ -16,6 +16,7 @@ class CommandHandler
         ~CommandHandler();
         void handleCommand(Client &client, const std::string &command);
         bool isClientAllowedToProceed(Client &client, const std::string &cmd);
+        bool isValidName(const std::string &nickname);
         const Server &getServer() const;
         Replies _replies;
     private:
@@ -46,6 +47,7 @@ class CommandHandler
         void handleWho(Client &client, std::istringstream &iss);
 
         void welcomeUser(Client &client);
+
         
         void handleTest();
         void handleTest2();

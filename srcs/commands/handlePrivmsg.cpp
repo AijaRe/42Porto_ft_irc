@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:58:52 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:18:52 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 14:27:06 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
        Client client_found;
        if (this->_server.clientExists(target, client_found))
        {
-            std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message;
+            std::string response = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message;
             sendDirectMessage(client_found.getFd(), response);
             return;
        }
@@ -54,7 +54,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             {
                 if (it2->first == client.getNickname())
                     continue;
-                std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message;
+                std::string response = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message;
                 sendDirectMessage(it2->second->getFd(), response);
             }
         }

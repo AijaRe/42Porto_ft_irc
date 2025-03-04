@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:17:02 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:16:56 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 14:26:55 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void CommandHandler::executeKick(Client &issuer, Channel &channel, const std::st
             if (temp.empty())
                 temp = issuer.getNickname();
             
-            std::string kickMessage = ":" + issuer.getNickname() + "!~" + issuer.getUsername() + "@" + issuer.getHost() +
+            std::string kickMessage = ":" + issuer.getNickname() + "!" + issuer.getUsername() + "@" + issuer.getHost() +
                 " KICK " + channel.getChannelKey() + " " + *it2 + " :" + temp;
             
             channel.broadcastMessage(channel.getClients(), kickMessage, issuer, true);

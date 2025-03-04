@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/02/22 14:45:52 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 15:18:02 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 Client::Client() : _fd(-1) {} //fd -1 means not connected
 
-Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _passAuthenticated(false), _nickname(""), _username(""), _welcomed(false) {}
+Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _pass_authenticated(false), _tmp_pass(""),
+                                                    _nickname(""), _username(""), _welcomed(false) {}
 
 Client::~Client() {}
 
@@ -47,6 +48,10 @@ std::string Client::getModes() const {
     return _modes.empty() ? "+" : "+" + _modes; // Retorna os modos do usuário
 }
 
+std::string Client::getTmpPass() const {
+    return _tmp_pass;
+}
+
 void Client::setNickname(const std::string &nickname)
 {
     _nickname = nickname;
@@ -54,7 +59,7 @@ void Client::setNickname(const std::string &nickname)
 
 void Client::setUsername(const std::string &username)
 {
-    _username = username;
+    _username = "~" + username;
 }
 
 void Client::setRealname(const std::string &realname) {
@@ -70,13 +75,17 @@ void Client::setMode(char mode, bool enable) {
     }
 }
 
+void Client::setTmpPass(const std::string &new_pass) {
+    _tmp_pass = new_pass;
+}
+
 bool Client::hasMode(char mode) const {
     return _modes.find(mode) != std::string::npos;
 }
 
 bool Client::passAuthenticated() const
 {
-    return _passAuthenticated;
+    return _pass_authenticated;
 }
 
 bool Client::isFullyAuthenticated() const {
@@ -85,7 +94,7 @@ bool Client::isFullyAuthenticated() const {
 
 void Client::setPassAuthenticated(bool status)
 {
-    _passAuthenticated = status;
+    _pass_authenticated = status;
 }
 
 bool Client::isConnected() const { return _fd != -1; }
