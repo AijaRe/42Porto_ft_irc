@@ -53,6 +53,7 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
 
 void CommandHandler::processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params) {
     bool adding = true;
+    std::string response;
     std::string responseModes;
     std::string responseParams;
 
@@ -171,7 +172,8 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
     }
 
     //std::string response = ":" + client.getNickname() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
-    std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->getServer().getName() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
+    if (response.empty())
+        response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->getServer().getName() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
     //>> @time=2025-03-04T16:45:52.382Z :uviana!~uviana1@SpotChat-rns.9p5.48.62.IP MODE #i :+i
     std::cout << "Response: " << response << std::endl;
     //>>:uviana!~uviana@SpotChat-rns.9p5.48.62.IP MODE #ci +o :uviana1
