@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 17:25:00 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/04 18:33:47 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,11 +142,11 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                             return;
                         }
                         int limit = std::atoi(param.c_str());
-                        if (limit <= 0)
+                        /*if (limit <= 0)
                         {
                             _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNMODE);
                             return;
-                        }
+                        }*/
                         channel->setModeLimit(limit);
                         channel->setMode('l', true);
                         responseModes += "+l";
@@ -154,12 +154,14 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                     }
                     else if (channel->isOperator(client.getNickname()))
                     {
-                        
                         channel->setModeLimit(-1);
                         responseModes += "-l";
                     }
                     else
-                        std::cout << "DEFINIR COMO E A MSG PARA UM CLIENT QUE TENTA DAR -l" << std::endl;
+                    {
+                        std::string responseL = ":" + _server.getName() + " 482 " + client.getNickname() + " " + channel->getChannelKey() + " :You must be a channel halfop or higher to unset channel mode l (limit).";    
+                        _replies.sendMessage(client.getFd(), responseL);
+                    }
                     break;
 
                 default:
