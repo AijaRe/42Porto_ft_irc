@@ -70,7 +70,7 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
         {
             std::string param;
 
-            if ((mode == 'k' || mode == 'l' || mode == 'o'))// removi o: && adding
+            if ((mode == 'k' || mode == 'l' || mode == 'o'))
             {
                 if(paramIndex >= params.size())
                 {
