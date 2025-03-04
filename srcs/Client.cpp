@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/03/04 15:18:02 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 16:40:43 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 Client::Client() : _fd(-1) {} //fd -1 means not connected
 
-Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _pass_authenticated(false), _tmp_pass(""),
+Client::Client(int fd, const std::string &host) : _fd(fd), _host(host), _pass_authenticated(false),
                                                     _nickname(""), _username(""), _welcomed(false) {}
 
 Client::~Client() {}
@@ -48,10 +48,6 @@ std::string Client::getModes() const {
     return _modes.empty() ? "+" : "+" + _modes; // Retorna os modos do usuário
 }
 
-std::string Client::getTmpPass() const {
-    return _tmp_pass;
-}
-
 void Client::setNickname(const std::string &nickname)
 {
     _nickname = nickname;
@@ -73,10 +69,6 @@ void Client::setMode(char mode, bool enable) {
     } else if (!enable && pos != std::string::npos) {
         _modes.erase(pos, 1); // Remove o modo se estiver presente
     }
-}
-
-void Client::setTmpPass(const std::string &new_pass) {
-    _tmp_pass = new_pass;
 }
 
 bool Client::hasMode(char mode) const {

@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:01:45 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 16:26:02 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/04 16:41:07 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void CommandHandler::handlePass(Client &client, std::istringstream &iss)
 
     if (password != _server.getPassword()) {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_PASSWDMISMATCH);
-        client.setTmpPass("");
         return;
     } 
 
