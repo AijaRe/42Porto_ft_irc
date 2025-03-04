@@ -28,8 +28,8 @@ Channel::Channel(Client &client, const std::string &name, const int &type)
 	setMode('n', true); // Mode +n (no external messages)
     setMode('t', true); // Mode +t (topic set by channel operator only)
     
+    addOp(client);
     addClient(client);
-    addOp(client, true);
 }
 
 Channel::~Channel()
