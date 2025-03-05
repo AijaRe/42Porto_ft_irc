@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:14:05 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/05 21:31:49 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ Replies::Replies() {
     ircReplies[ERR_NOSUCHCHANNEL] = "No such channel";
     ircReplies[ERR_CHANNELISFULL] = "Cannot join channel (+l)";
     ircReplies[ERR_BADCHANMASK] = "Invalid channel name";
+    ircReplies[ERR_NOTONCHANNEL] = "You're not on that channel";
     ircReplies[ERR_NOPRIVS] = "No privileges";
     ircReplies[ERR_PASSWDMISMATCH] = "Password incorrect";
     ircReplies[ERR_KEYSET] = "Channel key already set";

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelMembers.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:37:20 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 16:37:58 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/05 19:58:10 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void Channel::sendUserList(Client &client)
         //add space before nickname except for the first nickname
         if (it != this->_clients.begin())
             userListMsg += " ";
-        // user format @nickname!username@host - @for operators
+        // user format @nickname - @for operators
         if (this->_ops.find(it->first) != this->_ops.end())
             userListMsg += "@" + it->first;
         else
@@ -77,7 +77,7 @@ void Channel::addClient(Client &client)
 		// JOIN message: :<nickname>!<username>@<host> JOIN <channel> * :<realname>
         // send this message to all users in the channel
         std::string joinMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() +
-                        " JOIN " + this->getChannelKey() /* + " * :" + client.getRealname() */;
+                        " JOIN " + this->getChannelKey() + " * :" + client.getRealname();
         std::map<std::string, const Client*>::iterator it;
         for (it = this->_clients.begin(); it != this->_clients.end(); it++)
         {
@@ -118,7 +118,7 @@ void Channel::addOp(Client &op)
     std::pair<std::map<std::string, const Client*>::iterator, bool> ret;
     ret = this->_ops.insert(std::make_pair(op.getNickname(), &op));
     if (ret.second == false)
-        sendError(op.getFd(), "The user " + op.getNickname() + "is already OP.\r\n");
+        sendError(op.getFd(), "The user " + op.getNickname() + "is already OP.");
 }
 
 
