@@ -6,7 +6,7 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:17:50 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 16:04:55 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/05 13:29:43 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,23 @@ void CommandHandler::handleInvite(Client &client, std::istringstream &iss)//INVI
     }
     
     channel->addInvitedUser(targetNickname);
-    std::string responseInvite = ":" + _server.getName() + " 341 " + client.getNickname() + " " + targetClient->getNickname() + " :" + channelName;
+    
+    /*std::string responseInvite = ":" + _server.getName() + " 341 " + client.getNickname() + " " + targetClient->getNickname() + " :" + channelName;
     std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;    
     _replies.sendMessage(client.getFd(), responseInvite);
-    _replies.sendMessage(client.getFd(), response);
+    _replies.sendMessage(client.getFd(), response);*/
+
+    // Mensagem para o cliente que convidou
+    std::string responseInvite = ":" + _server.getName() + " 341 " + client.getNickname() + " " + targetClient->getNickname() + " :" + channelName;
+    _replies.sendMessage(client.getFd(), responseInvite);
+
+    // Mensagem para o cliente convidado
+    std::string responseGuest = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;
+    _replies.sendMessage(targetClient->getFd(), responseGuest);
+
+    // Mensagem para o canal
+    std::string channelMessage = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;
+    channel->broadcastMessage(channel->getClients(), channelMessage, client, true);
 }
+
    
