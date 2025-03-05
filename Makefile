@@ -13,7 +13,7 @@
 CXX = c++
 RM = rm -rf
 
-CXXFLAGS 	= -Wall -Werror -Wextra -pedantic-errors -std=c++98  #-fsanitize=address 
+CXXFLAGS 	= -Wall -Werror -Wextra -pedantic-errors -std=c++98  -fsanitize=address 
 
 #generate dependency files
 CPPFLAGS	= -MMD
