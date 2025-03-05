@@ -38,12 +38,13 @@ class CommandHandler
             std::vector<std::string> &users_to_kick, std::vector<std::string> &params);
         void handleCap(Client &client, std::istringstream &iss);
         void handleMode(Client &client, const std::vector<std::string> &params);
+        void passMode(Client &client, Channel *channel, const bool& adding, std::string &param, std::string &responseModes, std::string &responseParams);
+        void operatorMode(Client &client, Channel *channel, const bool& adding, std::string &param, std::string &responseModes, std::string &responseParams);
+        void limitMode(Client &client, Channel *channel, const bool& adding, std::string &param, std::string &responseModes, std::string &responseParams);
+        bool checkParams(char &mode, bool &adding, size_t &paramIndex, Client &client, std::string &param, const std::vector<std::string> &params);
         void processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params);
         void handleTopic(Client &client, std::istringstream &iss);
         void handleInvite(Client &client, std::istringstream &iss);
-        /*bool inviteValidation(Client &client, const std::string &nick_to_invite,
-            const std::string &channel_key, const std::string &test_param, Channel &channel_found);
-        void inviteUser(const std::string &nick_to_invite, Client &client, Channel &channel);*/
         void handleWho(Client &client, std::istringstream &iss);
 
         void welcomeUser(Client &client);

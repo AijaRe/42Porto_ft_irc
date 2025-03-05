@@ -53,6 +53,89 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
     processChannelModes(client, channel, modes, modeParams);
 }
 
+void CommandHandler::passMode(Client &client, Channel *channel, const bool& adding, std::string &param, std::string &responseModes, std::string &responseParams)
+{
+    if (adding)
+    {
+        if (param.empty())
+        {
+            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+            return;
+        }
+        channel->setModePass(param);
+        channel->setMode('k', true);
+        responseModes += "+k";
+        responseParams += " " + param;
+    }
+    else
+    {
+        channel->setModePass("");
+        channel->setMode('k', false);
+        responseModes += "-k";
+    }
+}
+
+void CommandHandler::operatorMode(Client &client, Channel *channel, const bool& adding, std::string &param, std::string &responseModes, std::string &responseParams)
+{
+    if (param.empty())
+    {
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+        return;
+    }
+    if (adding)
+    {
+        if (!channel->assignOperator(param))
+        {
+            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
+            return;
+        }
+    }
+    else
+    {
+        channel->removeOperator(param);
+    }
+    responseModes += (adding ? "+o" : "-o");
+    responseParams += " " + param;
+}
+
+void CommandHandler::limitMode(Client &client, Channel *channel, const bool& adding, std::string &param, std::string &responseModes, std::string &responseParams)
+{
+    if (adding)
+    {
+        if (param.empty())
+        {
+            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+            return;
+        }
+        int limit = std::atoi(param.c_str());
+        channel->setModeLimit(limit);
+        channel->setMode('l', true);
+        responseModes += "+l";
+        responseParams += " " + param;
+    }
+    else
+    {
+        channel->setModeLimit(-1);
+        channel->setMode('l', false);
+        responseModes += "-l";
+    }
+}
+
+bool CommandHandler::checkParams(char &mode, bool &adding, size_t &paramIndex, Client &client, std::string &param, const std::vector<std::string> &params)
+{
+    if ((mode == 'k' || mode == 'o') || (mode == 'l' && adding)) // Apenas +l requer parâmetro
+    {
+        if (paramIndex >= params.size())
+        {
+            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
+            return false;
+        }
+        param = params[paramIndex];
+        paramIndex++;
+    }
+    return true;
+}
+
 void CommandHandler::processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params)
 {
     bool adding = true;
@@ -73,18 +156,8 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
         {
             std::string param;
 
-            // Verifica se o modo requer um parâmetro
-            if ((mode == 'k' || mode == 'o') || (mode == 'l' && adding)) // Apenas +l requer parâmetro
-            {
-                if (paramIndex >= params.size())
-                {
-                    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
-                    return;
-                }
-                param = params[paramIndex];
-                paramIndex++;
-            }
-
+            if (!checkParams(mode, adding, paramIndex, client, param, params))
+                return;
             switch (mode)
             {
                 case 'i': // Modo invite-only
@@ -98,68 +171,15 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                     break;
 
                 case 'k': // Modo de senha
-                    if (adding)
-                    {
-                        if (param.empty())
-                        {
-                            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
-                            return;
-                        }
-                        channel->setModePass(param);
-                        channel->setMode('k', true);
-                        responseModes += "+k";
-                        responseParams += " " + param;
-                    }
-                    else
-                    {
-                        channel->setModePass("");
-                        channel->setMode('k', false);
-                        responseModes += "-k";
-                    }
+                    passMode(client, channel, adding, param, responseModes, responseParams);
                     break;
 
                 case 'o': // Modo de operador
-                    if (param.empty())
-                    {
-                        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
-                        return;
-                    }
-                    if (adding)
-                    {
-                        if (!channel->assignOperator(param))
-                        {
-                            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        channel->removeOperator(param);
-                    }
-                    responseModes += (adding ? "+o" : "-o");
-                    responseParams += " " + param;
+                    operatorMode(client, channel, adding, param, responseModes, responseParams);
                     break;
 
                 case 'l': // Modo de limite de usuários
-                    if (adding)
-                    {
-                        if (param.empty())
-                        {
-                            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
-                            return;
-                        }
-                        int limit = std::atoi(param.c_str());
-                        channel->setModeLimit(limit);
-                        channel->setMode('l', true);
-                        responseModes += "+l";
-                        responseParams += " " + param;
-                    }
-                    else
-                    {
-                        channel->setModeLimit(-1);
-                        channel->setMode('l', false);
-                        responseModes += "-l";
-                    }
+                    limitMode(client, channel, adding, param, responseModes, responseParams);                    
                     break;
 
                 default:
