@@ -47,7 +47,6 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         Channel channel_found;
         if (this->_server.channelExists(target, channel_found))
         {
-            //Falta confirmar as permissões do usuário dentro do channel.
             std::map<std::string, const Client*> clients = channel_found.getClients();
             std::map<std::string, const Client*>::const_iterator it2;
             for (it2 = clients.begin(); it2 != clients.end(); it2++)

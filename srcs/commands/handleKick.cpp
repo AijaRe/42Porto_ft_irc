@@ -127,6 +127,5 @@ void CommandHandler::handleKick(Client &issuer, std::istringstream &iss)
     std::map<std::string, Channel>::iterator it = this->_server.getChannels().find(channel_key);
     if (it == this->_server.getChannels().end())
         return ;
-
     executeKick(issuer, it->second, reason, users_to_kick, params);  
 }
