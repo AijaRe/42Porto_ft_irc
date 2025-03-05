@@ -48,13 +48,21 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         if (this->_server.channelExists(target, channel_found))
         {
             std::map<std::string, const Client*> clients = channel_found.getClients();
-            std::map<std::string, const Client*>::const_iterator it2;
-            for (it2 = clients.begin(); it2 != clients.end(); it2++)
+            if (channel_found.findUserByName(clients, client.getNickname()))
             {
-                if (it2->first == client.getNickname())
-                    continue;
-                std::string response = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message;
-                sendDirectMessage(it2->second->getFd(), response);
+                std::map<std::string, const Client*>::const_iterator it2;
+                for (it2 = clients.begin(); it2 != clients.end(); it2++)
+                {
+                    if (it2->first == client.getNickname())
+                        continue;
+                    std::string response = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_server.getName() + " PRIVMSG " + target + " " + message;
+                    sendDirectMessage(it2->second->getFd(), response);
+                }
+            }
+            else
+            {
+                std::string response = ":" + _server.getName() + " " + ERR_CANNOTSENDTOCHAN + " " + client.getNickname() + " " + target + " :You cannot send external messages to this channel whilst the +n (noextmsg) mode is set.";
+                sendDirectMessage(client.getFd(), response);
             }
         }
         else
