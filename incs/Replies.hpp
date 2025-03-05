@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/03/04 11:14:21 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/05 21:28:53 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@
 #define ERR_NICKCOLLISION          "436" // NICK nickname Collision
 #define ERR_NONICKNAMEGIVEN        "431" // NICK when Nickname isn't provided
 #define ERR_USERNOTINCHANNEL       "441" // KICK when trying to kick a user who isn't in channel 
+#define ERR_NOTONCHANNEL           "442" // User not part of channel
 #define ERR_USERONCHANNEL          "443" // When User is already on channel and is invited to
 #define ERR_NOTREGISTERED          "451" // When a user tries to send a message before registering
 #define ERR_NEEDMOREPARAMS         "461" // When a command has more or less params
