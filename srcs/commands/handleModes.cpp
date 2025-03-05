@@ -6,23 +6,20 @@
 /*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 18:33:47 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/05 13:07:30 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
-// RPL_UMODEIS - If <modestring> is not given
-//If <target> is a nickname that does not exist on the network, the ERR_NOSUCHNICK (401)
-//If <target> is a different nick than the user who sent the command, the ERR_USERSDONTMATCH (502)
-//If one or more modes sent are not implemented on the server, the server MUST apply the modes that are implemented, and then send the ERR_UMODEUNKNOWNFLAG (501) in reply along with the MODE message.
-// ERR_NOSUCHCHANNEL (403) If <target> is a channel that does not exist on the network
-// RPL_CHANNELMODEIS (324) If <modestring> is not given
-//If <modestring> is given, the user sending the command MUST have appropriate channel privileges on the target channel to change the modes given. If a user does not have appropriate privileges to change modes on the target channel, the server MUST NOT process the message, and ERR_CHANOPRIVSNEEDED (482)
-//Parameters: <target> [<modestring> [<mode arguments>...]]
-
 void CommandHandler::handleMode(Client &client, const std::vector<std::string> &params)
 {
+    if (params.empty())
+    {
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS, std::vector<std::string>(1, "MODE"));
+        return;
+    }
+
     std::string target = params[0]; // Nome do canal
     std::string modes = (params.size() > 1) ? params[1] : ""; // Modificadores de modo (se houver)
 
@@ -33,36 +30,41 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHCHANNEL, targetVec);
         return;
     }
-    
+
+    // Se não houver modos, apenas retorna os modos atuais do canal
     if (params.size() == 1)
     {
         std::string modeMessage = ":" + _server.getName() + " 324 " + client.getNickname() + " " + target + " :" + channel->getModes();
         sendDirectMessage(client.getFd(), modeMessage);
         return;
     }
-    std::vector<std::string> modeParams(params.begin() + 2, params.end());//Parâmetros dos modos
-    
-    //DEBUG!!
-    /*std::cout << "Lista de parâmetros para modos: ";
-    for (size_t i = 0; i < modeParams.size(); ++i)
-        std::cout << "[" << modeParams[i] << "] ";
-    std::cout << std::endl;*/
-    
+
+    std::vector<std::string> modeParams(params.begin() + 2, params.end()); // Parâmetros dos modos
+
+    // Verifica se o cliente é um operador do canal
+    if (!channel->isOperator(client.getNickname()))
+    {
+        std::string msg = ":" + _server.getName() + " 482 " + client.getNickname() + " " + target + " :You're not channel operator\r\n";
+        sendDirectMessage(client.getFd(), msg);
+        return;
+    }
+
+    // Processa os modos
     processChannelModes(client, channel, modes, modeParams);
 }
 
-void CommandHandler::processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params) {
+void CommandHandler::processChannelModes(Client &client, Channel *channel, std::string modes, const std::vector<std::string> &params)
+{
     bool adding = true;
-    std::string response;
     std::string responseModes;
     std::string responseParams;
 
     size_t paramIndex = 0;
-    //std::cout << "MODES: " << modes << std::endl;//DEBUG
+
     for (size_t i = 0; i < modes.size(); ++i)
     {
         char mode = modes[i];
-        //std::cout << "MODE: " << mode << std::endl;//DEBUG
+
         if (mode == '+')
             adding = true;
         else if (mode == '-')
@@ -71,9 +73,10 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
         {
             std::string param;
 
-            if ((mode == 'k' || mode == 'l' || mode == 'o'))
+            // Verifica se o modo requer um parâmetro
+            if ((mode == 'k' || mode == 'o') || (mode == 'l' && adding)) // Apenas +l requer parâmetro
             {
-                if(paramIndex >= params.size())
+                if (paramIndex >= params.size())
                 {
                     _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NEEDMOREPARAMS);
                     return;
@@ -81,6 +84,7 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 param = params[paramIndex];
                 paramIndex++;
             }
+
             switch (mode)
             {
                 case 'i': // Modo invite-only
@@ -129,7 +133,9 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                         }
                     }
                     else
+                    {
                         channel->removeOperator(param);
+                    }
                     responseModes += (adding ? "+o" : "-o");
                     responseParams += " " + param;
                     break;
@@ -143,25 +149,16 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                             return;
                         }
                         int limit = std::atoi(param.c_str());
-                        /*if (limit <= 0)
-                        {
-                            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNMODE);
-                            return;
-                        }*/
                         channel->setModeLimit(limit);
                         channel->setMode('l', true);
                         responseModes += "+l";
                         responseParams += " " + param;
                     }
-                    else if (channel->isOperator(client.getNickname()))
-                    {
-                        channel->setModeLimit(-1);
-                        responseModes += "-l";
-                    }
                     else
                     {
-                        std::string responseL = ":" + _server.getName() + " 482 " + client.getNickname() + " " + channel->getChannelKey() + " :You must be a channel halfop or higher to unset channel mode l (limit).";    
-                        _replies.sendMessage(client.getFd(), responseL);
+                        channel->setModeLimit(-1);
+                        channel->setMode('l', false);
+                        responseModes += "-l";
                     }
                     break;
 
@@ -173,12 +170,6 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
         }
     }
 
-    //std::string response = ":" + client.getNickname() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
-    if (response.empty())
-        response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->getServer().getName() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
-    //>> @time=2025-03-04T16:45:52.382Z :uviana!~uviana1@SpotChat-rns.9p5.48.62.IP MODE #i :+i
-    std::cout << "Response: " << response << std::endl;
-    //>>:uviana!~uviana@SpotChat-rns.9p5.48.62.IP MODE #ci +o :uviana1
-    //nick!~username@host MODE #channel +o :nick_to_get_op
+    std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->getServer().getName() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
     channel->broadcastMessage(channel->getClients(), response, client, true);
 }
