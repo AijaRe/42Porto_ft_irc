@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
 	try {
 		signal(SIGINT, Server::signalHandler); // handle (ctrl-c)
 		signal(SIGQUIT, Server::signalHandler); // handle (ctrl-\)
-		//signal(SIGTSTP, Server::signalHandler); // handle (ctrl-z)
+		signal(SIGTSTP, Server::signalHandler); // handle (ctrl-z)
 		server.runServer();
 	} catch (const std::exception &e) {
 		std::cerr << RED << e.what() << RESET << std::endl;

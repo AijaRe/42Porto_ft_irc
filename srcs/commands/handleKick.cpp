@@ -12,13 +12,17 @@
 
 #include "CommandHandler.hpp"
 
+/// @brief Organize the inputs from the KICK command.
+/// @param iss List of users and reason (optional).
+/// @param users_to_kick Vector to be filled with users to be kicked.
+/// @param reason (optional) reason why the user(s) will be kicked out.
 void parseTargets(std::istringstream &iss, std::vector<std::string> &users_to_kick, std::string &reason)
 {
     std::string user_to_kick;
 
     while (iss >> user_to_kick && !user_to_kick.empty())
     {
-        if (user_to_kick[0] == ':') //Check for colon
+        if (user_to_kick[0] == ':') //Check for colon (this means its the reason text).
         {
             reason = user_to_kick.substr(1);
             std::string temp;
@@ -27,15 +31,21 @@ void parseTargets(std::istringstream &iss, std::vector<std::string> &users_to_ki
             break;
         }
         if (user_to_kick[user_to_kick.length() - 1] == ',')
-            user_to_kick = user_to_kick.substr(0, user_to_kick.length() - 1); //Remove the comma at the end.
+            user_to_kick = user_to_kick.substr(0, user_to_kick.length() - 1); //Remove the comma at the end of the word.
         std::istringstream users_stream(user_to_kick);
         std::string single_user;
-        while (std::getline(users_stream, single_user, ',')) //Verify if there are a comma in the middle of the string.
+        while (std::getline(users_stream, single_user, ',')) //Verify if there are a comma in the middle of the string, for multiple users.
             if (!single_user.empty())
                 users_to_kick.push_back(single_user);
     }
 }
 
+/// @brief Validate if the KICK command was passed with all required parameters.
+/// @param issuer Client who sent the KICK command.
+/// @param channel_key Channel where the users must be kicked.
+/// @param users_to_kick List of users to be kicked.
+/// @param params Vector used in case of fail during the verification.
+/// @return True in case of success, otherwise false.
 bool    CommandHandler::kickRequestValidation(Client &issuer, const std::string &channel_key, const std::vector<std::string> &users_to_kick,
             std::vector<std::string> &params)
 {
@@ -72,6 +82,12 @@ bool    CommandHandler::kickRequestValidation(Client &issuer, const std::string 
     return true;
 }
 
+/// @brief Execute the KICK command.
+/// @param issuer Client who sent the KICK command.
+/// @param channel Channel where the users must be kicked.
+/// @param reason Why the users will be kicked (Optional).
+/// @param users_to_kick List of users to be kicked.
+/// @param params Vector used in case of fail during the verification.
 void CommandHandler::executeKick(Client &issuer, Channel &channel, const std::string &reason,
             std::vector<std::string> &users_to_kick, std::vector<std::string> &params)
 {
@@ -111,7 +127,9 @@ void CommandHandler::executeKick(Client &issuer, Channel &channel, const std::st
     }   
 }
 
-//KICK #channel user1, user2, user3 [:reason]
+/// @brief Manage a Kick command from the user.
+/// @param issuer User that sent a KICK command.
+/// @param iss Targets (channel and users to be kicked), and reason. Syntax: KICK #channel user1, user2, user3 [:reason]
 void CommandHandler::handleKick(Client &issuer, std::istringstream &iss)
 {
     std::string channel_key, reason;

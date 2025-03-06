@@ -12,11 +12,14 @@
 
 #include "CommandHandler.hpp"
 
+/// @brief Send a message to a target (user or channel)
+/// @param client Sender of the message.
+/// @param iss Target and message to be delivered.
 void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
 {
     std::string target, message;
     iss >> target;
-    std::getline(iss >> std::ws, message);//message already have the collon in the first position [0].
+    std::getline(iss >> std::ws, message);
     
     if (target.empty() || message.empty())
     {
@@ -36,7 +39,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
             sendDirectMessage(client_found.getFd(), response);
             return;
        }
-       else //client não encontrado.
+       else //client not found.
        {
            std::string response = ":" + _server.getName() + " " + ERR_NOSUCHNICK + " " + client.getNickname() + " " + target + " :No such nick";
            sendDirectMessage(client.getFd(), response);
@@ -48,7 +51,7 @@ void CommandHandler::handlePrivmsg(Client &client, std::istringstream &iss)
         if (this->_server.channelExists(target, channel_found))
         {
             std::map<std::string, const Client*> clients = channel_found.getClients();
-            if (channel_found.findUserByName(clients, client.getNickname()))
+            if (channel_found.findUserByName(clients, client.getNickname())) //Check if client is part of the channel.
             {
                 std::map<std::string, const Client*>::const_iterator it2;
                 for (it2 = clients.begin(); it2 != clients.end(); it2++)
