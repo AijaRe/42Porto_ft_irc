@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:17:50 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/06 22:16:05 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 23:23:31 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,11 @@ void CommandHandler::handleInvite(Client &client, std::istringstream &iss)
     channel->addInvitedUser(targetNickname);
     
     // Message to the client who sent the INVITE
-    std::string responseInvite = ":" + _server.getName() + " 341 " + client.getNickname() + " " + targetClient->getNickname() + " :" + channelName;
+    std::string responseInvite = ":" + _server.getName() + " " + RPL_INVITING + " " + client.getNickname() + " " + targetClient->getNickname() + " " + channelName;
     _replies.sendMessage(client.getFd(), responseInvite);
 
     // Message invited client
-    std::string responseGuest = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;
+    std::string responseGuest = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " " + channelName;
     _replies.sendMessage(targetClient->getFd(), responseGuest);
 
-    // Message to the channel
-    std::string channelMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;
-    channel->broadcastMessage(channel->getClients(), channelMessage, client, true);
 }
