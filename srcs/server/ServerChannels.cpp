@@ -3,19 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ServerChannels.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:49 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:55:13 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:34:46 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Channel.hpp"
-
-std::map<std::string, Channel>&Server::getChannels(){
-	return this->_channels;
-}
 
 int		Server::checkChannelType(std::string &channel_name)
 {
@@ -170,4 +166,3 @@ Channel *Server::getChannelByName(const std::string &channel_key)
         return &(it->second);
     return NULL;
 }
-

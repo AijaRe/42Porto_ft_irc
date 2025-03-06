@@ -6,13 +6,14 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:31:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/05 21:31:49 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:40:28 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Replies.hpp"
 
-Replies::Replies() {
+Replies::Replies() 
+{
     ircReplies[ERR_UNKNOWNERROR] = "Unknown error occurred";
     ircReplies[ERR_NONICKNAMEGIVEN] = "No nickname given";
     ircReplies[ERR_NICKNAMEINUSE] = "Nickname is already in use";
@@ -50,7 +51,6 @@ Replies::Replies() {
     ircReplies[RPL_WELCOME] = "Welcome to the We Read The Manual Netwok,";
     ircReplies[RPL_YOURHOST] = "Your host is";
     ircReplies[RPL_CREATED] = "This server was created";
-    //ircReplies[RPL_TOPIC] = "Channel topic is";
     ircReplies[RPL_NOTOPIC] = "No topic is set";
     ircReplies[RPL_INVITING] = "Inviting user to channel";
     ircReplies[RPL_YOUREOPER] = "You are now an operator";
@@ -80,7 +80,7 @@ void Replies::sendIrcInfo(int fd, const Server &server, const std::string &nickn
     }
     std::string ircMessage = ":" + server.getName() + " " + code + " " + targetNickname;
 
-    // Adiciona os parâmetros
+    // Add params to the message
     for (std::vector<std::string>::const_iterator it = params.begin(); it != params.end(); ++it) {
     ircMessage += " " + *it;
     }

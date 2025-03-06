@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:32:34 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 16:36:29 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:40:51 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ void sendError(int fd, const std::string& message)
         std::cerr << "[ERROR] Failed to send error message to client " << fd << std::endl;
 }
 
-void sendDirectMessage(int fd, const std::string &message) {
+void sendDirectMessage(int fd, const std::string &message)
+{
     std::stringstream ss;
     ss << "SEND TO FD " << fd;  // Convert fd to string
     logMessage(ss.str(), message);
@@ -37,13 +38,6 @@ void sendDirectMessage(int fd, const std::string &message) {
     //add /r/n to the message and send it to the client
     std::string messageToClient = message + "\r\n";
     send(fd, messageToClient.c_str(), messageToClient.length(), 0);
-}
-
-void sendReturn(int fd, const std::string& message)
-{
-    std::string returnMessage = message + "\r\n";
-    const char* retMsg = returnMessage.c_str();
-    send(fd, retMsg, returnMessage.length(), 0);
 }
 
 std::vector<std::string> splitString(const std::string &str, char delim)
@@ -77,5 +71,3 @@ std::string trimWhitespace(const std::string &str)
     }
     return str.substr(start, end - start + 1);
 }
-
-

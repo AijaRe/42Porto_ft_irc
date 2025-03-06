@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/03/04 16:40:43 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:38:34 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,15 @@ std::string Client::getUsername() const
     return _username;
 }
 
-const std::string &Client::getRealname() const {
+const std::string &Client::getRealname() const 
+{
     return _realname;
 }
 
-std::string Client::getModes() const {
-    return _modes.empty() ? "+" : "+" + _modes; // Retorna os modos do usuário
+std::string Client::getModes() const 
+{
+    // Returns user modes or "+" if no modes are set
+    return _modes.empty() ? "+" : "+" + _modes;
 }
 
 void Client::setNickname(const std::string &nickname)
@@ -58,20 +61,22 @@ void Client::setUsername(const std::string &username)
     _username = "~" + username;
 }
 
-void Client::setRealname(const std::string &realname) {
+void Client::setRealname(const std::string &realname) 
+{
     _realname = realname;
 }
 
 void Client::setMode(char mode, bool enable) {
     size_t pos = _modes.find(mode);
     if (enable && pos == std::string::npos) {
-        _modes += mode; // Adiciona o modo se não estiver presente
+        _modes += mode; // Add mode if not present
     } else if (!enable && pos != std::string::npos) {
-        _modes.erase(pos, 1); // Remove o modo se estiver presente
+        _modes.erase(pos, 1); // Remove mode if present
     }
 }
 
-bool Client::hasMode(char mode) const {
+bool Client::hasMode(char mode) const 
+{
     return _modes.find(mode) != std::string::npos;
 }
 
@@ -80,7 +85,8 @@ bool Client::passAuthenticated() const
     return _pass_authenticated;
 }
 
-bool Client::isFullyAuthenticated() const {
+bool Client::isFullyAuthenticated() const 
+{
     return passAuthenticated() && !getNickname().empty() && !getUsername().empty();
 }
 
@@ -89,25 +95,32 @@ void Client::setPassAuthenticated(bool status)
     _pass_authenticated = status;
 }
 
-bool Client::isConnected() const { return _fd != -1; }
+bool Client::isConnected() const 
+{ 
+    return _fd != -1; 
+}
 
 bool Client::operator==(const Client &compare) const
 {
     return this->getNickname() == compare.getNickname();
 }
 
-bool Client::isWelcomed() const{
+bool Client::isWelcomed() const
+{
     return _welcomed;
 }
 
-void Client::setWelcomed(bool welcomed) {
+void Client::setWelcomed(bool welcomed) 
+{
     _welcomed = welcomed;
 }
 
-void Client::addChannel(Channel *channel) {
+void Client::addChannel(Channel *channel) 
+{
     joinedChannels[channel->getChannelKey()] = channel;
 }
 
-void Client::removeChannel(Channel *channel) {
+void Client::removeChannel(Channel *channel) 
+{
     joinedChannels.erase(channel->getChannelKey());
 }

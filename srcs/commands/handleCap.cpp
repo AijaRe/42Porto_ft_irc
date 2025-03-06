@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   handleCap.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:15:22 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 11:15:48 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:12:51 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
-void CommandHandler::handleCap(Client &client, std::istringstream &iss){
+void CommandHandler::handleCap(Client &client, std::istringstream &iss)
+{
     std::string subcmd;    
     iss >> subcmd;    
     if (subcmd == "LS"){        

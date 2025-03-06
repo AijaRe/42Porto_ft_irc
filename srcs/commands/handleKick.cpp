@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleKick.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:17:02 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 14:26:55 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:16:36 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ bool    CommandHandler::kickRequestValidation(Client &issuer, const std::string 
         this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_NOSUCHCHANNEL, params);
         return false;
     }
-
     //The issuer is in the channel?
     if (!it->second.findUserByName(it->second.getClients(), issuer.getNickname()))
     {
@@ -71,7 +70,6 @@ bool    CommandHandler::kickRequestValidation(Client &issuer, const std::string 
         this->_replies.sendIrcInfo(issuer.getFd(), this->_server, issuer.getNickname(), ERR_USERNOTINCHANNEL, params);
         return false;
     }
-
     //Is the issuer an OP?
     if (!it->second.findUserByName(it->second.getOps(), issuer.getNickname()))
     {

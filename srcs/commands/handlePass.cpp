@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   handlePass.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:01:45 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 16:41:07 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:24:17 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
-bool CommandHandler::isClientAllowedToProceed(Client &client, const std::string &cmd){
+bool CommandHandler::isClientAllowedToProceed(Client &client, const std::string &cmd)
+{
     if(!client.passAuthenticated())
     {
         if(cmd != "PASS")

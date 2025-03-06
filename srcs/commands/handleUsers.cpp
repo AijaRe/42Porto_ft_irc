@@ -3,18 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   handleUsers.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 16:22:01 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:26:43 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
-void    CommandHandler::welcomeUser(Client &client) {
-    
+void    CommandHandler::welcomeUser(Client &client)
+{
     std::vector<std::string> emptyParams;
+    
     // 001 <nickname> :Welcome to the WRTM <nickname>!
     std::string nickname_msg = client.getNickname() + "!";
     _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_WELCOME, emptyParams, nickname_msg);
@@ -95,10 +96,10 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
 
     //process the bitmask of mode
     int mode = std::atoi(modeStr.c_str());
-    if (mode & 0x04) { // Bit 2 (valor 4): modo 'w'
+    if (mode & 0x04) { // Bit 2 (value 4): mode 'w'
         client.setMode('w', true);
     }
-    if (mode & 0x08) { // Bit 3 (valor 8): modo 'i'
+    if (mode & 0x08) { // Bit 3 (value 8): mode 'i'
         client.setMode('i', true);
     }
 

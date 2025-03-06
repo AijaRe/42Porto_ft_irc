@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:45:12 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 12:24:19 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/06 22:39:28 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         while (iss >> param)
             params.push_back(param);
         if(params.empty())
-            return;//para resolver o segfault
+            return; //fix segfault
         handleMode(client, params);
     }
     else if (cmd == "KICK")
@@ -83,10 +83,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handleTest4();
     else
     {
-        logMessage("INFO", "Unsupported command: " + cmd);
         std::vector<std::string> params;
         params.push_back(cmd);
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_UNKNOWNCOMMAND, params);
     }
 }
-

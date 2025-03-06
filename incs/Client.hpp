@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:02:57 by yfontene          #+#    #+#             */
-/*   Updated: 2025/03/04 16:40:18 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 21:59:19 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,48 +19,49 @@ class Channel;
 
 class Client
 {
-    public:
-        Client();
-        Client(int fd, const std::string &host);
-        ~Client();
-        
-        std::string buffer;
-        std::map<std::string, Channel*> joinedChannels;
-        
-        int getFd() const;
-        std::string getHost() const;
-        std::string getNickname() const;
-        std::string getUsername() const;
-        const std::string &getRealname() const;
-        std::string getModes() const;
-        
-        void setNickname(const std::string &nickname);
-        void setUsername(const std::string &username);
-        void setRealname(const std::string &realname);
-        void setMode(char mode, bool enable);
-        void setPassAuthenticated(bool status);
-        void setWelcomed(bool welcomed);
+	public:
+		Client();
+		Client(int fd, const std::string &host);
+		~Client();
+		
+		//setters
+		void		setNickname(const std::string &nickname);
+		void		setUsername(const std::string &username);
+		void		setRealname(const std::string &realname);
+		void		setMode(char mode, bool enable);
+		void		setPassAuthenticated(bool status);
+		void		setWelcomed(bool welcomed);
 
-        //bool isAuthenticated() const;
-        bool passAuthenticated() const;
-        bool isFullyAuthenticated() const;
-        bool isConnected() const;
-        bool isWelcomed() const;
-        bool hasMode(char mode) const;
+		//getters
+		int			getFd() const;
+		std::string	getHost() const;
+		std::string	getNickname() const;
+		std::string	getUsername() const;
+		const std::string&	getRealname() const;
+		std::string	getModes() const;
 
-        void addChannel(Channel *channel);
-        void removeChannel(Channel *channel);
-
-        bool operator==(const Client &compare) const; //Used inside Channel::findUser()
-    private:
-        int _fd;
-        std::string _host;
-        bool _pass_authenticated;
-        std::string _nickname;
-        std::string _username;
-        std::string _realname;
-        std::string _modes;
-        bool _welcomed; // Flag para indicar se o cliente já recebeu a mensagem de boas-vindas
+		//helper functions
+		bool		passAuthenticated() const;
+		bool		isFullyAuthenticated() const;
+		bool		isConnected() const;
+		bool		isWelcomed() const;
+		bool		hasMode(char mode) const;
+		void		addChannel(Channel *channel);
+		void		removeChannel(Channel *channel);
+		bool		operator==(const Client &compare) const; //Used inside Channel::findUser()
+		
+		std::string	buffer;
+		std::map<std::string, Channel*>	joinedChannels;
+	
+	private:
+		int			_fd;
+		std::string	_host;
+		bool		_pass_authenticated;
+		std::string	_nickname;
+		std::string	_username;
+		std::string	_realname;
+		std::string	_modes;
+		bool		_welcomed; // Flag para indicar se o cliente já recebeu a mensagem de boas-vindas
 };
 
 #endif

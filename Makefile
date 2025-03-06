@@ -6,7 +6,7 @@
 #    By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 19:53:42 by arepsa            #+#    #+#              #
-#    Updated: 2025/03/05 20:31:44 by arepsa           ###   ########.fr        #
+#    Updated: 2025/03/06 22:35:28 by arepsa           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ CMD_FILES	= handleCap handleJoin handleKick handleModes handleNick handleNotice 
 			  handlePass handlePing handlePrivmsg handleUsers handleTopic handleInvite \
 			  handleWho handleTests
 CH_FILES	= ChannelBasics ChannelMembers ChannelSettings
-SRV_FILES	= ServerBasics ServerClients ServerChannels ServerConnections
+SRV_FILES	= ServerBasics ServerClients ServerChannels ServerGetters
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(MAIN_FILES))) \
 			  $(addprefix $(SRC_DIR)/commands/, $(addsuffix .cpp, $(CMD_FILES))) \
 			  $(addprefix $(SRC_DIR)/channel/, $(addsuffix .cpp, $(CH_FILES))) \

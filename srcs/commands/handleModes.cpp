@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleModes.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/05 13:07:30 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/06 22:21:04 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,8 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
         return;
     }
 
-    std::string target = params[0]; // Nome do canal
-    std::string modes = (params.size() > 1) ? params[1] : ""; // Modificadores de modo (se houver)
-
+    std::string target = params[0]; // Channel name
+    std::string modes = (params.size() > 1) ? params[1] : ""; // Mode changers (if present)
     Channel *channel = this->_server.getChannelByName(target);
     if (!channel)
     {
@@ -31,7 +30,7 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
         return;
     }
 
-    // Se não houver modos, apenas retorna os modos atuais do canal
+    // If there are no mode changers, return the current channel modes
     if (params.size() == 1)
     {
         std::string modeMessage = ":" + _server.getName() + " 324 " + client.getNickname() + " " + target + " :" + channel->getModes();
@@ -39,9 +38,9 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
         return;
     }
 
-    std::vector<std::string> modeParams(params.begin() + 2, params.end()); // Parâmetros dos modos
+    std::vector<std::string> modeParams(params.begin() + 2, params.end()); // Mode parameters
 
-    // Verifica se o cliente é um operador do canal
+    // Check if the client is a channel operator
     if (!channel->isOperator(client.getNickname()))
     {
         std::string msg = ":" + _server.getName() + " 482 " + client.getNickname() + " " + target + " :You're not channel operator\r\n";
@@ -49,7 +48,6 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
         return;
     }
 
-    // Processa os modos
     processChannelModes(client, channel, modes, modeParams);
 }
 
@@ -160,25 +158,25 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
                 return;
             switch (mode)
             {
-                case 'i': // Modo invite-only
+                case 'i': // Invites only
                     channel->setMode('i', adding);
                     responseModes += (adding ? "+i" : "-i");
                     break;
 
-                case 't': // Modo de proteção de tópico
+                case 't': // Protect topic
                     channel->setMode('t', adding);
                     responseModes += (adding ? "+t" : "-t");
                     break;
 
-                case 'k': // Modo de senha
+                case 'k': // Password aka key
                     passMode(client, channel, adding, param, responseModes, responseParams);
                     break;
 
-                case 'o': // Modo de operador
+                case 'o': // Operator
                     operatorMode(client, channel, adding, param, responseModes, responseParams);
                     break;
 
-                case 'l': // Modo de limite de usuários
+                case 'l': // User limit
                     limitMode(client, channel, adding, param, responseModes, responseParams);                    
                     break;
 
@@ -190,6 +188,6 @@ void CommandHandler::processChannelModes(Client &client, Channel *channel, std::
         }
     }
 
-    std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + this->getServer().getName() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams + "\r\n";
+    std::string response = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->getServer().getName() + " MODE " + channel->getChannelKey() + " " + responseModes + responseParams;
     channel->broadcastMessage(channel->getClients(), response, client, true);
 }

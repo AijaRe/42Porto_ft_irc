@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 13:35:49 by yfontene          #+#    #+#             */
-/*   Updated: 2025/03/05 21:28:53 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 21:49:33 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 #define RPL_MYINFO                 "004" // Server info
 
 #define RPL_UMODEIS                "221" // User mode is
+
 #define RPL_ENDOFWHO               "315" // End of WHO list
 #define RPL_CHANNELMODEIS          "324" // MODE <channel> <mode> <param>
-
 #define RPL_NOTOPIC                "331" // TOPIC no topic has been set
 #define RPL_TOPIC                  "332" // TOPIC sending the topic of the channel
 #define RPL_TOPICWHOTIME           "333" // TOPIC when the topic was set and by whom
@@ -69,22 +69,22 @@
 #define ERR_CHANOPRIVSNEEDED       "482" // Returned by commands that need special ChanOp prevs :: KICK,INVITE,MODE,TOPIC
 #define ERR_NOPRIVILEGES           "481" // MODE RETURNED BY MODE +o/-o to set a Chanop
 #define ERR_NOPRIVS                "491" // MODE RETURNED BY MODE +o/-o to set a Chanop
+
 #define ERR_USERSDONTMATCH         "502" // When the user and the target are different
 #define ERR_UMODEUNKNOWNFLAG       "501" // When the user sends a mode that doesn't exist
+
 #define ERR_CANNOTCHANGEUMODE      "973" // When at authentication Mode +i is sent by irssi
 #define ERR_CANNOTCHANGECHANMODE   "974" // When Mode fails
-
 
 class Server;
 
 class Replies{
-    public:
-        Replies();//for initialization of the map
-        void sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params = std::vector<std::string>(), const std::string &additionalMessage = "");
-        void sendMessage(int fd, const std::string &message);
-    private:
-        std::map<std::string, std::string> ircReplies;
+	public:
+		Replies();//for initialization of the map
+		void sendIrcInfo(int fd, const Server &server, const std::string &nickname, const std::string &code, const std::vector<std::string> &params = std::vector<std::string>(), const std::string &additionalMessage = "");
+		void sendMessage(int fd, const std::string &message);
+	private:
+		std::map<std::string, std::string> ircReplies;
 };
-
 
 #endif
