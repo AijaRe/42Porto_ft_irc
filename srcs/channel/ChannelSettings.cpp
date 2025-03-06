@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelSettings.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:39:08 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 16:36:05 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/06 22:11:59 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,18 @@
 
 void Channel::setMode(char mode, bool enable)
 {
-    size_t pos = this->_modes.find(mode);//procura o modo na string de modos
-    if (enable && pos == std::string::npos)//se o modo não estiver presente e for para ativar
-        this->_modes += mode;//adiciona o modo
-    else if (!enable && pos != std::string::npos)//se o modo estiver presente e for para desativar
-        this->_modes.erase(std::remove(_modes.begin(), _modes.end(), mode), _modes.end());//remove o modo
+    size_t pos = this->_modes.find(mode);//look for the mode in the string
+    if (enable && pos == std::string::npos)//if mode is not present and is to be enabled
+        this->_modes += mode;//add the mode
+    else if (!enable && pos != std::string::npos)//if mode is present and is to be disabled
+        this->_modes.erase(std::remove(_modes.begin(), _modes.end(), mode), _modes.end());//remove the mode
     
 }
 
 void Channel::setModePass(const std::string &modepass)
 {
     if (modepass.empty())
-        _modepass.clear();//remove a senha quando -k é passado
+        _modepass.clear();//remove password when empty string is passed
     else
         this->_modepass = modepass;
 }
@@ -33,9 +33,9 @@ void Channel::setModePass(const std::string &modepass)
 void Channel::setModeLimit(int limit)
 {
     if (limit < 0)
-        _userlimit = -1;//remove o limite de usuários quando -l é passado
+        _userlimit = -1;//remove the limit when -1 is passed
     else
-        _userlimit = limit;//adiciona o limite de usuários quando +l é passado
+        _userlimit = limit;//add the limit when a positive number is passed
 }
 
 bool Channel::hasMode(char mode) const
@@ -97,4 +97,3 @@ void Channel::sendToChannel(const std::string &message, const Server &server)
         _replies.sendIrcInfo(client_fd, server, it->second->getNickname(), "NOTICE", std::vector<std::string>(), message);
     }
 }
-

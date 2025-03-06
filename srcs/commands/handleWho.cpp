@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   handleWho.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 19:52:58 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/04 14:27:11 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:27:11 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
 //WHO command to respond to query for channel (e.g. WHO #ch1)
-void	CommandHandler::handleWho(Client &client, std::istringstream &iss) {
+void	CommandHandler::handleWho(Client &client, std::istringstream &iss)
+{
 	std::string channel_name;
 	iss >> channel_name;
 	

@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 20:30:33 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/05 21:34:44 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:25:31 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void CommandHandler::handleTopic(Client &client, std::istringstream &iss)
         chan->sendChannelTopic(client, true);
         return ;
     }
-    
     // setTopic already checks if the client is allowed to set the topic
     if (chan->setTopic(new_topic, &client))
     {
@@ -68,5 +67,3 @@ void CommandHandler::handleTopic(Client &client, std::istringstream &iss)
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_CHANOPRIVSNEEDED, params);
     }
 }
-
-

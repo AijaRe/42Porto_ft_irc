@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleNick.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 14:22:00 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:23:21 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void    CommandHandler::updateNickname(Client &client, const std::string &newNic
     std::string message;
     if (oldNickname.empty()) {
         return ;
-        //message = ":" + newNickname + "!" + user + "@" + host + " NICK " + newNickname;
     }
     else
         message = ":" + oldNickname + "!" + user + "@" + host + " NICK " + newNickname;

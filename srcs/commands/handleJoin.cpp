@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:45:35 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/02/27 20:52:27 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:16:14 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,3 @@ void CommandHandler::handleJoin(Client &client, std::istringstream &iss)
         _server.addChannel(client, channel_name, password);
     }
 }
-

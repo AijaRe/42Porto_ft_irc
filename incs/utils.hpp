@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:43 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/04 10:29:42 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:42:32 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,11 @@
 #include <string> // std::string
 #include <string.h> // strlen
 #include <unistd.h> // read, write, close
-#include <vector> // std::vector
+#include <sys/socket.h> // socket, bind, listen, accept, send
+#include <vector> 
 #include <list>
 #include <map>
 #include <sstream>
-#include <sys/socket.h> // socket, bind, listen, accept, send
-#include <netinet/in.h> // sockaddr_in
-#include <poll.h> // poll
 #include <cstdlib> // strtol
 #include <cerrno> // errno
 #include <algorithm>
@@ -40,7 +38,6 @@
 #define MAGENTA "\033[35m"
 #define CYAN    "\033[36m"
 #define BOLD    "\033[1m"
-#define UNDERLINE "\033[4m"
 
 #define USER            0 //No special symbol found before the target.
 #define CH_STANDARD     1 //#
@@ -48,13 +45,10 @@
 #define CH_NO_EXT       3 //+
 #define CH_SAFE         4 //!
 
-void logMessage(const std::string &type, const std::string &message);
-void sendError(int fd, const std::string& message);
-void sendReturn(int fd, const std::string& message);
-void sendDirectMessage(int fd, const std::string &message);
-std::vector<std::string> splitString(const std::string &str, char delim);
-std::string trimWhitespace(const std::string &str);
-
-
+void		logMessage(const std::string &type, const std::string &message);
+void		sendError(int fd, const std::string& message);
+void		sendDirectMessage(int fd, const std::string &message);
+std::vector<std::string>	splitString(const std::string &str, char delim);
+std::string					trimWhitespace(const std::string &str);
 
 #endif

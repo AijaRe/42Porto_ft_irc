@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   handleInvite.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:17:50 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/05 13:29:43 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/06 22:16:05 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
-void CommandHandler::handleInvite(Client &client, std::istringstream &iss)//INVITE <nickname> <channel>
+//INVITE <nickname> <channel>
+void CommandHandler::handleInvite(Client &client, std::istringstream &iss)
 {
     std::string targetNickname, channelName;
     if (!(iss >> targetNickname >> channelName))
@@ -25,13 +26,13 @@ void CommandHandler::handleInvite(Client &client, std::istringstream &iss)//INVI
         return;
     }
 
-    if (!channel->isOperator(client.getNickname()))//verifica se o usuário é operador do canal
+    if (!channel->isOperator(client.getNickname()))//check if the client is a channel operator
     {        
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_CHANOPRIVSNEEDED);
         return;
     }
 
-    //existe forma mais limpa de buscar por esse usuário?
+    //is there a better way to look for a client by nickname?
     std::map<std::string, const Client*> clientMap;
     std::map<int, Client> &clients = _server.getClients();
     for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it)
@@ -40,13 +41,13 @@ void CommandHandler::handleInvite(Client &client, std::istringstream &iss)//INVI
     }
     
     const Client *targetClient = channel->findUserByName(clientMap, targetNickname);
-    if (!targetClient)//verifica se o usuário existe
+    if (!targetClient)//check if the target client exists
     {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
         return;
     }
     
-    if (channel->isInvited(targetNickname))//verifica se o usuário já foi convidado
+    if (channel->isInvited(targetNickname))//check if user was already invited
     {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_USERONCHANNEL);
         return;
@@ -54,22 +55,15 @@ void CommandHandler::handleInvite(Client &client, std::istringstream &iss)//INVI
     
     channel->addInvitedUser(targetNickname);
     
-    /*std::string responseInvite = ":" + _server.getName() + " 341 " + client.getNickname() + " " + targetClient->getNickname() + " :" + channelName;
-    std::string response = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;    
-    _replies.sendMessage(client.getFd(), responseInvite);
-    _replies.sendMessage(client.getFd(), response);*/
-
-    // Mensagem para o cliente que convidou
+    // Message to the client who sent the INVITE
     std::string responseInvite = ":" + _server.getName() + " 341 " + client.getNickname() + " " + targetClient->getNickname() + " :" + channelName;
     _replies.sendMessage(client.getFd(), responseInvite);
 
-    // Mensagem para o cliente convidado
-    std::string responseGuest = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;
+    // Message invited client
+    std::string responseGuest = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;
     _replies.sendMessage(targetClient->getFd(), responseGuest);
 
-    // Mensagem para o canal
-    std::string channelMessage = ":" + client.getNickname() + "!~" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;
+    // Message to the channel
+    std::string channelMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHost() + " INVITE " + targetClient->getNickname() + " :" + channelName;
     channel->broadcastMessage(channel->getClients(), channelMessage, client, true);
 }
-
-   

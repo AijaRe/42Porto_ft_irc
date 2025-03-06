@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerBasics.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/04 10:27:48 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:30:46 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 bool Server::_running = true;
 
-Server::Server (const int &port, const std::string &password) : _name(SERVER_NAME), _port(port), _password(password), _server_fd(-1) {
+Server::Server (const int &port, const std::string &password) : _name(SERVER_NAME), _port(port), _password(password), _server_fd(-1)
+{
 	if (_port < 1024 || _port > 65535) {
 		std::cerr << "Error: Invalid or restricted port number." << std::endl;
 		_running = false;
@@ -41,18 +42,22 @@ Server::Server (const int &port, const std::string &password) : _name(SERVER_NAM
 	}
 }
 
-Server::~Server() {
+Server::~Server()
+{
 	delete _command_handler; 
 	// shutdownServer();
 }
 
-void	Server::signalHandler(int signal) {
+void	Server::signalHandler(int signal)
+{
 	(void)signal;
 	_running = false;
 }
 
-void	Server::shutdownServer() {
+void	Server::shutdownServer()
+{
 	_running = false;
+	
 	logMessage("INFO", "Shutting down server...");
 	// close server socket
 	if (_server_fd >= 0)
@@ -68,8 +73,10 @@ void	Server::shutdownServer() {
 }
 
 
-void	Server::createSocket() {
+void	Server::createSocket()
+{
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
+	
 	if (_server_fd < 0)
 		throw std::runtime_error("Error: Socket creation failed.");
 
@@ -99,7 +106,6 @@ void	Server::createSocket() {
 		delete _command_handler;
 		logMessage("ERROR", "Socket bind failed.");
 		exit(EXIT_FAILURE);
-		//throw std::runtime_error("Error: Bind failed.");
 	}
 	
 	// listen for incoming connections
@@ -120,10 +126,9 @@ void	Server::createSocket() {
 
 void	Server::runServer() {
 	while (this->_running) {
-		// use poll to wait for events on the sockets
-		/*Another thing interesting in the approach is that the poll function will 
-		verify for new connection on the first _fd_list position (since its the _server_fd position)
-		and in the following ones (client connected) it will monitor for data to read.*/
+		// Poll function will verify for new connection on the first _fd_list position (_server_fd)
+		// and in the following ones (client connected) it will monitor for data to read.*/
+		// Use poll to wait for events on the sockets
 		// Convert the map to a vector of pollfd for the poll function
         std::vector<pollfd> poll_fds;
         for (std::map<int, pollfd>::const_iterator it = _fd_map.begin(); it != _fd_map.end(); ++it) {
@@ -151,6 +156,5 @@ void	Server::runServer() {
 			}
 		}
 	}
-	//Clean the code
 }
 

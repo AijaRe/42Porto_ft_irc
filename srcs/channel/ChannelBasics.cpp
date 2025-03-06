@@ -3,19 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelBasics.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:39 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/01 14:27:56 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/06 22:06:57 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-Channel::Channel()
-{
-
-}
+Channel::Channel(){}
 
 Channel::Channel(Client &client, const std::string &name, const int &type)
         : _channel_key(name), _name(name.substr(1)), _created_by(client.getNickname()), _type(type),  _topic("")
@@ -32,10 +29,7 @@ Channel::Channel(Client &client, const std::string &name, const int &type)
     addClient(client);
 }
 
-Channel::~Channel()
-{
-
-}
+Channel::~Channel(){}
 
 std::string Channel::getName()
 {
@@ -57,7 +51,6 @@ void    Channel::setName(const std::string &new_name)
     this->_name = new_name;
     if (!this->_channel_key.empty())
         this->_channel_key = _channel_key[0] + new_name;
-
 }
 
 void Channel::setType(int new_type)
@@ -124,8 +117,6 @@ std::map<std::string, const Client*> &Channel::getOps()
 
 bool Channel::setTopic(const std::string &new_topic, const Client *author)
 {
-    //print mode
-    logMessage("INFO", "Channel mode is: " + getModes());
     if (hasMode('t') && !isOperator(author->getNickname()))
         return false;
     this->_topic = new_topic;
@@ -133,4 +124,3 @@ bool Channel::setTopic(const std::string &new_topic, const Client *author)
     this->_topic_time = std::time(NULL);
     return true;
 }
-
