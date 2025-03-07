@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:07:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/06 22:21:04 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 19:31:05 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,17 @@ void CommandHandler::limitMode(Client &client, Channel *channel, const bool& add
             return;
         }
         int limit = std::atoi(param.c_str());
+        if (limit < 1 || limit > MAX_CONNECTIONS)
+            return;
+        // turn limit into string again to pass as response parameter, e.g, 12 from 12abc
+        std::stringstream ss;
+        ss << limit;
+        std::string valid_limit = ss.str();
+        
         channel->setModeLimit(limit);
         channel->setMode('l', true);
         responseModes += "+l";
-        responseParams += " " + param;
+        responseParams += " " + valid_limit;
     }
     else
     {
