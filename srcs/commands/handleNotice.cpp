@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleNotice.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42.fr>              +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:15:14 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/04 10:40:03 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 20:16:54 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void CommandHandler::handleNotice(Client &client, std::istringstream &iss)
     {
         if (_server.getClients()[i].getNickname() == target)
         {
-            std::string response = "NOTICE from " + client.getNickname() + ": " + message;
+            std::string response = ":" + client.getNickname() + "!" + client.getUsername() + "@" + this->_server.getName() + " NOTICE " + target + message;
             sendDirectMessage(_server.getClients()[i].getFd(), response);
             return;
         }
