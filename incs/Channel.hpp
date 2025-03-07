@@ -46,6 +46,7 @@ class Channel
 		std::string		getTopic() const;
 		const Client*	getTopicAuthor() const;
 		std::string		getTopicTime() const;
+		std::string		getCreatedTime() const;
 		std::string		getModes() const;
 		std::string		getModePass() const;
 		std::map<std::string, const Client*>	&getClients();
@@ -79,6 +80,7 @@ class Channel
 		std::string		_name;
 		std::string		_created_by;
 		int				_type; //Check utils.hpp
+		std::time_t		_created_time;
 		std::map<std::string, const Client *>	_clients;
 		std::map<std::string, const Client *>	_ops;
 

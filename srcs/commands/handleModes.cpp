@@ -35,6 +35,8 @@ void CommandHandler::handleMode(Client &client, const std::vector<std::string> &
     {
         std::string modeMessage = ":" + _server.getName() + " 324 " + client.getNickname() + " " + target + " :" + channel->getModes();
         sendDirectMessage(client.getFd(), modeMessage);
+        std::string createdMessage = ":" + _server.getName() + " 329 " + client.getNickname() + " " + target + " :" + channel->getCreatedTime();
+        sendDirectMessage(client.getFd(), createdMessage);
         return;
     }
 
