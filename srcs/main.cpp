@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:34 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/06 23:20:31 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 18:15:53 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 	try {
 		signal(SIGINT, Server::signalHandler); // handle (ctrl-c)
 		signal(SIGQUIT, Server::signalHandler); // handle (ctrl-\)
-		//signal(SIGTSTP, Server::signalHandler); // handle (ctrl-z)
+		signal(SIGTSTP, Server::signalHandler); // handle (ctrl-z)
 		server.runServer();
 	} catch (const std::exception &e) {
 		std::cerr << RED << e.what() << RESET << std::endl;

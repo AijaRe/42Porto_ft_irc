@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:39:08 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/06 22:11:59 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 18:38:32 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,11 @@ void Channel::removeInvitedUser(const std::string &nickname)
 bool Channel::isInvited(const std::string &nickname) const
 {
     return _invitedUsers.find(nickname) != _invitedUsers.end();
+}
+
+bool Channel::isUserOnChannel(const std::string &nickname) const
+{
+    return _clients.find(nickname) != _clients.end();
 }
 
 bool Channel::assignOperator(const std::string &nickname)

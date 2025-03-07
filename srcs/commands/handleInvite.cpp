@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:17:50 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/06 23:27:52 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 18:37:09 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,13 @@ void CommandHandler::handleInvite(Client &client, std::istringstream &iss)
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NOSUCHNICK);
         return;
     }
-    
-    if (channel->isInvited(targetNickname))//check if user was already invited
+    //check if user was already invited or has already joined the channel
+    if (channel->isInvited(targetNickname) || channel->isUserOnChannel(targetNickname))
     {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_USERONCHANNEL);
+        std::vector<std::string> params;
+        params.push_back(targetNickname);
+        params.push_back(channelName);
+        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_USERONCHANNEL, params);
         return;
     }
     
