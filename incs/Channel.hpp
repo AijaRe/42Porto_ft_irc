@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:41:18 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/06 21:38:28 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 18:37:56 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ class Channel
 		void			addInvitedUser(const std::string &nickname);
 		void			removeInvitedUser(const std::string &nickname);
 		bool			isInvited(const std::string &nickname) const;
+		bool			isUserOnChannel(const std::string &nickname) const;
 		bool			assignOperator(const std::string &nickname);
 		void			removeOperator(const std::string &nickname);
 		bool			isOperator(const std::string &nickname) const;
