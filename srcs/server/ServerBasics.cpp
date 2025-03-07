@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:31 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/06 22:30:46 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 21:48:33 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ Server::Server (const int &port, const std::string &password) : _name(SERVER_NAM
 		delete _command_handler;
 		exit(EXIT_FAILURE);
 	}
+	//get current timestamp
+	_created_on = std::time(0);
 }
 
 Server::~Server()
