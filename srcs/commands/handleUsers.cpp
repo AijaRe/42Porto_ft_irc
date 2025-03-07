@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handleUsers.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
+/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/07 21:06:49 by yfontene         ###   ########.fr       */
+/*   Updated: 2025/03/07 22:04:06 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ void    CommandHandler::welcomeUser(Client &client)
     _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_YOURHOST, emptyParams, server_msg);
     
     // 003 <nickname> :This server was created <date>
-    // get current timestamp and convert to string in  dd-mm-yyyy format
-    std::time_t time_now = std::time(0);
-    std::tm *now = std::localtime(&time_now);
-    char time_now_str[11];
-    std::strftime(time_now_str, 11, "%d-%m-%Y", now);
+    // convert time to string in dd-mm-yyyy hh:mm:ss format
+    std::time_t created_on = _server.getCreatedOn();
+    std::tm *server_created = std::localtime(&created_on);
+    char server_created_str[20];
+    std::strftime(server_created_str, 20, "%d-%m-%Y %H:%M:%S", server_created);
     
-    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_CREATED, emptyParams, time_now_str);
+    _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), RPL_CREATED, emptyParams, server_created_str);
     
     // 004 <nickname> <server_name> <version> <user_modes> <channel_modes>
     std::string myInfo = ":" + _server.getName() + " " + RPL_MYINFO + " " + client.getNickname() + " " + _server.getName() + " 1.0 o iklt";
@@ -75,9 +75,9 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     }
 
    // Validate the mode (should be 0 - modern protocol) 
-    if (modeStr != "0")
+    if (modeStr != "0" || unused != "*")
     {   
-        _replies.sendMessage(client.getFd(), "Only mode 0 is supported! Please, try again. [USER <username> <mode> <unused> <realname>]");
+        _replies.sendMessage(client.getFd(), "Only mode 0 is supported and * for unused! Please, try again. [USER <username> <mode> <unused> <realname>]");
         return;
     }
 

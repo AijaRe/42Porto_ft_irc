@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/06 22:42:43 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 21:55:44 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Server {
 		int			getPort() const;
 		std::string	getPassword() const;
 		std::string	getName() const;
+		std::time_t	getCreatedOn() const;
 		std::map<int, Client>&			getClients();
 		std::map<std::string, Channel>&	getChannels();
 
@@ -67,6 +68,7 @@ class Server {
 		std::map<int, pollfd>			_fd_map;
 		std::map<int, Client>			_clients;
 		std::map<std::string, Channel>	_channels;
+		std::time_t		_created_on;
 		
     	CommandHandler*	_command_handler;
 
