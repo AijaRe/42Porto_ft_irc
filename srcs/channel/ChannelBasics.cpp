@@ -25,6 +25,8 @@ Channel::Channel(Client &client, const std::string &name, const int &type)
 	setMode('n', true); // Mode +n (no external messages)
     setMode('t', true); // Mode +t (topic set by channel operator only)
     
+    this->_created_time = std::time(NULL);
+
     addOp(client);
     addClient(client);
 }
@@ -103,6 +105,14 @@ std::string Channel::getTopicTime() const
     oss << _topic_time;
     std::string topic_time_str = oss.str();
     return topic_time_str;
+}
+
+std::string Channel::getCreatedTime() const
+{
+    std::ostringstream oss;
+    oss << _created_time;
+    std::string created_time_str = oss.str();
+    return created_time_str;
 }
 
 std::map<std::string, const Client*> &Channel::getClients()
