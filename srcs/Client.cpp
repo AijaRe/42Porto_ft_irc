@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
+/*   By: yfontene <yfontene@student.42porto>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:07:41 by yfontene          #+#    #+#             */
-/*   Updated: 2025/03/06 22:38:34 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/07 21:07:21 by yfontene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ const std::string &Client::getRealname() const
     return _realname;
 }
 
-std::string Client::getModes() const 
+/*std::string Client::getModes() const 
 {
     // Returns user modes or "+" if no modes are set
     return _modes.empty() ? "+" : "+" + _modes;
-}
+}*/
 
 void Client::setNickname(const std::string &nickname)
 {
@@ -66,7 +66,7 @@ void Client::setRealname(const std::string &realname)
     _realname = realname;
 }
 
-void Client::setMode(char mode, bool enable) {
+/*void Client::setMode(char mode, bool enable) {
     size_t pos = _modes.find(mode);
     if (enable && pos == std::string::npos) {
         _modes += mode; // Add mode if not present
@@ -78,7 +78,7 @@ void Client::setMode(char mode, bool enable) {
 bool Client::hasMode(char mode) const 
 {
     return _modes.find(mode) != std::string::npos;
-}
+}*/
 
 bool Client::passAuthenticated() const
 {
