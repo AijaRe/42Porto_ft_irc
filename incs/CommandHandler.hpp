@@ -49,12 +49,5 @@ class CommandHandler
 						const std::vector<std::string> &users_to_kick, std::vector<std::string> &params);
 		void executeKick(Client &client, Channel &channel, const std::string &reason,
 						std::vector<std::string> &users_to_kick, std::vector<std::string> &params);
-	
-		//test functions
-		void handleTest();
-		void handleTest2();
-		void handleTest3();
-		void handleTest4();
 };
-
 #endif

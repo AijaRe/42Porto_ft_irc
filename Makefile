@@ -13,7 +13,7 @@
 CXX = c++
 RM = rm -rf
 
-CXXFLAGS 	= -Wall -Werror -Wextra -pedantic-errors -std=c++98  #-fsanitize=address 
+CXXFLAGS 	= -Wall -Werror -Wextra -std=c++98
 
 #generate dependency files
 CPPFLAGS	= -MMD
@@ -26,7 +26,7 @@ OBJ_DIR		= objs
 MAIN_FILES	= main utils Client CommandHandler Replies
 CMD_FILES	= handleCap handleJoin handleKick handleModes handleNick handleNotice \
 			  handlePass handlePing handlePrivmsg handleUsers handleTopic handleInvite \
-			  handleWho handleTests
+			  handleWho
 CH_FILES	= ChannelBasics ChannelMembers ChannelSettings
 SRV_FILES	= ServerBasics ServerClients ServerChannels ServerGetters
 SRC			= $(addprefix $(SRC_DIR)/, $(addsuffix .cpp, $(MAIN_FILES))) \
