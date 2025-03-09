@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:01:45 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/07 18:14:11 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/09 15:29:04 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,28 +17,19 @@ bool CommandHandler::isClientAllowedToProceed(Client &client, const std::string 
     if(!client.passAuthenticated())
     {
         if(cmd != "PASS")
-        {
-            sendError(client.getFd(), "You must authenticate first! [PASS <password>]");
             return false;
-        }
         return true;
     }
-    if (client.getNickname().empty() && cmd != "NICK")
+    if (client.getNickname().empty() && cmd != "NICK" && cmd != "USER")
     {
-        if (cmd == "PASS" && client.passAuthenticated()) {
+        if (cmd == "PASS" && client.passAuthenticated())
             _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
-            return false;
-        }
-        sendError(client.getFd(), "You must set a nickname first! [NICK <nickname>]");
         return false;
     }
     if (client.getUsername().empty() && cmd != "USER" && cmd != "NICK")
     {
-        if (cmd == "PASS" && client.passAuthenticated()) {
+        if (cmd == "PASS" && client.passAuthenticated())
             _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
-            return false;
-        }
-        sendError(client.getFd(), "You must set a username first! [USER <username>]");
         return false;
     }
 
