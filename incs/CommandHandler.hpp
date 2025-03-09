@@ -35,6 +35,7 @@ class CommandHandler
 		void handleKick(Client &client, std::istringstream &iss);
 		void handleTopic(Client &client, std::istringstream &iss);
 		void handleInvite(Client &client, std::istringstream &iss);
+		void handlePart(Client &client, std::istringstream &iss);
 		void handleWho(Client &client, std::istringstream &iss);
 		
 		//helper functions

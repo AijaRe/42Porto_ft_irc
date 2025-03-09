@@ -6,7 +6,7 @@
 #    By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 19:53:42 by arepsa            #+#    #+#              #
-#    Updated: 2025/03/07 18:03:13 by arepsa           ###   ########.fr        #
+#    Updated: 2025/03/09 15:55:54 by arepsa           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ INC_DIR		= incs
 OBJ_DIR		= objs
 MAIN_FILES	= main utils Client CommandHandler Replies
 CMD_FILES	= handleCap handleJoin handleKick handleModes handleNick handleNotice \
-			  handlePass handlePing handlePrivmsg handleUsers handleTopic handleInvite \
+			  handlePart handlePass handlePing handlePrivmsg handleUsers handleTopic handleInvite \
 			  handleWho handleTests
 CH_FILES	= ChannelBasics ChannelMembers ChannelSettings
 SRV_FILES	= ServerBasics ServerClients ServerChannels ServerGetters
