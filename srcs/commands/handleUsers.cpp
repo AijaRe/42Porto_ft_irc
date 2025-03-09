@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:12:55 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/07 22:04:06 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/09 15:33:33 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,6 @@ void CommandHandler::handleUser(Client &client, std::istringstream &iss)
     if (client.passAuthenticated() && !client.getNickname().empty() && !client.getUsername().empty())
     {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_ALREADYREGISTERED);
-        return;
-    }
-
-    if (client.getNickname().empty())
-    {
-        _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
         return;
     }
     

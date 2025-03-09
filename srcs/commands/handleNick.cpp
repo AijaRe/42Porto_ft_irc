@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:03:47 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/06 22:23:21 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/09 15:38:41 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* 
 ** Helper function to validate nickname 
 ** A nickname cannot contain leading digits
-** A nickname can contain only alphanumerical characters, ([]{}), (\), (|), (_) characters
+** A nickname can contain only alphanumerical characters, ([]{}), (\), (|), (_), (-) characters
 */
 bool CommandHandler::isValidName(const std::string &name)
 {
@@ -25,7 +25,7 @@ bool CommandHandler::isValidName(const std::string &name)
     {
         if (!std::isalnum(name[i]) && name[i] != '[' && name[i] != ']' && 
             name[i] != '{' && name[i] != '}' && name[i] != '\\' && 
-            name[i] != '|' && name[i] != '_')
+            name[i] != '|' && name[i] != '_' && name[i] != '-')
             return false;
     }
     return true;
@@ -38,6 +38,7 @@ void    CommandHandler::updateNickname(Client &client, const std::string &newNic
     std::string host = client.getHost();
 
     client.setNickname(newNickname);
+    logMessage("DEBUG", "updateNickname:client.getNickname(): " + client.getNickname());
 
     // send NICK confirmation to client only if the nickname is being changed
     std::string message;
@@ -55,6 +56,8 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     std::string nickname;
     iss >> nickname;
     // ERR_NONICKNAMEGIVEN (431) - No nickname provided
+    logMessage("DEBUG", "handleNick: nickname: " + nickname);
+    logMessage("DEBUG", "handleNick: client.getNickname(): " + client.getNickname());
     if (nickname.empty())
     {
         _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NONICKNAMEGIVEN);
@@ -69,11 +72,15 @@ void CommandHandler::handleNick(Client &client, std::istringstream &iss)
     // ERR_NICKNAMEINUSE (433) - Nickname already in use
     for (std::map<int, Client>::iterator it = _server.getClients().begin(); it != _server.getClients().end(); ++it) {
         if (it->second.getNickname() == nickname) {
-            _replies.sendIrcInfo(client.getFd(), _server, client.getNickname(), ERR_NICKNAMEINUSE);
+            _replies.sendIrcInfo(client.getFd(), _server, nickname, ERR_NICKNAMEINUSE);
             return;
         }
     }
     // Change nickname and send confirmation
-    updateNickname(client, nickname);    
+    updateNickname(client, nickname);
+    if (client.isFullyAuthenticated() && !client.isWelcomed()) {
+        welcomeUser(client);
+        client.setWelcomed(true);
+    }  
 }
 
