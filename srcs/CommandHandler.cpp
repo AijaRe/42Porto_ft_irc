@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 18:45:12 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/09 15:45:04 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/10 22:01:56 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ void CommandHandler::handleCommand(Client &client, const std::string &command)
         handleInvite(client, iss);
     else if (cmd == "PART")
         handlePart(client, iss);
+    else if (cmd == "QUIT")
+        handleQuit(client, iss);
     else if (cmd == "WHO")
         handleWho(client, iss);
     else if (cmd == "TEST")

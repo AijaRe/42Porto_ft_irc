@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:39 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/07 21:55:32 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/10 22:16:26 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ std::string Server::getPassword() const {
 
 std::string Server::getName() const{
 	return _name;
+}
+
+std::map<int, pollfd>&	Server::getFdMap() 
+{
+	return _fd_map;
 }
 
 std::map<int, Client>&	Server::getClients() 

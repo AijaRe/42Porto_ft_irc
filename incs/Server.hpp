@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 20:08:37 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/07 21:55:44 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/10 22:29:02 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Server {
 		std::string	getPassword() const;
 		std::string	getName() const;
 		std::time_t	getCreatedOn() const;
+		std::map<int, pollfd>&			getFdMap();
 		std::map<int, Client>&			getClients();
 		std::map<std::string, Channel>&	getChannels();
 
@@ -50,6 +51,7 @@ class Server {
 		void			shutdownServer();
 		static void		signalHandler(int signal);
         bool			clientExists(const std::string &nick, Client &client_found);
+		void			markClientForRemoval(int client_fd);
 
 		//channel functions
         void			addChannel(Client &client, std::string &name, std::string &channel_password);
@@ -69,6 +71,7 @@ class Server {
 		std::map<int, Client>			_clients;
 		std::map<std::string, Channel>	_channels;
 		std::time_t		_created_on;
+		std::vector<int>	_clients_to_remove;
 		
     	CommandHandler*	_command_handler;
 

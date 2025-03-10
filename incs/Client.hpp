@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 11:02:57 by yfontene          #+#    #+#             */
-/*   Updated: 2025/03/06 21:59:19 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/10 22:18:25 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ class Client
 		std::string	_username;
 		std::string	_realname;
 		std::string	_modes;
-		bool		_welcomed; // Flag para indicar se o cliente já recebeu a mensagem de boas-vindas
+		bool		_welcomed; // flag that indicates if the user has received connection messages
 };
 
 #endif
