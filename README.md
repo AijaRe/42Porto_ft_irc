@@ -64,4 +64,14 @@ If you want to run the project yourself:
 
 # Implementation
 
-## Connection Analysis
+## Connection Management
+Poll
+
+## Command Processing
+Signals
+Modifications on the data structure
+
+## Server Output
+"Feedback" to the client if success or not with the command process.
+
+
