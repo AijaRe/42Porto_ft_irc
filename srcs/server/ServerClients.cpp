@@ -6,12 +6,17 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 19:57:15 by uviana-a          #+#    #+#             */
-/*   Updated: 2025/03/06 22:33:48 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/10 23:00:33 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "CommandHandler.hpp"
+
+void Server::markClientForRemoval(int client_fd)
+{
+	_clients_to_remove.push_back(client_fd);
+}
 
 void	Server::acceptClient() 
 {
@@ -52,6 +57,15 @@ void	Server::handleClient(int client_fd)
 {
 	if (_clients.find(client_fd) == _clients.end()){
 		logMessage("ERROR", "Client not found in the list of clients");
+		return;
+	}
+
+	//check if client is marked for removal
+	if (std::find(_clients_to_remove.begin(), _clients_to_remove.end(), client_fd) != _clients_to_remove.end()) {
+		close(client_fd);
+		_fd_map.erase(client_fd);
+		_clients.erase(client_fd);
+		_clients_to_remove.erase(std::remove(_clients_to_remove.begin(), _clients_to_remove.end(), client_fd), _clients_to_remove.end());
 		return;
 	}
 	
