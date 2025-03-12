@@ -68,6 +68,25 @@ If you want to run the project yourself:
 Poll
 
 ## Command Processing
+| Command | Description | Format |
+|-------------|------------|--------|
+| CAP | Capability negotiation | `/CAP LS`<br>`/CAP END`<br>Our server responds to LS with empty capabilities |
+| INVITE | The `INVITE` command is used to invite a user to a channel. | `/INVITE <nickname> <channel>` |
+| JOIN | The `JOIN` command indicates that the client wants to join the given channel(s), each channel using the given key for it. | `/JOIN #channel1,#channel2,#channel3 pass1,pass2` |
+| KICK | The `KICK` command can be used to request the forced removal of a user from a channel. | `/KICK <channel> <nickname> <optional_reason>` |
+| MODE | The `MODE` command is used to set or remove options (or modes) from a given target. <br>Our user modes: `o`.<br>Our channel modes: `i, k, l, t`<br> `+i` - invite only<br>`+k` - add password/key to channel<br>`+l` - set user limit for a channel<br>`+t` - protect topic to be modified only by operators | `/MODE <channel> <mode_parameter>`<br>`/MODE` - to see current channel modes |
+| MOTD | The `MOTD` command is used to get the “Message of the Day” of the given server. | Our server sends MOTD to client only after authentication, not callable. |
+| NICK | The `NICK` command is used to give the client a nickname or change the previous one. | `/NICK <new_nickname>` |
+| NOTICE | The `NOTICE` command is used to send notices between users, as well as to send notices to channels. The difference between `NOTICE` and `PRIVMSG` is that automatic replies must never be sent in response to a `NOTICE` message. | `/NOTICE <target> <message>` |
+| PART | The `PART` command removes the client from the given channel(s). | `/PART <channel>` |
+| PASS | The `PASS` command is used to set a ‘connection password’ to the server. If set, the password must be set before any attempt to register the connection is made. | `/PASS <password>` |
+| PING | The `PING` command is sent by either clients or servers to check the other side of the connection is still connected and/or to check for connection latency, at the application layer. | `/PING <token>` |
+| PRIVMSG | The `PRIVMSG` command is used to send private messages between users, as well as to send messages to channels. | `/PRIVMSG <target> <message>` |
+| QUIT | The `QUIT` command is used to terminate a client’s connection to the server. The server acknowledges this by replying with an `ERROR` message and closing the connection to the client. | `/QUIT <optional_message>` |
+| TOPIC | The `TOPIC` command is used to change or view the topic of the given channel. | `/TOPIC <channel> <new_topic>` |
+| USER | The `USER` command is used at the beginning of a connection to specify the username and real name of a new user. | `/USER <username> 0 * <realname>` |
+
+
 Signals
 Modifications on the data structure
 
