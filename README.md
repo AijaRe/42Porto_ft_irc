@@ -39,12 +39,14 @@ An IRC server, in general, acts as the central hub for communication. It manages
 
 Check the full documentation to dive deep into the project [RFC 2812](https://datatracker.ietf.org/doc/html/rfc2812) specially its more readable version (saved us a lot!) [Horse: Modern IRC Client Protocol](https://modern.ircdocs.horse/).
 
-
+### Steps overview:
+![image](https://github.com/user-attachments/assets/fd47269a-300b-401d-aa16-2a1b2cd87725)
 
 ## Getting Started
 **Program overview:**
-**TO BE UPDATED**
-![image](https://github.com/user-attachments/assets/360bf9e6-a80e-4f8e-9587-71d3cc9b266c)
+![image](https://github.com/user-attachments/assets/7793effa-d223-4318-afdb-14763104904a)
+
+
 
 
 ## Usage
