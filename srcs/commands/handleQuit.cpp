@@ -6,7 +6,7 @@
 /*   By: arepsa <arepsa@student.42porto.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 22:02:09 by arepsa            #+#    #+#             */
-/*   Updated: 2025/03/10 22:52:42 by arepsa           ###   ########.fr       */
+/*   Updated: 2025/03/12 20:43:07 by arepsa           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void CommandHandler::handleQuit(Client &client, std::istringstream &iss)
 		message += " " + quitMessage;
 	// Broadcast the QUIT message to all channels the user is on
 	std::map<std::string, Channel>::iterator it;
-	for (it = this->_server.getChannels().begin(); it != this->_server.getChannels().end(); it++)
+	for (it = this->_server.getChannels().begin(); it != this->_server.getChannels().end();)
 	{
 		if (it->second.isUserOnChannel(client.getNickname()))
 		{
@@ -35,11 +35,14 @@ void CommandHandler::handleQuit(Client &client, std::istringstream &iss)
 			it->second.removeUser(it->second.getClients(), nickname);
 		}
 		//if user ir the last one in the channel, remove the channel
-		if (it->second.getClients().size() == 0)
+		if (it->second.getClients().empty())
 		{
-			Channel channel_to_delete;
-			if (this->_server.channelExists(it->second.getChannelKey(), channel_to_delete))
-				this->_server.getChannels().erase(channel_to_delete.getChannelKey());
+			// erase the element and return the iterator to the next element
+			this->_server.getChannels().erase(it++);
+		}
+		else
+		{
+			++it;
 		}
 	}
 	// Mark client for removal and close fd
