@@ -37,7 +37,7 @@ For more detailed information about the challenge, look at the [**subject of thi
 
 An IRC server, in general, acts as the central hub for communication. It manages connections from multiple clients, routes messages between users, and enforces rules for channels and user interactions. Clients connect to the server using IRC commands to perform actions like setting a nickname, joining channels, sending messages, and disconnecting.
 
-Check the full documentation to dive deep into the project [RFC 1459](https://datatracker.ietf.org/doc/html/rfc1459) specially its more readable version (saved us a lot!) [Horse](https://modern.ircdocs.horse/).
+Check the full documentation to dive deep into the project [RFC 2812](https://datatracker.ietf.org/doc/html/rfc2812) specially its more readable version (saved us a lot!) [Horse: Modern IRC Client Protocol](https://modern.ircdocs.horse/).
 
 
 
