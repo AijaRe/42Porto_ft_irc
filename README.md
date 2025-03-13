@@ -53,15 +53,45 @@ Check the full documentation to dive deep into the project [RFC 2812](https://da
 
 If you want to run the project yourself:
 
-	- First clone this git repository to your machine.
- 
-	- Enter the repo and run ``` make ```
- 
-	- The first time will download and set up the minilibx
- 
-	- Run ./ircserv <port> <password>
+1. **Clone the repository**:
+   - First, clone this git repository to your machine:
+     ```bash
+     git clone <repository-url>
+     ```
 
- 	- Open the client (Hexchat) configure and connect to the server.
+2. **Build the project**:
+   - Enter the repository directory:
+     ```bash
+     cd <repository-name>
+     ```
+   - Run `make` to build the project:
+     ```bash
+     make
+     ```
+   - The first time you run `make`, it will download and set up the MiniLibX.
+
+3. **Run the server**:
+   - Start the IRC server with the following command:
+     ```bash
+     ./ircserv <port> <password>
+     ```
+     - `port`: The port number on which your IRC server will listen for incoming connections.
+     - `password`: The connection password of your choice. This password will be required by any IRC client trying to connect to your server.
+
+4. **Connect to the server**:
+   - **Using `nc` (Netcat)**:
+     In your terminal, run:
+     ```bash
+     nc <IP_ADDRESS> <PORT>
+     ```
+     - Replace `<IP_ADDRESS>` with the host's IP address.
+     - Replace `<PORT>` with the port number the server is listening on.
+
+   - **Using a client interface (e.g., HexChat)**:
+     1. Open HexChat.
+     2. Add a new network and edit the server information:
+        - Enter the server's IP address and port.
+        - Fill in the password field with the password you set earlier.
 
 
 # Implementation
