@@ -12,6 +12,8 @@ This project was done by:
 **FT_IRC** is a C++ project developed as part of the 42 School Common Core Program. It is a simplified implementation of an IRC (Internet Relay Chat) server that adheres to the IRC protocol (RFC 1459). The primary objectives of this project are to:
  
     *Handle multiple clients connected to the server simultaneously.
+    *All I/O operations must be non-blocking.
+    *Communication between client and server has to be done via TCP/IP (v4 or v6).
     *Messages addressed to a channel must be forwarded to every other client that joined the channel.
     *Implement the following IRC commands: 
       /NICK - Set a nickname.
