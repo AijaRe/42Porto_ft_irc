@@ -68,7 +68,6 @@ If you want to run the project yourself:
      ```bash
      make
      ```
-   - The first time you run `make`, it will download and set up the MiniLibX.
 
 3. **Run the server**:
    - Start the IRC server with the following command:
