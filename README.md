@@ -74,7 +74,7 @@ If you want to run the project yourself:
      ```bash
      ./ircserv <port> <password>
      ```
-     - `port`: The port number on which your IRC server will listen for incoming connections.
+     - `port`: The port number on which your IRC server will listen for incoming connections (we choose port 6667).
      - `password`: The connection password of your choice. This password will be required by any IRC client trying to connect to your server.
 
 4. **Connect to the server**:
