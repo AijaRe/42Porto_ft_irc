@@ -9,7 +9,7 @@ This project was done by:
 # FT_IRC
 ![clideo_editor_c549726371ed491a84bd207847e31387](https://github.com/user-attachments/assets/6eef85c3-f44e-4016-82ed-67bc8510b6f8)
 
-**FT_IRC** is a C project developed as part of the 42 School Common Core Program. It is a simplified implementation of an IRC (Internet Relay Chat) server that adheres to the IRC protocol (RFC 1459). The primary objectives of this project are to:
+**FT_IRC** is a C++ project developed as part of the 42 School Common Core Program. It is a simplified implementation of an IRC (Internet Relay Chat) server that adheres to the IRC protocol (RFC 1459). The primary objectives of this project are to:
  
     *Handle multiple clients connected to the server simultaneously.
     *Messages addressed to a channel must be forwarded to every other client that joined the channel.
