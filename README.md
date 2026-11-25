@@ -1,6 +1,6 @@
 This project was done by:
 
-[Aija Arepsa](https://github.com/AijaRe)
+[Aija Repsa](https://github.com/AijaRe)
 
 [Yasmine Fontenele](https://github.com/yasminefontenele)
 
